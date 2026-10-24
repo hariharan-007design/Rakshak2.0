@@ -218,7 +218,7 @@ async function polishWithAi() {
   const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · WORKING…</span>Polishing…'; }
   try {
     const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail} (source: ${f.source})`).join('\n');
-    const res = await fetch(`${aiBase()}/chat/completions`, {
+    const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
       body: JSON.stringify({ model: aiModel(), messages:[
@@ -226,7 +226,7 @@ async function polishWithAi() {
         {role:'user', content:`Rules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewrite the draft to satisfy the rules above. Return only the rewritten copy.`}
       ], temperature:0.3 })
     });
-    if (!res.ok) throw new Error(`API error ${res.status}`);
+    if (!res.ok) { const t=await res.text(); throw new Error(`API error ${res.status}: ${t.slice(0,200)}`); }
     const data = await res.json();
     const text = data?.choices?.[0]?.message?.content?.trim() || '';
     if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}`;
