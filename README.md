@@ -20,6 +20,7 @@ Then open <http://localhost:8000>.
 
 - **Hermes Agent (Nous Research)** — used to plan, scaffold, and edit the prototype.
 - **Claude (Anthropic)** — used for code assistance and copy review.
+- In-app (optional): AI polish uses `transformers.js` with `Xenova/Qwen2.5-0.5B-Instruct` running in the browser; needs internet on first download; output requires human review.
 
 ## Demo workspaces
 
@@ -45,7 +46,7 @@ These codes are visible demo credentials. They are not authentication and must n
 
 The rule checks are curated demonstrations, not a legal or brand-compliance certification. They can miss issues or flag wording that is acceptable in context. The current PDF reader cannot OCR scanned pages and does not preserve page locations. The channel formatter only changes paragraph breaks; it does not publish to social platforms or log in to company accounts. The shared demo codes provide no data security. Do not enter confidential drafts.
 
-The build uses no LLM and needs no network for the rule scan. All checks run deterministically in the browser; uploaded material never leaves the browser. The page loads fonts from Google Fonts (network).
+The build uses no LLM for the deterministic rule scan and needs no network for it. All checks run in the browser; uploaded material never leaves the browser. An optional **AI polish** tab runs an in-browser model (transformers.js) that downloads ~0.5 GB on first use and needs internet for that download; its output is a suggestion that requires human review. The page also loads fonts from Google Fonts (network).
 
 ## How to try this demo
 
