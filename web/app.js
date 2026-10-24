@@ -207,25 +207,6 @@ function downloadReport() {
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
 function aiModel() { return localStorage.getItem('rakshak_ai_model') || 'gpt-4o-mini'; }
 function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
-async function polishWithAi() {
-  if (!state.revised) { toast('Run a review first'); return; }
-  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · LOADING MODEL…</span>Loading in-browser model (first run downloads ~0.5 GB).'; }
-  try {
-    if (!window.__rakshakGenerator) {
-      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
-      window.__rakshakGenerator = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { progress_callback: (p) => {
-        if (result && p?.status === 'progress') result.innerHTML = `<span class="ai-label">AI POLISH · LOADING MODEL…</span>${Math.round((p.progress||0))}%`;
-      }});
-    }
-    const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail} (source: ${f.source})`).join('\n');
-    const prompt = `You rewrite marketing copy to comply with the given brand rules. Keep meaning, tone, and facts. Return only the rewritten copy.\n\nRules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewritten copy:`;
-    const out = await window.__rakshakGenerator(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: true });
-    const text = (Array.isArray(out) ? out[0]?.generated_text : out?.generated_text) || '';
-    const cleaned = text.replace(prompt, '').trim();
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(cleaned || text)}`;
-  } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`; toast('AI polish failed'); }
-}
-
 function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
@@ -245,7 +226,6 @@ function bind() {
   $('guidelineDocument')?.addEventListener('load',()=>{});
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
   $('backButton')?.addEventListener('click',()=>{ if(state.previousView) showView(state.previousView); });
-  $('polishAi')?.addEventListener('click',polishWithAi);
   $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
   $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
   refreshAiStatus();
