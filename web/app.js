@@ -208,26 +208,29 @@ function downloadReport() {
 }
 
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
-function aiModel() { return localStorage.getItem('rakshak_ai_model') || 'gpt-4o-mini'; }
-function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
+function aiBase() { return localStorage.getItem('rakshak_ai_base') || 'https://api.groq.com/openai/v1'; }
+function aiModel() { return localStorage.getItem('rakshak_ai_model') || 'llama-3.1-8b-instant'; }
+function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
 async function polishWithAi() {
+  const key = aiKey();
+  if (!key) { toast('Save an API key in Profile & settings first'); showView('settings'); return; }
   if (!state.revised) { toast('Run a review first'); return; }
-  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · LOADING MODEL…</span>Loading in-browser model (first run downloads ~0.5 GB).'; }
+  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · WORKING…</span>Polishing…'; }
   try {
-    if (!window.__rakshakGenerator) {
-      const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
-      env.allowLocalModels = false;
-      window.__rakshakGenerator = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { progress_callback: (p) => {
-        if (result && p?.status === 'progress') result.innerHTML = `<span class="ai-label">AI POLISH · LOADING MODEL…</span>${Math.round((p.progress||0))}%`;
-      }});
-    }
     const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail} (source: ${f.source})`).join('\n');
-    const prompt = `You rewrite marketing copy to comply with the given brand rules. Keep meaning, tone, and facts. Return only the rewritten copy.\n\nRules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewritten copy:`;
-    const out = await window.__rakshakGenerator(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: true });
-    const text = (Array.isArray(out) ? out[0]?.generated_text : out?.generated_text) || '';
-    const cleaned = text.replace(prompt, '').trim();
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(cleaned || text)}`;
-  } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}. Needs internet on first use.`; toast('AI polish failed'); }
+    const res = await fetch(`${aiBase()}/chat/completions`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body: JSON.stringify({ model: aiModel(), messages:[
+        {role:'system', content:'You rewrite marketing copy to comply with the given brand rules. Keep meaning, tone, and facts. Return only the rewritten copy, no commentary.'},
+        {role:'user', content:`Rules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewrite the draft to satisfy the rules above. Return only the rewritten copy.`}
+      ], temperature:0.3 })
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content?.trim() || '';
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}`;
+  } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`; toast('AI polish failed'); }
 }
 
 function bind() {
@@ -250,7 +253,7 @@ function bind() {
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
   $('backButton')?.addEventListener('click',()=>{ if(state.previousView) showView(state.previousView); });
   $('polishAi')?.addEventListener('click',polishWithAi);
-  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
+  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); const b=$('aiBaseInput')?.value.trim(); if(b) localStorage.setItem('rakshak_ai_base',b); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
   $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
   refreshAiStatus();
 
