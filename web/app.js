@@ -204,9 +204,10 @@ function downloadReport() {
 
 function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
+  if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
   $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login(companyKey());});
   $('companySelect')?.addEventListener('change',e=>{const co=DEMO_COMPANIES[e.target.value];if($('demoHint'))$('demoHint').textContent=`Demo access code: ${co.code} · Prototype only`;});
-  $('togglePassword')?.addEventListener('click',()=>{const p=$('passwordInput');p.type=p.type==='password'?'text':'password';});
+  $('togglePassword')?.addEventListener('click',()=>{const p=$('passwordInput');p.type=p.type==='password'?'text':'password';$('togglePassword').textContent=p.type==='password'?'Show':'Hide';$('togglePassword').setAttribute('aria-label',p.type==='password'?'Show access code':'Hide access code');});
   $('profileTrigger')?.addEventListener('click',()=>{const menu=$('profileMenu');if(!menu)return;const opening=menu.classList.contains('hidden');menu.classList.toggle('hidden',!opening);menu.classList.toggle('open',opening);$('profileTrigger').setAttribute('aria-expanded',String(opening));});
   $('settingsButton')?.addEventListener('click',()=>showView('settings')); $('signOutButton')?.addEventListener('click',signOut);
   $('changeCompany')?.addEventListener('click',signOut); $('settingsChangeCompany')?.addEventListener('click',signOut);
