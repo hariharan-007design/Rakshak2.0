@@ -25,7 +25,7 @@ const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.c
 function replacementFor(ruleId, quote) {
   const q=quote.toLowerCase();
   const replacements={
-    'MOZ-01':'not approved or endorsed by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'Mozilla',
+    'MOZ-01':'not approved or endorsed by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
     'MC-01':{utilize:'use',synergy:'working together',leverage:'use',facilitate:'help'},
     'MC-02':{revolutionary:'new',worldclass:'capable', 'world-class':'capable','best-in-class':'useful',guaranteed:'can help'},
     'MC-03':{guys:'everyone',mankind:'people',manpower:'staff'},
@@ -76,8 +76,11 @@ function findMatches(text) {
   const findings = [];
   for (const rule of state.company.rules) {
     const regex = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`);
+    let count=0;
     for (const match of text.matchAll(regex)) {
       if (!match[0]) continue;
+      if (rule.id === 'MOZ-04' && count > 0) break;
+      count++;
       findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: replacementFor(rule.id,match[0]), source: rule.source, url: rule.url, status: 'open' });
     }
   }
