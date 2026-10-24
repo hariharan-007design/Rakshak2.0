@@ -120,7 +120,7 @@
                 <div class="section-head"><div><span class="section-number">04</span><h2 id="revisedTitle">Revised draft</h2></div><span class="channel-tag" id="channelTag">Website</span></div>
                 <p class="section-note" id="channelNote">Accepted fixes are applied. Your original meaning is preserved for human review.</p>
                 <div class="revised-copy" id="revisedCopy"></div>
-                <div class="revised-footer"><span class="char-warning" id="charWarning"></span><div><button class="button button-outline" id="polishAi" type="button">AI polish (optional)</button><button class="button button-outline" id="copyRevised" type="button"><svg class="icon"><use href="#i-copy" /></svg> Copy draft</button><button class="button button-primary" id="downloadReport" type="button">Download report <svg class="icon"><use href="#i-arrow" /></svg></button></div></div><div class="ai-polish-result hidden" id="aiPolishResult"></div>
+                <div class="revised-footer"><span class="char-warning" id="charWarning"></span><div><button class="button button-outline" id="copyRevised" type="button"><svg class="icon"><use href="#i-copy" /></svg> Copy draft</button><button class="button button-primary" id="downloadReport" type="button">Download report <svg class="icon"><use href="#i-arrow" /></svg></button></div></div>
               </section>
             </div>
 
@@ -145,7 +145,7 @@
         </section>
 
           <section class="view" id="polishView" data-title="AI polish">
-          <div class="page-heading"><div><h1>AI <em>polish.</em></h1><p>Optional: runs a local in-browser model to rewrite the revised draft. Needs internet on first use; review before use.</p></div><button class="button button-primary" id="polishAi" type="button">Run AI polish</button></div>
+          <div class="page-heading"><div><h1>AI <em>polish.</em></h1><p>Optional: uses your API key (Groq/OpenAI) to rewrite the revised draft. Sends the draft + rule context to that provider. Review before use.</p></div><button class="button button-primary" id="polishAi" type="button">Run AI polish</button></div>
           <div class="ai-polish-result" id="aiPolishResult"></div>
         </section>
           <section class="view" id="historyView" data-title="Review history">

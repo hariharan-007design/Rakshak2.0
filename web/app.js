@@ -25,7 +25,7 @@ const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.c
 function replacementFor(ruleId, quote) {
   const q=quote.toLowerCase();
   const replacements={
-    'MOZ-01': q.includes('partnered') ? 'not partnered with Mozilla' : q.includes('endorsed') ? 'not endorsed by Mozilla' : 'not approved by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
+    'MOZ-01': q.includes('partnered') ? 'not partnered with' : q.includes('endorsed') ? 'not endorsed by' : 'not approved by', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
     'MC-01':{utilize:'use',synergy:'working together',leverage:'use',facilitate:'help'},
     'MC-02':{revolutionary:'new',worldclass:'capable', 'world-class':'capable','best-in-class':'useful',guaranteed:'can help'},
     'MC-03':{guys:'everyone',mankind:'people',manpower:'staff'},
@@ -229,7 +229,7 @@ async function polishWithAi() {
     if (!res.ok) { const t=await res.text(); throw new Error(`API error ${res.status}: ${t.slice(0,200)}`); }
     const data = await res.json();
     const text = data?.choices?.[0]?.message?.content?.trim() || '';
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}`;
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only. Re-run Analyze on this text to verify it satisfies the rules.</p>`;
   } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`; toast('AI polish failed'); }
 }
 
