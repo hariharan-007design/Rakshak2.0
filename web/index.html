@@ -80,6 +80,7 @@
         <nav class="side-nav" aria-label="Workspace">
           <button class="side-tab active" data-view="review" type="button"><svg class="icon"><use href="#i-review" /></svg><span>Review draft</span></button>
           <button class="side-tab" data-view="logo" type="button"><svg class="icon"><use href="#i-image"/></svg><span>Logo</span></button>
+          <button class="side-tab" data-view="polish" type="button"><svg class="icon"><use href="#i-review"/></svg><span>AI polish</span></button>
           <button class="side-tab" data-view="guidelines" type="button"><svg class="icon"><use href="#i-book" /></svg><span>Guidelines</span></button>
           <button class="side-tab" data-view="history" type="button"><svg class="icon"><use href="#i-history" /></svg><span>Review history</span><span class="nav-badge" id="historyBadge">0</span></button>
         </nav>
@@ -143,6 +144,10 @@
           <p class="section-note">Logo-related findings from the current draft appear in Review findings. Upload one draft and all checks run on it.</p>
         </section>
 
+          <section class="view" id="polishView" data-title="AI polish">
+          <div class="page-heading"><div><h1>AI <em>polish.</em></h1><p>Optional: runs a local in-browser model to rewrite the revised draft. Needs internet on first use; review before use.</p></div><button class="button button-primary" id="polishAi" type="button">Run AI polish</button></div>
+          <div class="ai-polish-result" id="aiPolishResult"></div>
+        </section>
           <section class="view" id="historyView" data-title="Review history">
           <div class="page-heading"><div><h1>Review <em>history.</em></h1><p>Recent activity held only in this open browser session.</p></div><button class="button button-outline" id="clearSession" type="button">Clear this session</button></div>
           <div class="history-list" id="historyList"></div><div class="history-empty hidden" id="historyEmpty">No scans yet. Reviews from this session will appear here.</div>
