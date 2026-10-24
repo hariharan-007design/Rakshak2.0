@@ -65,7 +65,7 @@ function login(key) {
   const company = DEMO_COMPANIES[key];
   if (!company || $('passwordInput').value.trim().toUpperCase() !== company.code) { $('passwordInput').setAttribute('aria-invalid','true'); toast('Access code does not match this demo workspace'); return; }
   $('passwordInput').removeAttribute('aria-invalid'); setCompany(key);
-  $('loginScreen').hidden = true; $('workspace').hidden = false;
+  reveal('loginScreen',false); reveal('workspace',true);
   if ($('demoHint')) $('demoHint').textContent = `Demo access code: ${company.code} · Prototype only`;
   $('draftInput') && ($('draftInput').value = ''); showView('review');
 }
@@ -225,7 +225,7 @@ function bind() {
 function signOut() {
   state.findings=[];state.history=[];state.draft='';state.revised='';state.logo=null;
   if($('draftInput'))$('draftInput').value='';if($('passwordInput'))$('passwordInput').value='';
-  $('workspace').hidden=true;$('loginScreen').hidden=false;if($('profileMenu')){$('profileMenu').classList.add('hidden');$('profileMenu').classList.remove('open');}$('profileTrigger')?.setAttribute('aria-expanded','false');drawHistory();
+  reveal('workspace',false); reveal('loginScreen',true);if($('profileMenu')){$('profileMenu').classList.add('hidden');$('profileMenu').classList.remove('open');}$('profileTrigger')?.setAttribute('aria-expanded','false');drawHistory();
 }
 
 function updateWordCount() { const value=$('draftInput')?.value||''; if($('draftMeta'))$('draftMeta').textContent=`${value.trim().split(/\s+/).filter(Boolean).length} words · ${value.length.toLocaleString()} characters`; }
