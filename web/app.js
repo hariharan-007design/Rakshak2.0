@@ -25,7 +25,7 @@ const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.c
 function replacementFor(ruleId, quote) {
   const q=quote.toLowerCase();
   const replacements={
-    'MOZ-01':'not approved or endorsed by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
+    'MOZ-01':'not approved or endorsed by', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
     'MC-01':{utilize:'use',synergy:'working together',leverage:'use',facilitate:'help'},
     'MC-02':{revolutionary:'new',worldclass:'capable', 'world-class':'capable','best-in-class':'useful',guaranteed:'can help'},
     'MC-03':{guys:'everyone',mankind:'people',manpower:'staff'},
