@@ -2,7 +2,7 @@ const DEMO_COMPANIES = {
   mozilla: { name: 'Mozilla', code: 'MOZ-2026', mark: 'M', description: 'Trademark and voice checks based on the supplied Mozilla Trademark Guidelines.', rules: [
     { id: 'MOZ-01', title: 'Avoid implied endorsement', pattern: /\b(officially endorsed by|approved by|partnered with Mozilla)\b/ig, severity: 'high', detail: 'This wording can imply Mozilla approved or endorses the product. The supplied guidelines reserve control over how Mozilla marks are presented.', fix: 'Remove the endorsement claim unless you have explicit written permission.', source: 'Mozilla Trademark Guidelines, Use of Mozilla marks', url: 'https://www.mozilla.org/foundation/trademarks/policy/' },
     { id: 'MOZ-02', title: 'Do not turn the mark into a product name', pattern: /\bMozilla\s+(browser|app|tool|platform|project|service)\b/ig, severity: 'high', detail: 'Using Mozilla as part of a product or project name can make the mark appear to identify your own offering.', fix: 'Name your product independently and describe compatibility in plain language.', source: 'Mozilla Trademark Guidelines, Proper use of Mozilla marks', url: 'https://www.mozilla.org/foundation/trademarks/policy/' },
-    { id: 'MOZ-03', title: 'Review possessive or plural use', pattern: /\bMozilla(?:’s|’|s’)\b/ig, severity: 'medium', detail: 'The draft uses Mozilla as a possessive or plural noun. Brand marks should identify the organization or its products, not become generic wording.', fix: 'Rewrite the phrase to use Mozilla as an adjective followed by a generic noun.', source: 'Mozilla Trademark Guidelines, Proper use of Mozilla marks', url: 'https://www.mozilla.org/foundation/trademarks/policy/' },
+    { id: 'MOZ-03', title: 'Review possessive or plural use', pattern: /\bMozilla(?:’s|’|s’|'s)\b/ig, severity: 'medium', detail: 'The draft uses Mozilla as a possessive or plural noun. Brand marks should identify the organization or its products, not become generic wording.', fix: 'Rewrite the phrase to use Mozilla as an adjective followed by a generic noun.', source: 'Mozilla Trademark Guidelines, Proper use of Mozilla marks', url: 'https://www.mozilla.org/foundation/trademarks/policy/' },
     { id: 'MOZ-04', title: 'Add a clear trademark attribution', pattern: /\bMozilla\b/i, severity: 'review', detail: 'A Mozilla mark appears. Check that the page includes the required trademark attribution and does not suggest an affiliation that does not exist.', fix: 'Add an accurate attribution in the legal or footer area and state your relationship clearly.', source: 'Mozilla Trademark Guidelines, Attribution', url: 'https://www.mozilla.org/foundation/trademarks/policy/' }
   ] },
   mailchimp: { name: 'Mailchimp', code: 'MAIL-2026', mark: 'M', description: 'Demo voice checks inspired by the public Mailchimp Style Guide.', rules: [
@@ -19,7 +19,7 @@ const DEMO_COMPANIES = {
 
 const SAMPLE = `Introducing Mozilla's new collaboration workspace. It is officially endorsed by Mozilla, guarantees a 50% increase in team productivity, and is 100% secure.\n\nTry it today to see why it's the best-in-class choice for everyone.`;
 const $ = (id) => document.getElementById(id);
-const state = { company: null, findings: [], draft: '', revised: '', logo: null, history: [], activeFinding: null };
+const state = { company: null, findings: [], draft: '', revised: '', logo: null, history: [], activeFinding: null, currentView: 'review', previousView: null };
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.classList.toggle('hidden',!visible);} };
 function replacementFor(ruleId, quote) {
@@ -55,9 +55,11 @@ function setCompany(key) {
 }
 
 function showView(view) {
+  if (state.currentView && state.currentView !== view) state.previousView = state.currentView;
+  state.currentView = view;
   document.querySelectorAll('[data-view]').forEach(tab => tab.classList.toggle('active', tab.dataset.view === view));
   document.querySelectorAll('.view').forEach(panel => { const active = panel.id === `${view}View`; panel.hidden = !active; panel.classList.toggle('hidden',!active); panel.classList.toggle('active-view', active); });
-  if ($('breadcrumbCurrent')) $('breadcrumbCurrent').textContent = ({review:'New review',guidelines:'Guidelines',history:'Review history',settings:'Workspace settings'})[view] || 'New review';
+  if ($('breadcrumbCurrent')) $('breadcrumbCurrent').textContent = ({review:'New review',guidelines:'Guidelines',history:'Review history',settings:'Workspace settings',polish:'AI polish',logo:'Logo'})[view] || 'New review';
   if($('profileMenu')){$('profileMenu').classList.remove('open');$('profileMenu').classList.add('hidden');}$('profileTrigger')?.setAttribute('aria-expanded','false');
 }
 
@@ -104,7 +106,7 @@ function drawFindings() {
   if ($('findingsSummary')) $('findingsSummary').textContent = open.length ? `${open.length} item${open.length === 1 ? '' : 's'} need your review` : 'No matching rule issues were found';
   $('noFindings') && ($('noFindings').hidden = open.length > 0);
   reveal('findingsSection',true); reveal('noFindings',open.length===0);
-  list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div>${f.fix ? `<label class="suggestion-label" for="fix-${esc(f.id)}">EDITABLE REPLACEMENT</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea>` : '<p class="finding-ruleline">This needs human verification; the prototype has no safe automatic replacement.</p>'}<div class="finding-buttons">${f.fix ? `<button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button>` : ''}<button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Mark reviewed</button></div></div></article>`).join('');
+  list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div>${f.fix ? `<label class="suggestion-label" for="fix-${esc(f.id)}">EDITABLE REPLACEMENT</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea>` : '<p class="finding-ruleline">This needs human verification; the prototype has no safe automatic replacement.</p>'}<div class="finding-buttons">${f.fix ? `<button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button>` : ''}<button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Dismiss</button></div></div></article>`).join('');
   list.querySelectorAll('.finding-trigger').forEach(btn => btn.addEventListener('click', () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); }));
   list.querySelectorAll('.apply-fix').forEach(btn => btn.addEventListener('click', () => applyFix(btn.dataset.id)));
   list.querySelectorAll('.dismiss-finding').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f)f.status='ignored'; drawFindings(); drawHighlight(); }));
@@ -202,6 +204,28 @@ function downloadReport() {
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([report],{type:'text/plain'}));a.download=`rakshak-review-${state.company.name.toLowerCase().replace(/\W+/g,'-')}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
+function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
+function aiModel() { return localStorage.getItem('rakshak_ai_model') || 'gpt-4o-mini'; }
+function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
+async function polishWithAi() {
+  if (!state.revised) { toast('Run a review first'); return; }
+  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · LOADING MODEL…</span>Loading in-browser model (first run downloads ~0.5 GB).'; }
+  try {
+    if (!window.__rakshakGenerator) {
+      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+      window.__rakshakGenerator = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { progress_callback: (p) => {
+        if (result && p?.status === 'progress') result.innerHTML = `<span class="ai-label">AI POLISH · LOADING MODEL…</span>${Math.round((p.progress||0))}%`;
+      }});
+    }
+    const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail} (source: ${f.source})`).join('\n');
+    const prompt = `You rewrite marketing copy to comply with the given brand rules. Keep meaning, tone, and facts. Return only the rewritten copy.\n\nRules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewritten copy:`;
+    const out = await window.__rakshakGenerator(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: true });
+    const text = (Array.isArray(out) ? out[0]?.generated_text : out?.generated_text) || '';
+    const cleaned = text.replace(prompt, '').trim();
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(cleaned || text)}`;
+  } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`; toast('AI polish failed'); }
+}
+
 function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
@@ -220,6 +244,12 @@ function bind() {
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
+  $('backButton')?.addEventListener('click',()=>{ if(state.previousView) showView(state.previousView); });
+  $('polishAi')?.addEventListener('click',polishWithAi);
+  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
+  $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
+  refreshAiStatus();
+
 }
 
 function signOut() {
