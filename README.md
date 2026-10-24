@@ -14,7 +14,7 @@ Then open <http://localhost:8000>.
 
 ## Live demo
 
-**Live app:** (add your GitHub Pages URL here after enabling Pages on the `web/` folder)
+**Live app:** https://hariharan-007design.github.io/Rakshak2.0/
 
 ## AI tools used
 
@@ -45,7 +45,19 @@ These codes are visible demo credentials. They are not authentication and must n
 
 The rule checks are curated demonstrations, not a legal or brand-compliance certification. They can miss issues or flag wording that is acceptable in context. The current PDF reader cannot OCR scanned pages and does not preserve page locations. The channel formatter only changes paragraph breaks; it does not publish to social platforms or log in to company accounts. The shared demo codes provide no data security. Do not enter confidential drafts.
 
-The build uses no LLM and requires no network. All rule checks run deterministically in the browser; uploaded material never leaves the browser.
+The build uses no LLM and needs no network for the rule scan. All checks run deterministically in the browser; uploaded material never leaves the browser. The page loads fonts from Google Fonts (network).
+
+## How to try this demo
+
+1. Open the live app: https://hariharan-007design.github.io/Rakshak2.0/
+2. Choose a company workspace and enter its demo access code (Mozilla `MOZ-2026`, Mailchimp `MAIL-2026`, Acme SaaS `ACME-2026`).
+3. Click **Load sample draft** or paste/upload a `.txt`, `.md`, or text-based PDF.
+4. Click **Analyze draft**. Open each finding to see matched text, explanation, source link, and editable suggestion.
+5. Apply or dismiss suggestions, review the revised draft, then copy or download the report.
+
+**Supported files:** `.txt`, `.md`, text-based PDF (no OCR). Logos: PNG/JPEG/WEBP/SVG (file-quality checks only).
+
+**Known limits:** curated demo rules, not legal/brand compliance; no OCR; session-only history; demo codes are not authentication.
 
 ## Round 3 product improvements
 
