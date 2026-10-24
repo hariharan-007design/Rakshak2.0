@@ -17,11 +17,25 @@ const DEMO_COMPANIES = {
   ] }
 };
 
-const SAMPLE = `Mozilla's revolutionary browser gives your team a guaranteed productivity boost. Our tool is officially endorsed by Mozilla and is 100% secure.\n\nTry it today and see why we're the best-in-class choice for everyone.`;
+const SAMPLE = `Mozilla's browser is revolutionary and gives your team a guaranteed productivity boost. Our tool is officially endorsed by Mozilla and is 100% secure.\n\nTry it today and see why we're the best-in-class choice for everyone.`;
 const $ = (id) => document.getElementById(id);
 const state = { company: null, findings: [], draft: '', revised: '', logo: null, history: [], activeFinding: null };
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.classList.toggle('hidden',!visible);} };
+function replacementFor(ruleId, quote) {
+  const q=quote.toLowerCase();
+  const replacements={
+    'MOZ-01':'not approved or endorsed by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'Mozilla',
+    'MC-01':{utilize:'use',synergy:'working together',leverage:'use',facilitate:'help'},
+    'MC-02':{revolutionary:'new',worldclass:'capable', 'world-class':'capable','best-in-class':'useful',guaranteed:'can help'},
+    'MC-03':{guys:'everyone',mankind:'people',manpower:'staff'},
+    'AC-01':{guaranteed:'may', '100% secure':'designed with security in mind','zero risk':'lower risk','never fails':'is designed for reliability'},
+    'AC-02':{'the best':'a strong fit','number one':'a strong fit',unmatched:'distinctive','world-class':'capable','world class':'capable'}
+  };
+  const entry=replacements[ruleId];
+  if(typeof entry==='string')return entry;
+  return entry?.[q] || '';
+}
 
 function toast(message) { const el = $('toast'); if (!el) return; el.textContent = message; el.classList.remove('hidden'); el.classList.add('show'); clearTimeout(toast.timer); toast.timer = setTimeout(() => {el.classList.remove('show');el.classList.add('hidden');}, 2600); }
 function companyKey() { return $('companySelect')?.value || 'mozilla'; }
@@ -62,7 +76,7 @@ function findMatches(text) {
     const regex = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`);
     for (const match of text.matchAll(regex)) {
       if (!match[0]) continue;
-      findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: rule.fix, source: rule.source, url: rule.url, status: 'open' });
+      findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: replacementFor(rule.id,match[0]), source: rule.source, url: rule.url, status: 'open' });
     }
   }
   return findings.sort((a,b) => a.start - b.start);
@@ -90,7 +104,7 @@ function drawFindings() {
   if ($('findingsSummary')) $('findingsSummary').textContent = open.length ? `${open.length} item${open.length === 1 ? '' : 's'} need your review` : 'No matching rule issues were found';
   $('noFindings') && ($('noFindings').hidden = open.length > 0);
   reveal('findingsSection',true); reveal('noFindings',open.length===0);
-  list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div><label class="suggestion-label" for="fix-${esc(f.id)}">SUGGESTED CORRECTION</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea><div class="finding-buttons"><button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button><button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Mark reviewed</button></div></div></article>`).join('');
+  list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div>${f.fix ? `<label class="suggestion-label" for="fix-${esc(f.id)}">EDITABLE REPLACEMENT</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea>` : '<p class="finding-ruleline">This needs human verification; the prototype has no safe automatic replacement.</p>'}<div class="finding-buttons">${f.fix ? `<button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button>` : ''}<button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Mark reviewed</button></div></div></article>`).join('');
   list.querySelectorAll('.finding-trigger').forEach(btn => btn.addEventListener('click', () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); }));
   list.querySelectorAll('.apply-fix').forEach(btn => btn.addEventListener('click', () => applyFix(btn.dataset.id)));
   list.querySelectorAll('.dismiss-finding').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f)f.status='ignored'; drawFindings(); drawHighlight(); }));
