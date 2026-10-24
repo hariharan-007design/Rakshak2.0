@@ -1,1 +1,70 @@
-# Rakshak2.0
+# Rakshak 2.0
+
+Rakshak is a brand review desk prototype for checking marketing copy and logo file quality before publication. It is being built from scratch for the Round 2 demonstration.
+
+## Run the prototype
+
+Serve the `web` folder over HTTP (do not open `index.html` as a `file://` URL; browser PDF workers require HTTP):
+
+```sh
+python -m http.server 8000 --directory web
+```
+
+Then open <http://localhost:8000>.
+
+## Demo workspaces
+
+| Company | Access code | Rule pack |
+| --- | --- | --- |
+| Mozilla | `MOZ-2026` | Supplied Mozilla Trademark Guidelines and heuristic text rules |
+| Mailchimp | `MAIL-2026` | Demo checks inspired by the public Mailchimp Style Guide |
+| Acme SaaS | `ACME-2026` | Synthetic product-claim checks |
+
+These codes are visible demo credentials. They are not authentication and must never protect real company information.
+
+## What works in this build
+
+- Select a demo company and open its workspace.
+- Paste or upload `.txt` / `.md` copy, or upload a text-based PDF. PDF text is extracted in-browser with the locally bundled Mozilla PDF.js library. Files are not sent to a server.
+- Compare draft text against the active sample rules. Findings appear in order and are highlighted in the draft. Open a finding to see its matched text, explanation, source link, and editable suggestion.
+- Apply suggestions, review the resulting draft for Website, LinkedIn, Instagram, X, or Facebook, copy it, or download a plain-text review report.
+- Upload a PNG, JPEG, WEBP, or SVG logo for basic dimensions, file size, and transparent/clear-space checks. These checks do not establish brand identity or approve artwork.
+- Preview the supplied Mozilla Trademark Guidelines PDF and view the demo rule pack.
+- Review history is held in memory for the current tab only.
+
+## What this prototype does not do
+
+The rule checks are curated demonstrations, not a legal or brand-compliance certification. They can miss issues or flag wording that is acceptable in context. The current PDF reader cannot OCR scanned pages and does not preserve page locations. The channel formatter only changes paragraph breaks; it does not publish to social platforms or log in to company accounts. The shared demo codes provide no data security. Do not enter confidential drafts.
+
+The build does not use an LLM or require Ollama. A local model would run on each reviewer’s own computer and require a model download and compatible hardware. That would make an open jury link harder to use. This round uses deterministic rules and keeps uploaded material in the browser; a later AI feature should be optional, grounded in approved rules, and reviewed by a person.
+
+## Round 3 product improvements
+
+1. **Full document and asset review:** OCR for scanned PDFs and images, DOCX and slide ingestion, page/element-level citations, brand logo matching against approved assets, color/contrast checks, and downloadable annotated files.
+2. **Enterprise governance and audit:** real SSO and role-based permissions, tenant isolation, versioned and editable rule packs, reviewer assignments and approvals, complete decision history, retention controls, and security verification against OWASP ASVS 5.0.0.
+3. **Connected publishing with measurable quality:** permission-scoped CMS and social integrations, draft previews and scheduled publishing only after approval, rollback and audit trails, plus evaluation dashboards for rule coverage, false positives, and reviewer overrides. AI assistance can be added behind explicit organization controls and grounded citations.
+
+These are roadmap commitments, not features in this prototype. Accessibility should be built and checked against [WCAG 2.2](https://www.w3.org/TR/wcag/). Enterprise application security should use [OWASP ASVS 5.0.0](https://asvs.owasp.org/). Connected publishing should follow the [OAuth 2.0 Security Best Current Practice, RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700). AI risk management can use the [NIST AI Risk Management Framework](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/).
+
+## Sources
+
+- [Mozilla PDF.js documentation](https://mozilla.github.io/pdf.js/getting_started/) — bundled browser PDF reader; version 6.4.299.
+- [Mozilla Trademark Policy](https://www.mozilla.org/foundation/trademarks/policy/).
+- [Mailchimp Style Guide](https://styleguide.mailchimp.com/).
+- [W3C Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/wcag/).
+- [OWASP Application Security Verification Standard](https://asvs.owasp.org/) — stable 5.0.0.
+- [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/rfc9700).
+- [NIST AI Risk Management Framework](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/).
+
+## Repository layout
+
+```text
+web/
+  app.js
+  index.html
+  styles.css
+  assets/rakshak-logo.png
+  guidelines/mozilla-trademark-guidelines.pdf
+  vendor/                 # PDF.js browser bundle
+PRODUCT.md                # Product scope and round-by-round plan
+```
