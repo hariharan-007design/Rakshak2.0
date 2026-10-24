@@ -17,7 +17,7 @@ const DEMO_COMPANIES = {
   ] }
 };
 
-const SAMPLE = `Mozilla's browser is revolutionary and gives your team a guaranteed productivity boost. Our tool is officially endorsed by Mozilla and is 100% secure.\n\nTry it today and see why we're the best-in-class choice for everyone.`;
+const SAMPLE = `Introducing Mozilla's new collaboration workspace. It is officially endorsed by Mozilla, guarantees a 50% increase in team productivity, and is 100% secure.\n\nTry it today to see why it's the best-in-class choice for everyone.`;
 const $ = (id) => document.getElementById(id);
 const state = { company: null, findings: [], draft: '', revised: '', logo: null, history: [], activeFinding: null };
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -164,7 +164,7 @@ async function readPdf(file) {
   if(pdf.numPages>40) throw new Error('This prototype supports PDFs up to 40 pages.');
   const pages=[];
   for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const content=await page.getTextContent();pages.push(content.items.map(x=>x.str).join(' '));}
-  const text=pages.join('\n\n'); if(!text.trim())throw new Error('No selectable text was found. Scanned PDFs need OCR, planned for Round 3.');
+  const text=pages.join('\n\n'); if(!text.trim())throw new Error('No selectable text was found. This version cannot read scanned PDFs.');
   return text.slice(0,50000);
 }
 
