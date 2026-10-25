@@ -209,8 +209,8 @@ function downloadReport() {
 
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
 function aiBase() { return (localStorage.getItem('rakshak_ai_base') || 'https://api.groq.com/openai/v1').trim(); }
-function aiModel() { const m=localStorage.getItem('rakshak_ai_model'); if(!m||m==='llama-3.1-8b-instant') return 'llama-3.3-70b-versatile'; return m; }
-function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
+function aiModel() { const v = $('aiModelInput') && $('aiModelInput').value.trim(); if (v) return v; const m = localStorage.getItem('rakshak_ai_model'); if (m && m !== 'llama-3.1-8b-instant') return m; return 'llama-3.3-70b-versatile'; }
+function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelInput')) $('aiModelInput').value = aiModel(); }
 async function polishWithAi() {
   const key = aiKey();
   if (!key) { toast('Save an API key in Profile & settings first'); showView('settings'); return; }
@@ -253,7 +253,7 @@ function bind() {
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
   $('backButton')?.addEventListener('click',()=>{ if(state.previousView) showView(state.previousView); });
   $('polishAi')?.addEventListener('click',polishWithAi);
-  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); const b=$('aiBaseInput')?.value.trim(); if(b) localStorage.setItem('rakshak_ai_base',b); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
+  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); const b=$('aiBaseInput')?.value.trim(); if(b) localStorage.setItem('rakshak_ai_base',b); const m=$('aiModelInput')?.value.trim(); if(m) localStorage.setItem('rakshak_ai_model',m); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
   $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
   refreshAiStatus();
 
