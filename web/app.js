@@ -209,7 +209,7 @@ function downloadReport() {
 
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
 function aiBase() { return (localStorage.getItem('rakshak_ai_base') || 'https://api.groq.com/openai/v1').trim(); }
-function aiModel() { let v = ($('aiModelInput') && $('aiModelInput').value.trim()) || localStorage.getItem('rakshak_ai_model') || ''; v = v.replace(/verseatile/gi,'versatile'); if (!v || v==='llama-3.1-8b-instant') v='llama-3.3-70b-versatile'; return v; }
+function aiModel() { let v = ($('aiModelInput') && $('aiModelInput').value.trim()) || localStorage.getItem('rakshak_ai_model') || ''; v = v.replace(/verseatile/gi,'versatile'); if (!v || v==='llama-3.1-8b-instant') v='openai/gpt-oss-20b'; return v; }
 function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelInput')) $('aiModelInput').value = aiModel(); }
 async function polishWithAi() {
   const key = aiKey();
