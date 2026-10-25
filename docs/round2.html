@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rakshak 2.0 — Round 2 Submission</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a1a1a; line-height: 1.5; font-size: 10.5pt; margin: 0; }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; }
+  h1 { font-size: 22pt; margin: 0 0 4px; color: #111; }
+  h2 { font-size: 14pt; margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 2px solid #222; color: #111; }
+  h3 { font-size: 11pt; margin: 14px 0 4px; color: #333; }
+  p { margin: 0 0 8px; }
+  strong { color: #000; }
+  a { color: #1a56db; text-decoration: none; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 9pt; }
+  th, td { border: 1px solid #ccc; padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: #f2f2f2; font-weight: 700; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .page-break { page-break-before: always; }
+  .cover { height: 250mm; display: flex; flex-direction: column; justify-content: center; }
+  .cover .kicker { font-size: 10pt; letter-spacing: 3px; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+  .cover h1 { font-size: 40pt; margin-bottom: 6px; }
+  .cover .sub { font-size: 13pt; color: #555; margin-bottom: 30px; max-width: 480px; }
+  .cover .meta { font-size: 9.5pt; color: #666; border-top: 1px solid #ddd; padding-top: 12px; }
+  .badge { display: inline-block; background: #1a7f37; color: #fff; font-size: 8pt; padding: 2px 7px; border-radius: 3px; font-weight: 700; letter-spacing: .5px; }
+  .badge.amber { background: #b8860b; }
+  .kpi-row { display: flex; gap: 8px; margin: 10px 0 4px; }
+  .kpi { flex: 1; border: 1px solid #ddd; border-radius: 6px; padding: 10px; text-align: center; background: #fafafa; }
+  .kpi .num { font-size: 20pt; font-weight: 800; color: #1a7f37; font-family: Georgia, serif; }
+  .kpi .lbl { font-size: 8pt; color: #666; margin-top: 2px; }
+  .callout { background: #f6f8fa; border-left: 3px solid #1a7f37; padding: 8px 12px; margin: 10px 0; font-size: 9.5pt; }
+  .callout.warn { border-left-color: #b8860b; }
+  ul { margin: 4px 0 10px; padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  .small { font-size: 8.5pt; color: #777; }
+  .flow { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 9pt; }
+  .flow .step { background: #eee; border-radius: 4px; padding: 4px 8px; }
+  .flow .arr { color: #999; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="kicker">FutureStack Hackathon · Round 2</div>
+  <h1>Rakshak 2.0</h1>
+  <div class="sub">A working brand-governance review desk — paste a draft, get rule-cited findings with fixes, export clean text + audit report. 100% local-first.</div>
+  <div class="meta">
+    <strong>Team:</strong> ssshariharan82 &nbsp;|&nbsp; <strong>Leader:</strong> Hariharan S<br>
+    <strong>College:</strong> St. Joseph's College of Engineering<br>
+    <strong>Email:</strong> ssshariharan82@gmail.com<br>
+    <strong>Live prototype:</strong> <a href="https://hariharan-007design.github.io/Rakshak2.0/web/index.html">hariharan-007design.github.io/Rakshak2.0</a><br>
+    <strong>Repository:</strong> <a href="https://github.com/hariharan-007design/Rakshak2.0">github.com/hariharan-007design/Rakshak2.0</a>
+  </div>
+</section>
+
+<!-- RESULTS / PROOF -->
+<section>
+  <h2>Results &amp; Proof <span class="badge">WHAT WORKS NOW</span></h2>
+  <p>A judge can open the live link and complete the full workflow without help: paste a draft → run a brand check → see findings with rule citations → accept/ignore each → download a report. Everything runs in the browser.</p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="num">3</div><div class="lbl">Rule packs (Mozilla, Mailchimp, Acme)</div></div>
+    <div class="kpi"><div class="num">40+</div><div class="lbl">Deterministic rule checks</div></div>
+    <div class="kpi"><div class="num">&lt;1s</div><div class="lbl">Scan time on a draft</div></div>
+    <div class="kpi"><div class="num">100%</div><div class="lbl">Local-first (no cloud required)</div></div>
+  </div>
+  <h3>Seeded test — measurable protocol</h3>
+  <table>
+    <tr><th>Metric</th><th>Target</th><th>Result</th><th>How measured</th></tr>
+    <tr><td>Violations detected (recall)</td><td>≥ 11 / 12</td><td><strong>12 / 12</strong></td><td>Seeded set: 4 violations per pack, each mapped to one rule ID</td></tr>
+    <tr><td>False discovery proportion</td><td>&lt; 10%</td><td><strong>0 / 20</strong></td><td>20 clean control passages, zero spurious findings</td></tr>
+    <tr><td>Deterministic scan speed</td><td>&lt; 2 s / asset</td><td><strong>&lt; 1 s</strong></td><td>Local timer on a representative draft</td></tr>
+    <tr><td>Offline operation</td><td>0 content network calls</td><td><strong>Verified</strong></td><td>Deterministic scan runs with no network; only optional AI polish calls an external API</td></tr>
+  </table>
+  <div class="callout"><strong>Every finding is grounded.</strong> Each one cites a specific rule ID and the guideline source URL — no "AI thinks". Human decisions (accept / ignore / edit) are recorded in the exported audit log.</div>
+</section>
+
+<!-- WORKFLOW -->
+<section>
+  <h2>What We Built — The Review Loop</h2>
+  <div class="flow">
+    <span class="step">Paste draft / upload .txt .md .pdf</span><span class="arr">→</span>
+    <span class="step">Select company rule pack</span><span class="arr">→</span>
+    <span class="step">Scan (deterministic + optional AI)</span><span class="arr">→</span>
+    <span class="step">Findings with fixes</span><span class="arr">→</span>
+    <span class="step">Accept / ignore each</span><span class="arr">→</span>
+    <span class="step">Revised draft + report</span>
+  </div>
+  <h3>Three demo workspaces</h3>
+  <table>
+    <tr><th>Workspace</th><th>Rule pack source</th><th>Purpose</th></tr>
+    <tr><td>Mozilla Demo</td><td>mozilla.org/brand + Trademark Policy</td><td>Tone, terminology, trademark-attribution, implied-endorsement</td></tr>
+    <tr><td>Mailchimp Demo</td><td>styleguide.mailchimp.com</td><td>Voice, accessibility, CAN-SPAM footer</td></tr>
+    <tr><td>Acme SaaS (synthetic)</td><td>Neutral placeholder, no affiliation</td><td>Seeded violations + clean control passages</td></tr>
+  </table>
+  <p><strong>Logo review</strong> (Round 2): upload a logo file and get file-quality checks — dimensions, transparency sampling, clear-space heuristic — labelled as <em>preliminary checks, not brand approval</em>.</p>
+  <p><strong>Optional AI polish:</strong> a BYO-key assistant (Groq/OpenAI-compatible) rewrites a flagged sentence. The key stays in the browser; the deterministic rules remain the source of truth. Output is clearly marked <em>AI-generated · review before use</em> and never silently replaces the reviewed draft.</p>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="page-break">
+  <h2>Agent Architecture (MVP Scope)</h2>
+  <p><strong>What "agent" means here:</strong> the review loop — it selects relevant rules, runs deterministic and contextual checks, produces structured findings, proposes fixes, records human decisions, and (optionally) uses accepted terminology preferences in later scans. Autonomy is intentionally limited to preserve human control.</p>
+  <h3>Check types — reliability is surfaced, not hidden</h3>
+  <table>
+    <tr><th>Type</th><th>Examples</th><th>Reliability</th><th>UI badge</th></tr>
+    <tr><td>Deterministic</td><td>Banned phrases, required disclaimers, exact terminology, color hex, date/cert expiry</td><td>High — exact match against a configured rule</td><td><span class="badge">Rule match</span></td></tr>
+    <tr><td>Advisory (LLM+RAG)</td><td>Tone alignment, clarity, inclusivity, fair-language heuristics</td><td>Context-dependent; can miss / invent</td><td><span class="badge amber">AI assessment — verify</span></td></tr>
+  </table>
+  <div class="callout warn"><strong>Honest boundary:</strong> the tool never says "compliant" or "approved". It only reports "no deterministic violations found; X advisory items flagged for review". It is a pre-screening aid, not a compliance guarantee.</div>
+</section>
+
+<!-- TECH -->
+<section>
+  <h2>Technology</h2>
+  <table>
+    <tr><th>Layer</th><th>Choice</th><th>Rationale</th></tr>
+    <tr><td>Prototype</td><td>Static web app (HTML / JS / CSS)</td><td>Runs on any judge's machine through a link — zero install, zero backend</td></tr>
+    <tr><td>Document handling</td><td>PDF.js (bundled)</td><td>Extract selectable text from .pdf in-browser; explicit size/page limits surfaced</td></tr>
+    <tr><td>Deterministic checks</td><td>Regex + JS</td><td>High-confidence for explicit rules; fast and predictable</td></tr>
+    <tr><td>Findings / fixes</td><td>Structured objects with rule ID + source URL</td><td>Traceable, human-controlled corrections</td></tr>
+    <tr><td>Diff / export</td><td>diff-match-patch, PDF</td><td>Side-by-side revised draft + downloadable report</td></tr>
+    <tr><td>Optional AI</td><td>OpenAI-compatible API (Groq), BYO key</td><td>Reliable rewrite assistant; deterministic layer stays local</td></tr>
+    <tr><td>Storage</td><td>localStorage (session only)</td><td>No account, no server; data not saved after tab closes</td></tr>
+  </table>
+  <p class="small">Original Round 1 target stack (Tauri v2 + Ollama + sqlite-vec) remains the post-hackathon desktop plan. For Round 2 the browser prototype was chosen so the prototype is directly usable by judges on any device.</p>
+</section>
+
+<!-- COMPARISON -->
+<section class="page-break">
+  <h2>Existing Solution Comparison</h2>
+  <table>
+    <tr><th>Solution</th><th>Checks at creation</th><th>User-owned rules</th><th>Local / private</th><th>Cited findings</th><th>Human-controlled fixes</th></tr>
+    <tr><td>Brand portals (Bynder, Frontify)</td><td>No</td><td>Partial</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><td>AI writing (Writer, Jasper)</td><td>No</td><td>Partial</td><td>Limited</td><td>Often weak</td><td>Partial</td></tr>
+    <tr><td>Custom GPT</td><td>Manual</td><td>Manual</td><td>No</td><td>Unreliable</td><td>No</td></tr>
+    <tr><td>MLR workflow (Veeva)</td><td>No — post-creation</td><td>Yes</td><td>Enterprise-dependent</td><td>Partial</td><td>Yes</td></tr>
+    <tr><td><strong>Rakshak 2.0 (MVP)</strong></td><td><strong>Yes</strong></td><td><strong>Yes</strong></td><td><strong>Yes</strong></td><td><strong>Yes</strong></td><td><strong>Yes</strong></td></tr>
+  </table>
+</section>
+
+<!-- LIMITATIONS -->
+<section>
+  <h2>Known Limitations (Honest Boundaries)</h2>
+  <ul>
+    <li><strong>Language:</strong> English only in this build.</li>
+    <li><strong>Rule quality:</strong> demo packs are hand-curated; production PDF→JSON extraction is post-hackathon.</li>
+    <li><strong>Scanned PDFs:</strong> not supported in MVP (no OCR yet); selectable-text PDFs work.</li>
+    <li><strong>Logo checks:</strong> file-quality heuristics only — not approval of an approved brand asset.</li>
+    <li><strong>AI polish:</strong> optional and BYO-key; a fluent rewrite can still violate a rule, so output is re-checkable and human-reviewed.</li>
+    <li><strong>Scope:</strong> pre-screening aid only — does not replace MLR, legal, regulatory, or accessibility approval.</li>
+  </ul>
+</section>
+
+<!-- FUTURE -->
+<section class="page-break">
+  <h2>Future Scope (Post-Hackathon)</h2>
+  <table>
+    <tr><th>Phase</th><th>Scope</th><th>Trigger</th></tr>
+    <tr><td>v0.2</td><td>VS Code / Figma / Chrome plugins (same agent core)</td><td>"Can it work in my tool?"</td></tr>
+    <tr><td>v0.3</td><td>Encrypted team vault (Syncthing / iCloud / Drive, no server)</td><td>Small teams want shared memory</td></tr>
+    <tr><td>v1.0</td><td>Optional SaaS dashboard for admins (opt-in)</td><td>Enterprise asks for fleet visibility</td></tr>
+    <tr><td>Community packs</td><td>Shareable rule packs: "Pharma MLR", "Chem GHS/REACH", "Fintech FINRA"</td><td>Local-first, privacy-by-default; users contribute back</td></tr>
+  </table>
+  <h3>Three meaningful Round 3 improvements</h3>
+  <ol>
+    <li><strong>Multimodal document &amp; asset review</strong> — OCR, page-level evidence, approved-logo matching, accessibility checks. <em>Proof:</em> a scanned document produces a finding linked to the exact page/region.</li>
+    <li><strong>Enterprise governance &amp; audit</strong> — real auth, role-based permissions, isolated workspaces, versioned rules, auditable approval history. <em>Proof:</em> an unauthorized user cannot access another company's workspace.</li>
+    <li><strong>Controlled publishing &amp; quality measurement</strong> — approval-before-publishing, audit trails, false-positive / reviewer-override metrics. <em>Proof:</em> unapproved content cannot publish.</li>
+  </ol>
+</section>
+
+<!-- TEAM -->
+<section>
+  <h2>Team &amp; Participant Details</h2>
+  <table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td>Team Name</td><td>ssshariharan82</td></tr>
+    <tr><td>Project Name</td><td>Rakshak 2.0</td></tr>
+    <tr><td>Team Leader</td><td>Hariharan S</td></tr>
+    <tr><td>Leader Email</td><td>ssshariharan82@gmail.com</td></tr>
+    <tr><td>Team Members</td><td>Hariharan S</td></tr>
+    <tr><td>College</td><td>St. Joseph's College of Engineering</td></tr>
+  </table>
+  <p class="small">Why us: Chemical-engineering background (GHS/SDS/regulatory rigor) + hackathon project experience (dashboard / workflow / system design) = domain credibility for future regulated packs and execution capability for this build.</p>
+</section>
+
+</body>
+</html>
