@@ -14,6 +14,47 @@ const DEMO_COMPANIES = {
     { id: 'AC-01', title: 'Qualify guaranteed outcomes', pattern: /\b(guaranteed|100% secure|zero risk|never fails)\b/ig, severity: 'high', detail: 'Absolute performance or security claims require evidence and legal review.', fix: 'Describe the measurable result and its conditions, or route the claim to review.', source: 'Acme demo policy — claims review', url: '#' },
     { id: 'AC-02', title: 'Replace vague superlatives', pattern: /\b(the best|number one|unmatched|world[- ]class)\b/ig, severity: 'medium', detail: 'A comparative claim should be specific and supported by current evidence.', fix: 'Use a verifiable product fact instead of a ranking.', source: 'Acme demo policy — substantiation', url: '#' },
     { id: 'AC-03', title: 'Add a source for statistics', pattern: /\b\d{1,3}%\b/g, severity: 'review', detail: 'A percentage appears without an obvious source in this draft. Confirm its evidence and date.', fix: 'Add the source and measurement period near the statistic.', source: 'Acme demo policy — evidence', url: '#' }
+  ] },
+  pharma: { name: 'Pharma MLR', code: 'PHARMA-2026', mark: 'P', description: 'Medical, legal, and regulatory pre-screening for pharmaceutical content.', rules: [
+    { id: 'PH-01', title: 'No unsubstantiated efficacy claims', pattern: /\b(cures?|cure-all|miracle drug|100% effective|guaranteed to (cure|heal|treat))\b/ig, severity: 'high', detail: 'Efficacy claims must be supported by clinical trial data.', fix: 'Replace with approved indication language.', source: 'FDA Guidance', url: 'https://www.fda.gov/drugs' },
+    { id: 'PH-02', title: 'Include required safety information', pattern: /\b(no side effects|zero side effects|completely safe|no (risk|danger))\b/ig, severity: 'high', detail: 'All promotional content must include balanced safety information.', fix: 'Add approved safety profile and contraindications.', source: 'FDA Fair Balance', url: 'https://www.fda.gov/drugs' },
+    { id: 'PH-03', title: 'Avoid off-label promotion', pattern: /\b(use for|treats?|indicated for)\s+(?!the approved)\w+/ig, severity: 'medium', detail: 'Promoting uses beyond approved indications violates regulatory guidelines.', fix: 'Restrict claims to approved indications only.', source: 'FDA Off-Label', url: 'https://www.fda.gov/drugs' },
+    { id: 'PH-04', title: 'Check for missing disclaimer', pattern: /\b(prescription|required)\b/i, severity: 'review', detail: 'Content mentioning prescriptions should include regulatory disclaimers.', fix: 'Add "Consult your healthcare provider" disclaimer.', source: 'Pharma MLR Guidelines', url: '#' }
+  ] },
+  ghs: { name: 'Chemical GHS', code: 'GHS-2026', mark: 'G', description: 'GHS pre-screening for chemical safety data sheets and labels.', rules: [
+    { id: 'GHS-01', title: 'Signal word required', pattern: /\b(danger|warning)\b/i, severity: 'review', detail: 'Hazardous chemicals require appropriate signal words per GHS.', fix: 'Verify correct signal word matches hazard classification.', source: 'GHS Rev. 9', url: 'https://unece.org/ghs-rev9-2021' },
+    { id: 'GHS-02', title: 'Missing hazard statements', pattern: /\b(toxic|harmful|corrosive|flammable|explosive)\b/ig, severity: 'high', detail: 'Hazard statements (H-codes) must accompany all hazard classifications.', fix: 'Add appropriate H-statements and P-statements.', source: 'GHS Hazard Communication', url: 'https://unece.org/ghs-rev9-2021' },
+    { id: 'GHS-03', title: 'Unsupported safety claims', pattern: /\b(non-toxic|safe to handle|no hazard|environmentally friendly)\b/ig, severity: 'medium', detail: 'Safety and environmental claims require substantiation.', fix: 'Replace with specific verified safety data.', source: 'GHS Environmental', url: 'https://unece.org/ghs-rev9-2021' },
+    { id: 'GHS-04', title: 'PPE requirement missing', pattern: /\b(chemical|solvent|acid|base)\b/i, severity: 'review', detail: 'Content referencing chemicals should specify PPE.', fix: 'Add PPE recommendations per SDS.', source: 'OSHA HCS 2012', url: 'https://www.osha.gov/hazcom' }
+  ] },
+  finra: { name: 'FINRA', code: 'FINRA-2026', mark: 'F', description: 'Financial industry regulatory pre-screening for marketing communications.', rules: [
+    { id: 'FN-01', title: 'No guaranteed returns', pattern: /\b(guaranteed (return|profit|income)|risk[- ]free|no (risk|loss))\b/ig, severity: 'high', detail: 'Financial communications cannot promise guaranteed returns.', fix: 'Replace with historical performance data and risk disclosures.', source: 'FINRA Rule 2210', url: 'https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210' },
+    { id: 'FN-02', title: 'Past performance disclaimer', pattern: /\b(past performance|historical returns?|annualized return)\b/ig, severity: 'medium', detail: 'Past performance claims require standard disclaimer.', fix: 'Add "Past performance is not indicative of future results."', source: 'FINRA Rule 2210(d)(1)', url: 'https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210' },
+    { id: 'FN-03', title: 'Misleading comparisons', pattern: /\b(outperform(s|ed)?|beat(s|en)? the market|superior returns?)\b/ig, severity: 'high', detail: 'Comparative performance claims require fair presentation.', fix: 'Add comparative context and risk factors.', source: 'FINRA Rule 2210', url: 'https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210' },
+    { id: 'FN-04', title: 'Missing risk disclosure', pattern: /\b(invest(ment|ing)?|portfolio|fund|stock|bond)\b/i, severity: 'review', detail: 'Investment content should include risk disclosures.', fix: 'Add "Investments involve risk, including possible loss of principal."', source: 'FINRA Rule 2210', url: 'https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210' }
+  ] }, healthcare: { name: 'Healthcare', code: 'HC-2026', mark: 'H', description: 'Healthcare content compliance — HIPAA, medical claims, patient privacy.', rules: [
+    { id: 'HC-01', title: 'No unsubstantiated medical claims', pattern: /\b(cures?|miracle|100% effective|guaranteed (cure|heal|treat))\b/ig, severity: 'high', detail: 'Medical claims must be supported by clinical evidence.', fix: 'Replace with approved indication language and add disclaimer.', source: 'FDA Guidance', url: 'https://www.fda.gov/drugs' },
+    { id: 'HC-02', title: 'Patient privacy language', pattern: /\b(patient (name|data|record|info)|personal health|PHI)\b/ig, severity: 'high', detail: 'Content referencing patient data must comply with HIPAA privacy rules.', fix: 'Remove identifiable patient information. Use anonymized examples.', source: 'HIPAA Privacy Rule', url: 'https://www.hhs.gov/hipaa' },
+    { id: 'HC-03', title: 'Missing medical disclaimer', pattern: /\b(treatment|diagnosis|symptom|medication|prescription)\b/i, severity: 'review', detail: 'Health-related content should include a medical disclaimer.', fix: 'Add "Consult your healthcare provider" disclaimer.', source: 'Medical Content Guidelines', url: '#' },
+    { id: 'HC-04', title: 'Unverified wellness claims', pattern: /\b(detox|cleanse|boosts? immunity|natural cure|holistic healing)\b/ig, severity: 'medium', detail: 'Wellness claims require substantiation and may mislead patients.', fix: 'Replace with evidence-based statements or remove.', source: 'FTC Health Claims', url: 'https://www.ftc.gov' }
+  ] },
+  realestate: { name: 'Real Estate', code: 'RE-2026', mark: 'R', description: 'Real estate listing and marketing compliance — fair housing, claims.', rules: [
+    { id: 'RE-01', title: 'Fair housing language', pattern: /\b(family[- ]friendly|perfect for (families|couples|singles)|no (children|pets|smokers))\b/ig, severity: 'high', detail: 'Listing language must comply with Fair Housing Act.', fix: 'Use neutral, inclusive descriptions of the property.', source: 'Fair Housing Act', url: 'https://www.hud.gov/fairhousing' },
+    { id: 'RE-02', title: 'Unsubstantiated property claims', pattern: /\b(best (neighborhood|location|investment)|guaranteed (appreciation|return|profit))\b/ig, severity: 'high', detail: 'Property claims must be verifiable and not misleading.', fix: 'Replace with specific, verifiable property features.', source: 'NAR Code of Ethics', url: 'https://www.nar.realtor' },
+    { id: 'RE-03', title: 'Missing disclosure', pattern: /\b(investment (opportunity|property)|rental income|cash flow)\b/ig, severity: 'review', detail: 'Investment-related listings require proper disclosures.', fix: 'Add investment risk disclaimer.', source: 'SEC Real Estate', url: '#' },
+    { id: 'RE-04', title: 'Accessibility claim check', pattern: /\b(wheelchair accessible|ADA compliant|accessible)\b/ig, severity: 'medium', detail: 'Accessibility claims must be accurate and verifiable.', fix: 'Verify accessibility features match ADA standards.', source: 'ADA Guidelines', url: 'https://www.ada.gov' }
+  ] },
+  insurance: { name: 'Insurance', code: 'INS-2026', mark: 'I', description: 'Insurance marketing compliance — disclaimers, claims, regulations.', rules: [
+    { id: 'INS-01', title: 'No guaranteed payouts', pattern: /\b(guaranteed (payout|benefit|coverage)|100% covered|no (deductible|exclusions))\b/ig, severity: 'high', detail: 'Insurance communications cannot guarantee specific payouts.', fix: 'Replace with conditional language and add disclaimers.', source: 'NAIC Model Law', url: 'https://www.naic.org' },
+    { id: 'INS-02', title: 'Missing risk disclosure', pattern: /\b(policy|coverage|premium|claim)\b/i, severity: 'review', detail: 'Insurance content should include standard risk disclosures.', fix: 'Add "Terms and conditions apply" disclaimer.', source: 'State Insurance Regs', url: '#' },
+    { id: 'INS-03', title: 'Misleading comparison', pattern: /\b(cheaper than|better than|save \d+% (vs|versus|compared))\b/ig, severity: 'medium', detail: 'Comparative claims require fair and accurate presentation.', fix: 'Add comparison context and qualifying conditions.', source: 'FTC Advertising', url: 'https://www.ftc.gov' },
+    { id: 'INS-04', title: 'Unsubstantiated savings claim', pattern: /\b(save (up to )?\$?\d+|\d+% (savings|discount|off))\b/ig, severity: 'medium', detail: 'Savings claims must be substantiated with data.', fix: 'Add source and conditions for the savings claim.', source: 'FTC Substantiation', url: 'https://www.ftc.gov' }
+  ] },
+  education: { name: 'Education', code: 'EDU-2026', mark: 'E', description: 'Education content compliance — FERPA, accessibility, claims.', rules: [
+    { id: 'EDU-01', title: 'Student data privacy', pattern: /\b(student (name|record|grade|score)|FERPA|student data)\b/ig, severity: 'high', detail: 'Student data references must comply with FERPA.', fix: 'Remove identifiable student information.', source: 'FERPA', url: 'https://www.ed.gov/ferpa' },
+    { id: 'EDU-02', title: 'Unverified outcome claims', pattern: /\b(100% (pass|graduate|job placement)|guaranteed (admission|scholarship|job))\b/ig, severity: 'high', detail: 'Educational outcome claims must be verifiable.', fix: 'Replace with verified statistics and methodology.', source: 'FTC Education', url: 'https://www.ftc.gov' },
+    { id: 'EDU-03', title: 'Accessibility compliance', pattern: /\b(course|program|curriculum|syllabus)\b/i, severity: 'review', detail: 'Educational content should meet accessibility standards.', fix: 'Verify WCAG 2.1 AA compliance for all materials.', source: 'Section 508', url: 'https://www.section508.gov' },
+    { id: 'EDU-04', title: 'Missing disclaimer', pattern: /\b(degree|certification|accreditation|accredited)\b/ig, severity: 'medium', detail: 'Accreditation claims require proper verification.', fix: 'Add accreditation details and verification link.', source: 'CHEA', url: 'https://www.chea.org' }
   ] }
 };
 
@@ -25,7 +66,7 @@ const reveal = (id, visible) => { const el=$(id); if(el){el.hidden=!visible;el.c
 function replacementFor(ruleId, quote) {
   const q=quote.toLowerCase();
   const replacements={
-    'MOZ-01':'not approved or endorsed by Mozilla', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'Mozilla',
+    'MOZ-01': q.includes('partnered') ? 'not partnered with' : q.includes('endorsed') ? 'not endorsed by' : 'not approved by', 'MOZ-02':'a browser compatible with Mozilla products', 'MOZ-03':'',
     'MC-01':{utilize:'use',synergy:'working together',leverage:'use',facilitate:'help'},
     'MC-02':{revolutionary:'new',worldclass:'capable', 'world-class':'capable','best-in-class':'useful',guaranteed:'can help'},
     'MC-03':{guys:'everyone',mankind:'people',manpower:'staff'},
@@ -63,21 +104,50 @@ function showView(view) {
   if($('profileMenu')){$('profileMenu').classList.remove('open');$('profileMenu').classList.add('hidden');}$('profileTrigger')?.setAttribute('aria-expanded','false');
 }
 
-function login(key) {
+function login() {
+  const industry = $('industrySelect')?.value || 'tech';
+  const name = ($('companyNameInput')?.value || '').trim();
+  const code = ($('passwordInput')?.value || '').trim();
+  if (!name) { toast('Enter your company or brand name'); return; }
+  if (!code) { toast('Enter an access code'); return; }
+  const industryMap = { tech:'acme', healthcare:'pharma', finance:'finra', realestate:'acme', education:'acme', chemical:'ghs', media:'mozilla', ecommerce:'mailchimp', other:'acme' };
+  const key = industryMap[industry] || 'acme';
   const company = DEMO_COMPANIES[key];
-  if (!company || $('passwordInput').value.trim().toUpperCase() !== company.code) { $('passwordInput').setAttribute('aria-invalid','true'); toast('Access code does not match this demo workspace'); return; }
-  $('passwordInput').removeAttribute('aria-invalid'); setCompany(key);
+  const profile = { industry, name, code, key, mark: name[0].toUpperCase() };
+  localStorage.setItem('rakshak_profile', JSON.stringify(profile));
+  $('passwordInput').removeAttribute('aria-invalid');
+  const originalName = company.name;
+  const originalMark = company.mark;
+  company.name = name;
+  company.mark = name[0].toUpperCase();
+  setCompany(key);
+  company.name = originalName;
+  company.mark = originalMark;
+  state.company.name = name;
+  state.company.mark = name[0].toUpperCase();
+  if ($('profileCompany')) $('profileCompany').textContent = name;
+  if ($('orgName')) $('orgName').textContent = name;
+  if ($('orgMark')) $('orgMark').textContent = name[0].toUpperCase();
+  if ($('profileInitial')) $('profileInitial').textContent = name[0].toUpperCase();
+  if ($('userChip')) $('userChip').textContent = name[0].toUpperCase();
+  if ($('headingCompany')) $('headingCompany').textContent = name;
+  if ($('railCompany')) $('railCompany').textContent = name;
+  if ($('guidelinesCompany')) $('guidelinesCompany').textContent = name;
+  if ($('settingsCompany')) $('settingsCompany').textContent = name;
   reveal('loginScreen',false); reveal('workspace',true);
-  if ($('demoHint')) $('demoHint').textContent = `Demo access code: ${company.code} · Prototype only`;
   $('draftInput') && ($('draftInput').value = ''); showView('review');
+  toast('Welcome to ' + name + ' workspace!');
 }
 
 function findMatches(text) {
   const findings = [];
   for (const rule of state.company.rules) {
     const regex = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`);
+    let count=0;
     for (const match of text.matchAll(regex)) {
       if (!match[0]) continue;
+      if (rule.id === 'MOZ-04' && count > 0) break;
+      count++;
       findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: replacementFor(rule.id,match[0]), source: rule.source, url: rule.url, status: 'open' });
     }
   }
@@ -143,6 +213,86 @@ function updateRevised() {
   if($('charWarning')) { const limit=($('channelSelect')?.value==='X')?280:null; $('charWarning').textContent=limit&&state.revised.length>limit?`${state.revised.length-limit} characters over X's 280 character limit`:`${state.revised.length} characters`; $('charWarning').classList.toggle('warning',!!limit&&state.revised.length>limit); }
 }
 
+
+// ─── Voice Recognition ─────────────────────────────────────
+let recognition = null;
+function initVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) { toast('Voice recognition not supported in this browser'); return; }
+  if (recognition) { recognition.stop(); recognition = null; return; }
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = true;
+  const btn = $('voiceBtn');
+  const input = $('draftInput');
+  recognition.onstart = () => { if (btn) { btn.classList.add('recording'); btn.textContent = '⏹ Stop'; } toast('Listening... speak now'); };
+  recognition.onresult = (e) => {
+    let transcript = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
+    if (input) {
+      const cur = input.value;
+      input.value = cur ? cur + ' ' + transcript : transcript;
+      input.dispatchEvent(new Event('input'));
+    }
+  };
+  recognition.onerror = (e) => { toast('Voice error: ' + e.error); stopVoice(); };
+  recognition.onend = () => { stopVoice(); };
+  recognition.start();
+}
+function stopVoice() {
+  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
+  const btn = $('voiceBtn');
+  if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤 Voice'; }
+}
+
+
+// ─── Share Draft Functions ──────────────────────────────────
+function getDraftText() { return ($('draftInput')?.value || '').trim(); }
+
+function shareEmail() {
+  const text = getDraftText();
+  if (!text) { toast('Write a draft first'); return; }
+  const subject = encodeURIComponent('Brand-compliant draft for review');
+  const body = encodeURIComponent(text);
+  window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  toast('Opening email client...');
+}
+
+function shareTwitter() {
+  const text = getDraftText();
+  if (!text) { toast('Write a draft first'); return; }
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text.slice(0, 280))}`;
+  window.open(url, '_blank', 'width=600,height=400');
+  toast('Opening X/Twitter...');
+}
+
+function shareLinkedin() {
+  const text = getDraftText();
+  if (!text) { toast('Write a draft first'); return; }
+  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+  window.open(url, '_blank', 'width=600,height=400');
+  toast('Opening LinkedIn...');
+}
+
+function shareCopy() {
+  const text = getDraftText();
+  if (!text) { toast('Write a draft first'); return; }
+  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!')).catch(() => toast('Copy failed'));
+}
+
+function shareInstagram() {
+  const text = getDraftText();
+  if (!text) { toast('Write a draft first'); return; }
+  navigator.clipboard.writeText(text).then(() => {
+    toast('Copied! Opening Instagram...');
+    window.open('https://www.instagram.com/', '_blank');
+  }).catch(() => toast('Copy failed'));
+}
+
+
 function analyze() {
   const text=$('draftInput')?.value.trim() || '';
   if(!text){ toast('Add or upload draft text first'); $('draftInput')?.focus(); return; }
@@ -166,7 +316,22 @@ async function readPdf(file) {
   if(pdf.numPages>40) throw new Error('This prototype supports PDFs up to 40 pages.');
   const pages=[];
   for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const content=await page.getTextContent();pages.push(content.items.map(x=>x.str).join(' '));}
-  const text=pages.join('\n\n'); if(!text.trim())throw new Error('No selectable text was found. This version cannot read scanned PDFs.');
+  let text=pages.join('\n\n');
+  // OCR fallback for scanned PDFs
+  if(!text.trim() && window.Tesseract){
+    toast('No text found — running OCR on scanned pages...');
+    const ocrPages=[];
+    for(let n=1;n<=pdf.numPages;n++){
+      const page=await pdf.getPage(n);
+      const vp=page.getViewport({scale:2});
+      const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;
+      const ctx=canvas.getContext('2d');await page.render({canvasContext:ctx,viewport:vp}).promise;
+      const {data:{text:t}}=await window.Tesseract.recognize(canvas,'eng',{logger:m=>{}});
+      ocrPages.push(t);
+    }
+    text=ocrPages.join('\n\n');
+    if(!text.trim()) throw new Error('OCR could not extract text from this PDF.');
+  } else if(!text.trim()) throw new Error('No selectable text was found. This version cannot read scanned PDFs.');
   return text.slice(0,50000);
 }
 
@@ -178,7 +343,8 @@ async function handleDraft(file) {
     let text='';
     if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')) text=await readPdf(file);
     else if(file.type.startsWith('text/')||/\.(txt|md)$/i.test(file.name)) text=await file.text();
-    else {toast('Use a text file or PDF');return;}
+    else if(file.type.startsWith('image/') && window.Tesseract){ toast('Running OCR on image...'); const {data:{text:t}}=await window.Tesseract.recognize(file,'eng',{logger:m=>{}}); text=t; }
+    else {toast('Use a text file, PDF, or image');return;}
     $('draftInput').value=text; $('draftMeta') && ($('draftMeta').textContent=`${text.trim().split(/\s+/).filter(Boolean).length} words · ${text.length.toLocaleString()} characters`); $('pdfMeta') && ($('pdfMeta').textContent=file.name.toLowerCase().endsWith('.pdf')?'Text extracted from PDF · page references are not included in this prototype':'Text file loaded'); toast('Draft loaded in browser');
   } catch(error) { toast(error.message || 'Could not read that file'); }
 }
@@ -205,38 +371,84 @@ function downloadReport() {
 }
 
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
-function aiModel() { return localStorage.getItem('rakshak_ai_model') || 'gpt-4o-mini'; }
-function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiModelSelect')) $('aiModelSelect').value = aiModel(); }
+function aiBase() { return (localStorage.getItem('rakshak_ai_base') || 'https://api.groq.com/openai/v1').trim(); }
+function aiModel() { let v = ($('aiModelInput') && $('aiModelInput').value.trim()) || localStorage.getItem('rakshak_ai_model') || ''; v = v.replace(/verseatile/gi,'versatile'); if (!v || v==='llama-3.1-8b-instant') v='openai/gpt-oss-20b'; return v; }
+function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelInput')) $('aiModelInput').value = aiModel(); }
+let _offlinePipe = null;
+async function loadOfflineModel() {
+  if (_offlinePipe) return _offlinePipe;
+  if (!window.transformers) throw new Error('Offline AI library not loaded');
+  const { pipeline } = window.transformers;
+  toast('Loading offline AI model (first time, ~500MB)...');
+  _offlinePipe = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { dtype: 'q4' });
+  return _offlinePipe;
+}
+
+async function polishOffline(text, findings) {
+  const pipe = await loadOfflineModel();
+  const prompt = `Rewrite this marketing copy to comply with brand rules. Keep meaning and tone. Return only rewritten copy.\nRules:\n${findings || 'none'}\n\nDraft:\n${text}\n\nRewritten:`;
+  const out = await pipe(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: false });
+  return (out?.[0]?.generated_text || '').replace(prompt, '').trim();
+}
+
 async function polishWithAi() {
   if (!state.revised) { toast('Run a review first'); return; }
-  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · LOADING MODEL…</span>Loading in-browser model (first run downloads ~0.5 GB).'; }
+  const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · WORKING…</span>Polishing…'; }
+  const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail}`).join('\n');
+  const online = navigator.onLine && aiKey();
   try {
-    if (!window.__rakshakGenerator) {
-      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
-      window.__rakshakGenerator = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { progress_callback: (p) => {
-        if (result && p?.status === 'progress') result.innerHTML = `<span class="ai-label">AI POLISH · LOADING MODEL…</span>${Math.round((p.progress||0))}%`;
-      }});
+    let text = '', mode = '';
+    if (online) {
+      mode = 'ONLINE';
+      const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${aiKey()}`},
+        body: JSON.stringify({ model: aiModel(), messages:[
+          {role:'system', content:'You rewrite marketing copy to comply with brand rules. Keep meaning, tone, facts. Return only rewritten copy.'},
+          {role:'user', content:`Rules:\n${findings || 'none'}\n\nDraft:\n${state.revised}\n\nRewrite:`}
+        ], temperature:0.3 })
+      });
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const data = await res.json();
+      text = data?.choices?.[0]?.message?.content?.trim() || '';
+    } else {
+      mode = 'OFFLINE';
+      text = await polishOffline(state.revised, findings);
     }
-    const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail} (source: ${f.source})`).join('\n');
-    const prompt = `You rewrite marketing copy to comply with the given brand rules. Keep meaning, tone, and facts. Return only the rewritten copy.\n\nRules applied:\n${findings || 'none'}\n\nDraft to polish:\n${state.revised}\n\nRewritten copy:`;
-    const out = await window.__rakshakGenerator(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: true });
-    const text = (Array.isArray(out) ? out[0]?.generated_text : out?.generated_text) || '';
-    const cleaned = text.replace(prompt, '').trim();
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · AI-GENERATED · REVIEW BEFORE USE</span>${esc(cleaned || text)}`;
-  } catch (e) { if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`; toast('AI polish failed'); }
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ${mode} · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only. Re-run Analyze to verify.</p>`;
+    toast(`AI polish complete (${mode})`);
+  } catch (e) {
+    // If online fails, try offline
+    if (online) {
+      try {
+        const text = await polishOffline(state.revised, findings);
+        if (result) result.innerHTML = `<span class="ai-label">AI POLISH · OFFLINE FALLBACK · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only.</p>`;
+        toast('Online failed — used offline AI');
+        return;
+      } catch (e2) {}
+    }
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`;
+    toast('AI polish failed');
+  }
 }
 
 function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
-  $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login(companyKey());});
-  $('companySelect')?.addEventListener('change',e=>{const co=DEMO_COMPANIES[e.target.value];if($('demoHint'))$('demoHint').textContent=`Demo access code: ${co.code} · Prototype only`;});
+  $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login();});
+  
   $('togglePassword')?.addEventListener('click',()=>{const p=$('passwordInput');p.type=p.type==='password'?'text':'password';$('togglePassword').textContent=p.type==='password'?'Show':'Hide';$('togglePassword').setAttribute('aria-label',p.type==='password'?'Show access code':'Hide access code');});
   $('profileTrigger')?.addEventListener('click',()=>{const menu=$('profileMenu');if(!menu)return;const opening=menu.classList.contains('hidden');menu.classList.toggle('hidden',!opening);menu.classList.toggle('open',opening);$('profileTrigger').setAttribute('aria-expanded',String(opening));});
   $('settingsButton')?.addEventListener('click',()=>showView('settings')); $('signOutButton')?.addEventListener('click',signOut);
   $('changeCompany')?.addEventListener('click',signOut); $('settingsChangeCompany')?.addEventListener('click',signOut);
   document.querySelectorAll('[data-view]').forEach(tab=>tab.addEventListener('click',()=>showView(tab.dataset.view)));
-  $('analyzeButton')?.addEventListener('click',analyze); $('loadSample')?.addEventListener('click',()=>{$('draftInput').value=SAMPLE;$('sourceFileName').textContent='sample-launch-copy.txt';reveal('sourceFileName',true);updateWordCount();toast('Sample draft loaded');});
+  $('analyzeButton')?.addEventListener('click',analyze);
+  $('voiceBtn')?.addEventListener('click',initVoice);
+  $('shareEmail')?.addEventListener('click',shareEmail);
+  $('shareTwitter')?.addEventListener('click',shareTwitter);
+  $('shareLinkedin')?.addEventListener('click',shareLinkedin);
+  $('shareCopy')?.addEventListener('click',shareCopy);
+  $('shareInstagram')?.addEventListener('click',shareInstagram); $('loadSample')?.addEventListener('click',()=>{$('draftInput').value=SAMPLE;$('sourceFileName').textContent='sample-launch-copy.txt';reveal('sourceFileName',true);updateWordCount();toast('Sample draft loaded');});
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
   $('channelSelect')?.addEventListener('change',updateRevised); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
@@ -246,7 +458,7 @@ function bind() {
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
   $('backButton')?.addEventListener('click',()=>{ if(state.previousView) showView(state.previousView); });
   $('polishAi')?.addEventListener('click',polishWithAi);
-  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); if($('aiModelSelect')) localStorage.setItem('rakshak_ai_model',$('aiModelSelect').value); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
+  $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); const b=$('aiBaseInput')?.value.trim(); if(b) localStorage.setItem('rakshak_ai_base',b); const m=$('aiModelInput')?.value.trim(); if(m) localStorage.setItem('rakshak_ai_model',m); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
   $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
   refreshAiStatus();
 

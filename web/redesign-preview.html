@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rakshak 2.0 — Redesign Preview</title>
+<link rel="stylesheet" href="./warm-theme.css" />
+<style>
+  /* ═══ REDESIGN PREVIEW STYLES ═══ */
+  :root {
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+  }
+
+  /* ─── Layout ─────────────────────────────────────────────── */
+  .redesign-shell {
+    display: grid;
+    grid-template-columns: 260px 1fr 320px;
+    min-height: 100vh;
+    gap: 0;
+  }
+
+  /* ─── Sidebar ────────────────────────────────────────────── */
+  .rd-sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--line-soft);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .rd-logo {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px;
+  }
+  .rd-logo img { width: 40px; height: 40px; border-radius: var(--radius-sm); }
+  .rd-logo strong { font-size: 18px; color: var(--ink); letter-spacing: 2px; }
+  .rd-logo small { font-size: 10px; color: var(--quiet); letter-spacing: 1px; }
+
+  .rd-nav-section { display: flex; flex-direction: column; gap: 4px; }
+  .rd-nav-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; color: var(--quiet); padding: 0 12px; margin-bottom: 4px; }
+  .rd-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    color: var(--muted); font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s ease;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .rd-nav-item:hover { background: var(--tan-wash); color: var(--ink); }
+  .rd-nav-item.active { background: var(--surface); color: var(--brown); box-shadow: var(--shadow-sm); }
+  .rd-nav-item .icon { width: 16px; height: 16px; }
+  .rd-nav-badge {
+    margin-left: auto; background: var(--orange); color: #fff;
+    font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+  }
+
+  /* ─── Main Content ───────────────────────────────────────── */
+  .rd-main {
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 24px;
+    overflow-y: auto;
+  }
+  .rd-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .rd-header h1 { font-size: 28px; font-weight: 700; color: var(--ink); margin: 0; }
+  .rd-header h1 em { color: var(--orange); font-style: italic; }
+  .rd-header p { font-size: 14px; color: var(--muted); margin: 4px 0 0; }
+
+  /* ─── Cards ──────────────────────────────────────────────── */
+  .rd-card {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  .rd-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .rd-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .rd-card-title { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0; }
+  .rd-card-subtitle { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+
+  /* ─── Stats Grid ─────────────────────────────────────────── */
+  .rd-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  .rd-stat {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  .rd-stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .rd-stat-value { font-size: 32px; font-weight: 700; color: var(--ink); }
+  .rd-stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+  .rd-stat-icon { width: 24px; height: 24px; margin: 0 auto 8px; color: var(--orange); }
+
+  /* ─── Finding Cards ──────────────────────────────────────── */
+  .rd-finding {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--orange);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .rd-finding:hover { background: var(--tan-wash); transform: translateX(4px); }
+  .rd-finding.high { border-left-color: var(--red); }
+  .rd-finding.medium { border-left-color: var(--orange); }
+  .rd-finding.review { border-left-color: var(--tan); }
+  .rd-finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .rd-finding-id { font-size: 11px; font-weight: 700; color: var(--orange); }
+  .rd-finding-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .rd-finding-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .rd-finding-quote {
+    background: var(--surface-2); border-radius: var(--radius-sm);
+    padding: 8px 12px; margin-top: 8px; font-size: 12px;
+    color: var(--ink); font-style: italic; border-left: 2px solid var(--line);
+  }
+
+  /* ─── Right Panel ────────────────────────────────────────── */
+  .rd-right {
+    background: var(--surface);
+    border-left: 1px solid var(--line-soft);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    overflow-y: auto;
+  }
+  .rd-right-section { display: flex; flex-direction: column; gap: 12px; }
+  .rd-right-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--quiet); text-transform: uppercase; }
+
+  /* ─── Rule Pack Card ──────────────────────────────────────── */
+  .rd-rule-pack {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  .rd-rule-pack h3 { font-size: 14px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+  .rd-rule-pack p { font-size: 11px; color: var(--muted); margin: 0; }
+  .rd-rule-count { font-size: 24px; font-weight: 700; color: var(--orange); }
+
+  /* ─── Upload Area ────────────────────────────────────────── */
+  .rd-upload {
+    border: 2px dashed var(--line);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+    background: var(--surface-2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .rd-upload:hover { border-color: var(--tan); background: var(--tan-wash); }
+  .rd-upload-icon { width: 48px; height: 48px; margin: 0 auto 12px; color: var(--tan); }
+  .rd-upload h3 { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+  .rd-upload p { font-size: 12px; color: var(--muted); margin: 0; }
+
+  /* ─── Button Styles ──────────────────────────────────────── */
+  .rd-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s ease; border: none;
+  }
+  .rd-btn-primary { background: var(--brown); color: #fff; }
+  .rd-btn-primary:hover { background: var(--brown-dark); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .rd-btn-outline { background: var(--surface); color: var(--brown); border: 1px solid var(--line); }
+  .rd-btn-outline:hover { background: var(--tan-wash); border-color: var(--tan); }
+
+  /* ─── Animations ─────────────────────────────────────────── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .rd-animate { animation: fadeUp 0.4s ease-out both; }
+  .rd-animate-delay-1 { animation-delay: 0.1s; }
+  .rd-animate-delay-2 { animation-delay: 0.2s; }
+  .rd-animate-delay-3 { animation-delay: 0.3s; }
+
+  /* ─── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .redesign-shell { grid-template-columns: 1fr; }
+    .rd-sidebar, .rd-right { display: none; }
+    .rd-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="redesign-shell">
+  <!-- Sidebar -->
+  <aside class="rd-sidebar">
+    <div class="rd-logo">
+      <img src="./assets/rakshak-logo.png" alt="Rakshak" />
+      <div><strong>RAKSHAK</strong><br><small>2.0</small></div>
+    </div>
+    <nav class="rd-nav-section">
+      <div class="rd-nav-label">WORKSPACE</div>
+      <button class="rd-nav-item active"><svg class="icon"><use href="#i-file"/></svg> Review draft <span class="rd-nav-badge">3</span></button>
+      <button class="rd-nav-item"><svg class="icon"><use href="#i-image"/></svg> Logo check</button>
+      <button class="rd-nav-item"><svg class="icon"><use href="#i-book"/></svg> Guidelines</button>
+      <button class="rd-nav-item"><svg class="icon"><use href="#i-history"/></svg> Review history <span class="rd-nav-badge">0</span></button>
+    </nav>
+    <nav class="rd-nav-section">
+      <div class="rd-nav-label">TOOLS</div>
+      <button class="rd-nav-item"><svg class="icon"><use href="#i-spark"/></svg> AI polish</button>
+      <button class="rd-nav-item"><svg class="icon"><use href="#i-settings"/></svg> Settings</button>
+    </nav>
+    <div style="margin-top:auto;">
+      <div class="rd-rule-pack">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><h3>Mozilla Demo</h3><p>Trademark & voice</p></div>
+          <div class="rd-rule-count">4</div>
+        </div>
+        <p style="margin-top:8px;font-size:10px;">Active rule pack · 4 rules</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="rd-main">
+    <div class="rd-header rd-animate">
+      <div>
+        <h1>Review before it <em>ships.</em></h1>
+        <p>Check a draft against Mozilla Demo rules. Every finding points to its source.</p>
+      </div>
+      <button class="rd-btn rd-btn-outline">Load sample draft</button>
+    </div>
+
+    <div class="rd-stats rd-animate rd-animate-delay-1">
+      <div class="rd-stat">
+        <svg class="rd-stat-icon"><use href="#i-shield"/></svg>
+        <div class="rd-stat-value">4</div>
+        <div class="rd-stat-label">Rules active</div>
+      </div>
+      <div class="rd-stat">
+        <svg class="rd-stat-icon"><use href="#i-alert"/></svg>
+        <div class="rd-stat-value">3</div>
+        <div class="rd-stat-label">Findings</div>
+      </div>
+      <div class="rd-stat">
+        <svg class="rd-stat-icon"><use href="#i-check"/></svg>
+        <div class="rd-stat-value">0</div>
+        <div class="rd-stat-label">Resolved</div>
+      </div>
+      <div class="rd-stat">
+        <svg class="rd-stat-icon"><use href="#i-clock"/></svg>
+        <div class="rd-stat-value">12s</div>
+        <div class="rd-stat-label">Scan time</div>
+      </div>
+    </div>
+
+    <div class="rd-card rd-animate rd-animate-delay-2">
+      <div class="rd-card-header">
+        <div><h2 class="rd-card-title">The draft</h2><p class="rd-card-subtitle">Paste or upload your content</p></div>
+      </div>
+      <div class="rd-upload">
+        <svg class="rd-upload-icon"><use href="#i-upload"/></svg>
+        <h3>Upload draft</h3>
+        <p>PDF or TXT · up to 10 MB · OCR supported</p>
+      </div>
+      <textarea placeholder="Paste the copy you want to review…" style="width:100%;min-height:120px;margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface-2);color:var(--ink);font-size:14px;resize:vertical;"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+        <span style="font-size:11px;color:var(--muted);">0 words · 0 characters</span>
+        <button class="rd-btn rd-btn-primary">Analyze draft →</button>
+      </div>
+    </div>
+
+    <div class="rd-card rd-animate rd-animate-delay-3">
+      <div class="rd-card-header">
+        <div><h2 class="rd-card-title">Findings</h2><p class="rd-card-subtitle">3 issues found</p></div>
+      </div>
+      <div class="rd-finding high">
+        <div class="rd-finding-header">
+          <span class="rd-finding-id">MOZ-01</span>
+          <span class="rd-finding-title">Avoid implied endorsement</span>
+        </div>
+        <p class="rd-finding-detail">This wording can imply Mozilla approved or endorses the product.</p>
+        <div class="rd-finding-quote">"officially endorsed by Mozilla"</div>
+      </div>
+      <div class="rd-finding medium">
+        <div class="rd-finding-header">
+          <span class="rd-finding-id">MOZ-02</span>
+          <span class="rd-finding-title">Do not turn the mark into a product name</span>
+        </div>
+        <p class="rd-finding-detail">Using Mozilla as part of a product name can make the mark appear to identify your own offering.</p>
+        <div class="rd-finding-quote">"Mozilla's new collaboration workspace"</div>
+      </div>
+      <div class="rd-finding review">
+        <div class="rd-finding-header">
+          <span class="rd-finding-id">MOZ-04</span>
+          <span class="rd-finding-title">Add a clear trademark attribution</span>
+        </div>
+        <p class="rd-finding-detail">A Mozilla mark appears. Check attribution requirements.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right Panel -->
+  <aside class="rd-right">
+    <div class="rd-right-section">
+      <div class="rd-right-title">Active rule pack</div>
+      <div class="rd-rule-pack">
+        <h3>Mozilla Demo</h3>
+        <p>Trademark and voice checks</p>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <span style="font-size:10px;background:var(--red-wash);color:var(--red);padding:2px 8px;border-radius:4px;">1 high</span>
+          <span style="font-size:10px;background:#FFF3E0;color:var(--orange);padding:2px 8px;border-radius:4px;">1 medium</span>
+          <span style="font-size:10px;background:var(--tan-wash);color:var(--tan);padding:2px 8px;border-radius:4px;">1 review</span>
+        </div>
+      </div>
+    </div>
+    <div class="rd-right-section">
+      <div class="rd-right-title">AI Polish</div>
+      <div class="rd-card" style="padding:16px;">
+        <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">Rewrite draft to comply with rules. Online or offline.</p>
+        <button class="rd-btn rd-btn-primary" style="width:100%;justify-content:center;">✨ AI Polish</button>
+      </div>
+    </div>
+    <div class="rd-right-section">
+      <div class="rd-right-title">Quick actions</div>
+      <button class="rd-btn rd-btn-outline" style="width:100%;justify-content:center;">Copy revised draft</button>
+      <button class="rd-btn rd-btn-outline" style="width:100%;justify-content:center;">Download report</button>
+      <button class="rd-btn rd-btn-outline" style="width:100%;justify-content:center;">Export PDF</button>
+    </div>
+    <div class="rd-right-section">
+      <div class="rd-right-title">Recent scans</div>
+      <div style="font-size:12px;color:var(--muted);text-align:center;padding:20px;">No history yet</div>
+    </div>
+  </aside>
+</div>
+
+<!-- SVG Sprite (minimal) -->
+<svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 8 12 3 7 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/></symbol>
+</svg>
+</body>
+</html>

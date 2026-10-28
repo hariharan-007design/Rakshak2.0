@@ -1,0 +1,22 @@
+{
+  "name": "rakshak-brand-review",
+  "displayName": "Rakshak Brand Review",
+  "description": "Brand governance checks for your codebase and docs",
+  "version": "0.1.0",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Linters", "Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "rakshak.scanFile", "title": "Rakshak: Scan Current File" },
+      { "command": "rakshak.scanWorkspace", "title": "Rakshak: Scan Workspace" }
+    ],
+    "configuration": {
+      "title": "Rakshak",
+      "properties": {
+        "rakshak.rulePack": { "type": "string", "default": "mozilla", "description": "Active rule pack" }
+      }
+    }
+  }
+}

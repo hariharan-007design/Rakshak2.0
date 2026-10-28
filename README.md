@@ -29,6 +29,9 @@ Then open <http://localhost:8000>.
 | Mozilla | `MOZ-2026` | Supplied Mozilla Trademark Guidelines and heuristic text rules |
 | Mailchimp | `MAIL-2026` | Demo checks inspired by the public Mailchimp Style Guide |
 | Acme SaaS | `ACME-2026` | Synthetic product-claim checks |
+| Pharma MLR | `PHARMA-2026` | Medical, legal, regulatory pre-screening (FDA-style) |
+| Chemical GHS | `GHS-2026` | GHS hazard communication and safety claims |
+| FINRA | `FINRA-2026` | Financial industry regulatory pre-screening |
 
 These codes are visible demo credentials. They are not authentication and must never protect real company information.
 

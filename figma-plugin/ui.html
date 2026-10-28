@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: sans-serif; padding: 12px; background: #FAF7F2; color: #2C2416; }
+  h2 { font-size: 14px; margin: 0 0 8px; }
+  button { background: #7A5F3A; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 12px; }
+  .finding { background: #FFF8F0; border: 1px solid #D4C5A9; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-size: 12px; }
+  .finding.high { border-left: 3px solid #D32F2F; }
+  .finding.medium { border-left: 3px solid #D4782A; }
+  .finding .id { color: #D4782A; font-weight: 700; }
+  .empty { text-align: center; color: #7A6548; padding: 20px; }
+</style>
+</head>
+<body>
+  <h2>Rakshak Brand Review</h2>
+  <button id="scanBtn">Scan Page Text Layers</button>
+  <div id="results"></div>
+  <script>
+    document.getElementById('scanBtn').onclick = () => { parent.postMessage({ pluginMessage: { type: 'scan' } }, '*'); };
+    onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'results') {
+        const el = document.getElementById('results');
+        if (msg.findings.length === 0) { el.innerHTML = '<div class="empty">No issues found</div>'; return; }
+        el.innerHTML = msg.findings.map(f => `<div class="finding ${f.severity}"><span class="id">${f.rule}</span> ${f.title}<br><small>Node: ${f.nodeName}</small><br><em>"${f.text}"</em></div>`).join('');
+      }
+    };
+  </script>
+</body>
+</html>

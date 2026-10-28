@@ -8,9 +8,10 @@
     <title>Rakshak 2.0 — Brand review</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Eczar:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Eczar:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" href="./assets/rakshak-logo.png" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./warm-theme.css" />
   </head>
   <body>
     <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +33,50 @@
       <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5m4-4 4-4-4-4m4 4H9"/></symbol>
     </svg>
 
-    <main class="login-screen" id="loginScreen">
+  <!-- ═══ 3D SPLASH SCREEN ═══ -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="bg-layer">
+      <div class="bg-gradient-orb orange"></div>
+      <div class="bg-gradient-orb brown"></div>
+      <div class="floating-shape s1"></div>
+      <div class="floating-shape s2"></div>
+      <div class="floating-shape s3"></div>
+      <div class="floating-shape s4"></div>
+    </div>
+    <div class="corner-accent tl"></div>
+    <div class="corner-accent br"></div>
+    <div class="particles">
+      <span class="particle" style="--i:0"></span><span class="particle" style="--i:1"></span>
+      <span class="particle" style="--i:2"></span><span class="particle" style="--i:3"></span>
+      <span class="particle" style="--i:4"></span><span class="particle" style="--i:5"></span>
+      <span class="particle" style="--i:6"></span><span class="particle" style="--i:7"></span>
+      <span class="particle" style="--i:8"></span><span class="particle" style="--i:9"></span>
+      <span class="particle" style="--i:10"></span><span class="particle" style="--i:11"></span>
+    </div>
+    <div class="logo-stage">
+      <div class="logo-3d">
+        <div class="logo-container">
+          <div class="logo-shadow"></div>
+          <div class="glow-ring"></div>
+          <div class="glow-ring-2"></div>
+          <div class="hex-ring"></div>
+          <div class="orbit">
+            <div class="orbit-dot"></div><div class="orbit-dot"></div>
+            <div class="orbit-dot"></div><div class="orbit-dot"></div>
+          </div>
+          <img src="./assets/rakshak-logo.png" alt="Rakshak 2.0 Logo" class="logo-img" />
+        </div>
+      </div>
+    </div>
+    <div class="logo-text-block">
+      <div class="logo-title">RAKSHAK</div>
+      <div class="logo-version">2.0</div>
+    </div>
+    <p class="tagline">Your brand guardian</p>
+    <div class="loading-track"><div class="loading-fill"></div></div>
+  </div>
+
+  <main class="login-screen" id="loginScreen" style="display:none;">
       <section class="login-shell">
         <div class="login-brand">
           <img src="./assets/rakshak-logo.png" alt="Rakshak 2.0" class="login-logo" />
@@ -46,14 +90,26 @@
             <div class="login-proof"><svg class="icon"><use href="#i-lock" /></svg><span>Demo mode · Files stay in this browser session</span></div>
           </div>
           <form class="login-form" id="loginForm">
-            <div class="form-heading"><h2>Open your workspace</h2><p>Choose a demo company to view its guidelines.</p></div>
-            <label for="companySelect">COMPANY WORKSPACE</label>
-            <div class="select-wrap"><select id="companySelect" required></select><svg class="icon"><use href="#i-chevron" /></svg></div>
-            <label for="passwordInput">DEMO ACCESS CODE</label>
+            <div class="form-heading"><h2>Open your workspace</h2><p>Select an industry and enter your brand details.</p></div>
+            <label for="industrySelect">INDUSTRY</label>
+            <div class="select-wrap"><select id="industrySelect" required>
+              <option value="tech">Technology / SaaS</option>
+              <option value="healthcare">Healthcare / Pharma</option>
+              <option value="finance">Finance / Insurance</option>
+              <option value="realestate">Real Estate</option>
+              <option value="education">Education</option>
+              <option value="chemical">Chemicals / Manufacturing</option>
+              <option value="media">Media / Publishing</option>
+              <option value="ecommerce">E-commerce / Retail</option>
+              <option value="other">Other</option>
+            </select><svg class="icon"><use href="#i-chevron" /></svg></div>
+            <label for="companyNameInput">COMPANY / BRAND NAME</label>
+            <input id="companyNameInput" type="text" placeholder="e.g. Acme Corp" required style="width:100%;height:45px;border:1px solid #49433b;background:#151411;padding:0 13px;font-size:12px;color:#f4efe6;border-radius:2px;" />
+            <label for="passwordInput">ACCESS CODE</label>
             <div class="password-wrap"><input id="passwordInput" type="password" autocomplete="current-password" placeholder="Enter access code" required /><button class="show-password" id="togglePassword" type="button" aria-label="Show access code">Show</button></div>
             <div class="demo-hint" id="demoHint"></div>
             <button class="button button-primary login-submit" type="submit">Continue to workspace <svg class="icon"><use href="#i-arrow" /></svg></button>
-            <p class="login-disclaimer">Demo access is a prototype gate, not company authentication. Do not enter confidential material.</p>
+            <p class="login-disclaimer">Your workspace is stored locally in this browser. Do not enter confidential material on shared devices.</p>
           </form>
         </div>
         <div class="login-footer"><span>RAKSHAK 2.0 <b>·</b> BRAND REVIEW WORKSPACE</span><span>RULE-BASED REVIEW <b>·</b> HUMAN DECIDES</span></div>
@@ -79,20 +135,15 @@
         <span class="side-label">WORKSPACE</span>
         <nav class="side-nav" aria-label="Workspace">
           <button class="side-tab active" data-view="review" type="button"><svg class="icon"><use href="#i-review" /></svg><span>Review draft</span></button>
-          <button class="side-tab" data-view="guidelines" type="button"><svg class="icon"><use href="#i-book" /></svg><span>Guidelines</span></button>
           <button class="side-tab" data-view="logo" type="button"><svg class="icon"><use href="#i-image"/></svg><span>Logo</span></button>
-          <button class="side-tab" data-view="polish" type="button"><svg class="icon"><use href="#i-review"/></svg><span>AI polish</span></button>
+          <button class="side-tab" data-view="guidelines" type="button"><svg class="icon"><use href="#i-book" /></svg><span>Guidelines</span></button>
           <button class="side-tab" data-view="history" type="button"><svg class="icon"><use href="#i-history" /></svg><span>Review history</span><span class="nav-badge" id="historyBadge">0</span></button>
         </nav>
-        <div class="sidebar-bottom">
-          <div class="workspace-status"><span class="status-light"></span><span>LOCAL REVIEW</span><span class="status-label">DEMO</span></div>
-          <p>Drafts are analyzed in your browser and are not uploaded.</p>
-          <button class="change-company" id="changeCompany" type="button">Change company workspace <svg class="icon"><use href="#i-arrow" /></svg></button>
-        </div>
+        <div class="sidebar-bottom"></div>
       </aside>
 
       <main class="main-area">
-        <header class="topbar"><div class="breadcrumb"><button class="back-btn" id="backButton" type="button" aria-label="Go back">←</button><span>Workspace</span><svg class="icon"><use href="#i-chevron" /></svg><strong id="breadcrumbCurrent">Review draft</strong></div><div class="topbar-right"><label for="channelSelect" class="channel-label">DESTINATION</label><div class="channel-select-wrap"><select id="channelSelect" aria-label="Select destination"><option value="Website">Website</option><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option></select><svg class="icon"><use href="#i-chevron" /></svg></div><span class="topbar-divider"></span><span class="user-chip" id="userChip">M</span></div></header>
+        <header class="topbar"><div class="breadcrumb"><button class="back-btn" id="backButton" type="button" aria-label="Go back">←</button><span>Workspace</span><svg class="icon"><use href="#i-chevron" /></svg><strong id="breadcrumbCurrent">Review draft</strong></div><div class="topbar-right"><label for="channelSelect" class="channel-label">DESTINATION</label><div class="channel-select-wrap"><select id="channelSelect" aria-label="Select destination"><option value="Website">Website</option><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option><option value="Email">Email</option><option value="Print">Print</option><option value="Internal">Internal</option></select><svg class="icon"><use href="#i-chevron" /></svg></div><span class="topbar-divider"></span><span class="user-chip" id="userChip">M</span></div></header>
 
         <section class="view active-view" id="reviewView" data-title="Review draft">
           <div class="page-heading"><div><h1>Review before it <em>ships.</em></h1><p>Check a draft against <strong id="headingCompany">Mozilla Demo</strong> rules. Every finding points to its source.</p></div><button class="button button-text" id="loadSample" type="button">Load sample draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
@@ -108,7 +159,15 @@
                 <textarea id="draftInput" placeholder="Paste the copy you want to review…" aria-label="Draft copy"></textarea>
                 <div class="draft-meta"><span id="draftMeta">0 words · 0 characters</span><span id="pdfMeta" class="pdf-meta"></span></div>
                 <div class="draft-preview hidden" id="highlightPanel"><div class="preview-label">ORIGINAL DRAFT <span>Flagged text is highlighted below</span></div><div class="highlighted-copy" id="highlightedCopy"></div></div>
-                <div class="draft-actions"><span class="rule-mode"><svg class="icon"><use href="#i-shield" /></svg> Curated rules · no AI calls</span><button class="button button-primary" id="analyzeButton" type="button">Analyze draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
+                <div class="draft-actions"><span class="rule-mode"><svg class="icon"><use href="#i-shield" /></svg> Curated rules · AI advisory available</span><button class="button button-outline" id="voiceBtn" type="button">🎤 Voice</button><button class="button button-primary" id="analyzeButton" type="button">Analyze draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
+    <div class="share-bar">
+      <span class="share-label">Share draft:</span>
+      <button class="share-btn share-email" id="shareEmail" type="button">✉️ Email</button>
+      <button class="share-btn share-twitter" id="shareTwitter" type="button">𝕏 Post</button>
+      <button class="share-btn share-linkedin" id="shareLinkedin" type="button">💼 LinkedIn</button>
+      <button class="share-btn share-copy" id="shareCopy" type="button">📋 Copy</button>
+      <button class="share-btn share-instagram" id="shareInstagram" type="button">📸 Instagram</button>
+    </div>
                 <div class="analysis-message hidden" id="analysisMessage" role="status"></div>
               </section>
 
@@ -124,7 +183,7 @@
                 <div class="section-head"><div><span class="section-number">04</span><h2 id="revisedTitle">Revised draft</h2></div><span class="channel-tag" id="channelTag">Website</span></div>
                 <p class="section-note" id="channelNote">Accepted fixes are applied. Your original meaning is preserved for human review.</p>
                 <div class="revised-copy" id="revisedCopy"></div>
-                <div class="revised-footer"><span class="char-warning" id="charWarning"></span><div><button class="button button-outline" id="polishAi" type="button">AI polish (optional)</button><button class="button button-outline" id="copyRevised" type="button"><svg class="icon"><use href="#i-copy" /></svg> Copy draft</button><button class="button button-primary" id="downloadReport" type="button">Download report <svg class="icon"><use href="#i-arrow" /></svg></button></div></div><div class="ai-polish-result hidden" id="aiPolishResult"></div>
+                <div class="revised-footer"><span class="char-warning" id="charWarning"></span><div><button class="button button-outline" id="polishAi" type="button">AI polish</button><button class="button button-outline" id="copyRevised" type="button"><svg class="icon"><use href="#i-copy" /></svg> Copy draft</button><button class="button button-primary" id="downloadReport" type="button">Download report <svg class="icon"><use href="#i-arrow" /></svg></button></div></div><div class="ai-polish-result hidden" id="aiPolishResult"></div>
               </section>
             </div>
 
@@ -148,24 +207,67 @@
           <p class="section-note">Logo-related findings from the current draft appear in Review findings. Upload one draft and all checks run on it.</p>
         </section>
 
-          <section class="view" id="polishView" data-title="AI polish">
-          <div class="page-heading"><div><h1>AI <em>polish.</em></h1><p>Runs a local in-browser model to rewrite the revised draft against your rules. Review before use.</p></div><button class="button button-primary" id="polishAi" type="button">Run AI polish</button></div>
-          <div class="ai-polish-result" id="aiPolishResult"></div>
-        </section>
-
-          <section class="view" id="historyView" data-title="Review history">
+        <section class="view" id="historyView" data-title="Review history">
           <div class="page-heading"><div><h1>Review <em>history.</em></h1><p>Recent activity held only in this open browser session.</p></div><button class="button button-outline" id="clearSession" type="button">Clear this session</button></div>
           <div class="history-list" id="historyList"></div><div class="history-empty hidden" id="historyEmpty">No scans yet. Reviews from this session will appear here.</div>
         </section>
 
         <section class="view" id="settingsView" data-title="Profile & settings">
           <div class="page-heading"><div><h1>Profile & <em>settings.</em></h1><p>Local demo preferences for this browser session.</p></div></div>
-          <div class="settings-page"><div class="settings-row"><div><strong>Current company</strong><span id="settingsCompany">Mozilla Demo</span></div><button class="button button-outline" id="settingsChangeCompany" type="button">Change company</button></div><div class="settings-row"><div><strong>AI polish (optional)</strong><span>In-browser model (transformers.js). First run downloads ~0.5 GB; runs locally, no API key. Used only to rewrite suggestions; rules stay deterministic.</span></div><div class="ai-settings"><span class="settings-status" id="aiKeyStatus">LOCAL MODEL</span></div></div><div class="settings-row"><div><strong>Data handling</strong><span>Drafts and logos are processed in this browser. They are not saved after you close the tab.</span></div><span class="settings-status">SESSION ONLY</span></div><div class="settings-row"><div><strong>Authentication</strong><span>This public prototype uses shared demo codes. It does not protect real company data.</span></div><span class="settings-status warning">DEMO GATE</span></div><div class="settings-row"><div><strong>Website destination</strong><span>Choose Website, LinkedIn, Instagram, X, or Facebook in the top bar.</span></div></div></div>
+          <div class="settings-page"><div class="settings-row"><div><strong>Current company</strong><span id="settingsCompany">Mozilla Demo</span></div><button class="button button-outline" id="settingsChangeCompany" type="button">Change company</button></div><div class="settings-row"><div><strong>AI polish</strong><span>BYO API key (Groq/OpenAI-compatible). Key stays in this browser. Used only to rewrite suggestions; rules stay deterministic.</span></div><div class="ai-settings"><input id="aiKeyInput" type="password" placeholder="gsk_... / sk-..." autocomplete="off" /><input id="aiBaseInput" type="text" placeholder="https://api.groq.com/openai/v1" /><input id="aiModelInput" type="text" placeholder="openai/gpt-oss-20b" /><button class="button button-outline" id="saveAiKey" type="button">Save key</button><button class="button button-text" id="clearAiKey" type="button">Clear</button><span class="settings-status" id="aiKeyStatus">NOT SET</span></div></div><div class="settings-row"><div><strong>Data handling</strong><span>Drafts and logos are processed in this browser. They are not saved after you close the tab.</span></div><span class="settings-status">SESSION ONLY</span></div><div class="settings-row"><div><strong>Authentication</strong><span>This public prototype uses shared demo codes. It does not protect real company data.</span></div><span class="settings-status warning">DEMO GATE</span></div><div class="settings-row"><div><strong>Website destination</strong><span>Choose Website, LinkedIn, Instagram, X, or Facebook in the top bar.</span></div></div></div>
         </section>
         <footer class="app-footer"><span>RAKSHAK 2.0 <b>·</b> BRAND REVIEW WORKSPACE</span><span>Text rules + logo file review <b>·</b> Human approval required</span></footer>
       </main>
     </div>
     <div class="toast hidden" id="toast" role="status"></div>
-    <script type="module" src="./app.js"></script>
+  <!-- Particle Field -->
+  <div class="particle-field" id="particles"></div>
+
+  <!-- ═══ SPLASH SCREEN JS ═══ -->
+  <script>
+    (function() {
+      const splash = document.getElementById('splashScreen');
+      const login = document.getElementById('loginScreen');
+      if (!splash) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const duration = reduced ? 500 : 3200;
+      setTimeout(() => {
+        splash.classList.add('exit');
+        setTimeout(() => {
+          splash.style.display = 'none';
+          if (login) login.style.display = 'flex';
+        }, 600);
+      }, duration);
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
+    // Advanced UI effects
+    (function() {
+      const field = document.getElementById('particles');
+      if (field) {
+        for (let i = 0; i < 16; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'particle-dot';
+          dot.style.left = Math.random() * 100 + '%';
+          dot.style.top = Math.random() * 100 + '%';
+          dot.style.animationDelay = (Math.random() * 8) + 's';
+          dot.style.animationDuration = (6 + Math.random() * 4) + 's';
+          field.appendChild(dot);
+        }
+      }
+      document.querySelectorAll('.button-primary').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+        });
+        btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; });
+      });
+    })();
+  </script>
+  <script type="module" src="./app.js"></script>
   </body>
 </html>

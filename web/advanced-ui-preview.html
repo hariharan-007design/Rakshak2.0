@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rakshak 2.0 — Advanced Animated UI</title>
+<link rel="stylesheet" href="./warm-theme.css" />
+<style>
+/* ═══════════════════════════════════════════════════════════
+   ADVANCED ANIMATED UI — Rakshak 2.0 Redesign
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-glow: 0 0 30px rgba(232, 145, 58, 0.15);
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(212, 197, 169, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0; overflow: hidden;
+  font-family: 'Quicksand', system-ui, sans-serif;
+  background: var(--bg);
+}
+
+/* ─── App Shell ───────────────────────────────────────────── */
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr 340px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+.sidebar {
+  background: linear-gradient(180deg, var(--sidebar) 0%, var(--bg) 100%);
+  border-right: 1px solid var(--line-soft);
+  padding: 28px 20px;
+  display: flex; flex-direction: column; gap: 28px;
+  position: relative; overflow: hidden;
+}
+.sidebar::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(232,145,58,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px; position: relative; z-index: 1;
+}
+.sidebar-logo img {
+  width: 44px; height: 44px; border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(139,111,71,0.15);
+  transition: transform 0.3s var(--ease-spring);
+}
+.sidebar-logo:hover img { transform: rotate(-5deg) scale(1.05); }
+.sidebar-logo strong { font-size: 20px; color: var(--ink); letter-spacing: 3px; font-weight: 700; }
+.sidebar-logo small { font-size: 10px; color: var(--quiet); letter-spacing: 2px; text-transform: uppercase; }
+
+.nav-section { display: flex; flex-direction: column; gap: 2px; position: relative; z-index: 1; }
+.nav-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  color: var(--quiet); padding: 0 12px; margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 10px;
+  color: var(--muted); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.25s var(--ease-out-expo);
+  border: none; background: none; width: 100%; text-align: left;
+  position: relative; overflow: hidden;
+}
+.nav-item::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--tan-wash); opacity: 0;
+  transition: opacity 0.25s ease; border-radius: 10px;
+}
+.nav-item:hover::before { opacity: 1; }
+.nav-item:hover { color: var(--ink); transform: translateX(4px); }
+.nav-item.active {
+  background: var(--surface); color: var(--brown);
+  box-shadow: 0 2px 8px rgba(139,111,71,0.08);
+  font-weight: 600;
+}
+.nav-item.active::before { opacity: 0; }
+.nav-item .icon { width: 18px; height: 18px; position: relative; z-index: 1; }
+.nav-item span { position: relative; z-index: 1; }
+.nav-badge {
+  margin-left: auto; background: var(--orange); color: #fff;
+  font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 12px;
+  position: relative; z-index: 1;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,145,58,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(232,145,58,0); }
+}
+
+.sidebar-footer { margin-top: auto; position: relative; z-index: 1; }
+.rule-pack-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px; padding: 18px;
+  box-shadow: 0 4px 16px rgba(139,111,71,0.06);
+  transition: all 0.3s var(--ease-out-expo);
+}
+.rule-pack-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,111,71,0.1); }
+.rule-pack-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.rule-pack-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.rule-pack-count {
+  font-size: 28px; font-weight: 700; color: var(--orange);
+  line-height: 1;
+}
+.rule-pack-meta { font-size: 10px; color: var(--muted); }
+.rule-pack-bar {
+  height: 4px; background: var(--line-soft); border-radius: 2px;
+  margin-top: 12px; overflow: hidden;
+}
+.rule-pack-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--brown), var(--orange));
+  border-radius: 2px; width: 75%;
+  animation: bar-grow 1.5s var(--ease-out-expo) 0.5s both;
+}
+@keyframes bar-grow { from { width: 0; } }
+
+/* ─── Main Content ────────────────────────────────────────── */
+.main-content {
+  padding: 36px 40px;
+  display: flex; flex-direction: column; gap: 28px;
+  overflow-y: auto; position: relative;
+}
+.main-content::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(232,145,58,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  position: relative; z-index: 1;
+}
+.page-header h1 {
+  font-size: 36px; font-weight: 700; color: var(--ink);
+  margin: 0; line-height: 1.1;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--brown) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-header h1 em { font-style: italic; }
+.page-header p { font-size: 14px; color: var(--muted); margin: 6px 0 0; max-width: 500px; }
+
+/* ─── Stats Grid ──────────────────────────────────────────── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  position: relative; z-index: 1;
+}
+.stat-card {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 22px;
+  text-align: center; position: relative; overflow: hidden;
+  transition: all 0.3s var(--ease-out-expo);
+  cursor: default;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--brown), var(--orange));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.stat-card:hover::before { transform: scaleX(1); }
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(139,111,71,0.12);
+  border-color: var(--tan);
+}
+.stat-icon {
+  width: 32px; height: 32px; margin: 0 auto 10px;
+  color: var(--orange); opacity: 0.8;
+}
+.stat-value {
+  font-size: 36px; font-weight: 700; color: var(--ink);
+  line-height: 1; margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 11px; color: var(--muted); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.stat-trend {
+  font-size: 10px; margin-top: 6px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.stat-trend.up { color: var(--green); }
+.stat-trend.down { color: var(--red); }
+
+/* ─── Glass Card ──────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 28px;
+  box-shadow: 0 8px 32px rgba(139,111,71,0.06);
+  position: relative; z-index: 1;
+  transition: all 0.3s var(--ease-out-expo);
+}
+.glass-card:hover { box-shadow: 0 12px 40px rgba(139,111,71,0.1); }
+
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.card-title { font-size: 18px; font-weight: 600; color: var(--ink); margin: 0; }
+.card-subtitle { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+.card-action {
+  font-size: 12px; color: var(--tan); font-weight: 600;
+  cursor: pointer; transition: color 0.2s ease;
+  background: none; border: none;
+}
+.card-action:hover { color: var(--orange); }
+
+/* ─── Upload Zone ─────────────────────────────────────────── */
+.upload-zone {
+  border: 2px dashed var(--line);
+  border-radius: 16px; padding: 40px 24px;
+  text-align: center; background: var(--surface-2);
+  transition: all 0.3s var(--ease-out-expo);
+  cursor: pointer; position: relative; overflow: hidden;
+}
+.upload-zone::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(232,145,58,0.08) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.upload-zone:hover { border-color: var(--tan); transform: scale(1.01); }
+.upload-zone:hover::before { opacity: 1; }
+.upload-zone.dragover { border-color: var(--orange); background: var(--tan-wash); transform: scale(1.02); }
+.upload-icon {
+  width: 56px; height: 56px; margin: 0 auto 16px;
+  color: var(--tan); transition: all 0.3s var(--ease-spring);
+}
+.upload-zone:hover .upload-icon { color: var(--orange); transform: translateY(-4px) scale(1.1); }
+.upload-title { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+.upload-desc { font-size: 12px; color: var(--muted); }
+
+/* ─── Textarea ────────────────────────────────────────────── */
+.premium-textarea {
+  width: 100%; min-height: 140px;
+  padding: 20px; border: 1px solid var(--line);
+  border-radius: 14px; background: var(--surface-2);
+  color: var(--ink); font-size: 14px; line-height: 1.6;
+  resize: vertical; transition: all 0.3s ease;
+  font-family: inherit;
+}
+.premium-textarea:focus {
+  outline: none; border-color: var(--tan);
+  box-shadow: 0 0 0 3px var(--orange-glow);
+  background: var(--surface);
+}
+.premium-textarea::placeholder { color: var(--quiet); }
+
+/* ─── Finding Cards ───────────────────────────────────────── */
+.finding-card {
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px; padding: 20px;
+  margin-bottom: 12px; position: relative;
+  overflow: hidden; cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+}
+.finding-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  transition: width 0.3s var(--ease-out-expo);
+}
+.finding-card.high::before { background: var(--red); }
+.finding-card.medium::before { background: var(--orange); }
+.finding-card.review::before { background: var(--tan); }
+.finding-card:hover { transform: translateX(6px); box-shadow: 0 4px 16px rgba(139,111,71,0.08); }
+.finding-card:hover::before { width: 6px; }
+.finding-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.finding-id {
+  font-size: 11px; font-weight: 700; color: var(--orange);
+  background: var(--tan-wash); padding: 3px 8px; border-radius: 6px;
+}
+.finding-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+.finding-detail { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+.finding-quote {
+  background: var(--surface-2); border-radius: 8px;
+  padding: 10px 14px; font-size: 12px; color: var(--ink);
+  font-style: italic; border-left: 2px solid var(--line);
+  transition: border-color 0.2s ease;
+}
+.finding-card:hover .finding-quote { border-left-color: var(--orange); }
+
+/* ─── Right Panel ─────────────────────────────────────────── */
+.right-panel {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  border-left: 1px solid var(--line-soft);
+  padding: 28px 24px;
+  display: flex; flex-direction: column; gap: 24px;
+  overflow-y: auto;
+}
+.panel-section { display: flex; flex-direction: column; gap: 12px; }
+.panel-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  color: var(--quiet); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--line-soft);
+}
+
+/* ─── Severity Badges ─────────────────────────────────────── */
+.severity-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; padding: 4px 10px;
+  border-radius: 20px; transition: all 0.2s ease;
+}
+.severity-badge.high { background: var(--red-wash); color: var(--red); }
+.severity-badge.medium { background: #FFF3E0; color: var(--orange); }
+.severity-badge.review { background: var(--tan-wash); color: var(--tan); }
+.severity-badge:hover { transform: scale(1.05); }
+
+/* ─── AI Polish Button ────────────────────────────────────── */
+.ai-polish-btn {
+  width: 100%; padding: 14px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--brown) 0%, var(--orange) 100%);
+  color: #fff; border: none; font-size: 13px; font-weight: 600;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: all 0.3s var(--ease-out-expo);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.ai-polish-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--brown) 100%);
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.ai-polish-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,145,58,0.3); }
+.ai-polish-btn:hover::before { opacity: 1; }
+.ai-polish-btn span { position: relative; z-index: 1; }
+
+/* ─── Quick Action Buttons ────────────────────────────────── */
+.quick-btn {
+  width: 100%; padding: 12px 16px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--line-soft);
+  color: var(--ink); font-size: 12px; font-weight: 500;
+  cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 10px;
+  transition: all 0.25s var(--ease-out-expo);
+}
+.quick-btn:hover {
+  background: var(--tan-wash); border-color: var(--tan);
+  transform: translateX(4px);
+}
+.quick-btn .icon { width: 16px; height: 16px; color: var(--tan); }
+
+/* ─── Magnetic Button Effect ──────────────────────────────── */
+.magnetic-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 12px;
+  background: var(--brown); color: #fff; border: none;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: transform 0.2s var(--ease-out-expo);
+  position: relative;
+}
+
+/* ─── Skeleton Loader ─────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--line-soft) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Floating Particles ──────────────────────────────────── */
+.particle-field {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.particle-dot {
+  position: absolute; width: 3px; height: 3px;
+  background: var(--orange); border-radius: 50%;
+  opacity: 0.3; animation: particle-float 8s ease-in-out infinite;
+}
+@keyframes particle-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.2; }
+  25% { transform: translate(20px, -30px); opacity: 0.5; }
+  50% { transform: translate(-10px, -60px); opacity: 0.3; }
+  75% { transform: translate(15px, -20px); opacity: 0.4; }
+}
+
+/* ─── Progress Ring ───────────────────────────────────────── */
+.progress-ring {
+  width: 48px; height: 48px; position: relative;
+}
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring circle {
+  fill: none; stroke-width: 4;
+  stroke-dasharray: 126; stroke-dashoffset: 30;
+  stroke-linecap: round; transition: stroke-dashoffset 1s ease;
+}
+.progress-ring .bg { stroke: var(--line-soft); }
+.progress-ring .fg { stroke: var(--orange); }
+
+/* ─── Animations ──────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-in { animation: fadeInUp 0.5s var(--ease-out-expo) both; }
+.animate-scale { animation: scaleIn 0.4s var(--ease-spring) both; }
+.animate-slide { animation: slideInRight 0.4s var(--ease-out-expo) both; }
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* ─── Glow Effect ─────────────────────────────────────────── */
+.glow-accent {
+  position: relative;
+}
+.glow-accent::after {
+  content: ''; position: absolute; inset: -2px;
+  background: linear-gradient(135deg, var(--orange), var(--brown));
+  border-radius: inherit; z-index: -1;
+  opacity: 0; filter: blur(12px);
+  transition: opacity 0.3s ease;
+}
+.glow-accent:hover::after { opacity: 0.3; }
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .app-shell { grid-template-columns: 240px 1fr; }
+  .right-panel { display: none; }
+}
+@media (max-width: 768px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Field -->
+<div class="particle-field" id="particles"></div>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo animate-in">
+      <img src="./assets/rakshak-logo.png" alt="Rakshak" />
+      <div><strong>RAKSHAK</strong><br><small>2.0</small></div>
+    </div>
+
+    <nav class="nav-section animate-in stagger-1">
+      <div class="nav-label">Workspace</div>
+      <button class="nav-item active">
+        <svg class="icon"><use href="#i-file"/></svg> Review draft
+        <span class="nav-badge">3</span>
+      </button>
+      <button class="nav-item">
+        <svg class="icon"><use href="#i-image"/></svg> Logo check
+      </button>
+      <button class="nav-item">
+        <svg class="icon"><use href="#i-book"/></svg> Guidelines
+      </button>
+      <button class="nav-item">
+        <svg class="icon"><use href="#i-history"/></svg> Review history
+        <span class="nav-badge">0</span>
+      </button>
+    </nav>
+
+    <nav class="nav-section animate-in stagger-2">
+      <div class="nav-label">Tools</div>
+      <button class="nav-item">
+        <svg class="icon"><use href="#i-spark"/></svg> AI polish
+      </button>
+      <button class="nav-item">
+        <svg class="icon"><use href="#i-settings"/></svg> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer animate-in stagger-3">
+      <div class="rule-pack-card">
+        <div class="rule-pack-header">
+          <div>
+            <div class="rule-pack-name">Mozilla Demo</div>
+            <div class="rule-pack-meta">Trademark & voice</div>
+          </div>
+          <div class="rule-pack-count">4</div>
+        </div>
+        <div class="rule-pack-bar"><div class="rule-pack-bar-fill"></div></div>
+        <div class="rule-pack-meta" style="margin-top:6px;">4 rules active</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header animate-in">
+      <div>
+        <h1>Review before it <em>ships.</em></h1>
+        <p>Check a draft against Mozilla Demo rules. Every finding points to its source.</p>
+      </div>
+      <button class="magnetic-btn glow-accent">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Load sample
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card animate-in stagger-1">
+        <svg class="stat-icon"><use href="#i-shield"/></svg>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Rules Active</div>
+        <div class="stat-trend up">↑ 2 new</div>
+      </div>
+      <div class="stat-card animate-in stagger-2">
+        <svg class="stat-icon"><use href="#i-alert"/></svg>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Findings</div>
+        <div class="stat-trend down">↓ 1 resolved</div>
+      </div>
+      <div class="stat-card animate-in stagger-3">
+        <svg class="stat-icon"><use href="#i-check"/></svg>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card animate-in stagger-4">
+        <div class="progress-ring">
+          <svg width="48" height="48">
+            <circle class="bg" cx="24" cy="24" r="20"/>
+            <circle class="fg" cx="24" cy="24" r="20"/>
+          </svg>
+        </div>
+        <div class="stat-label" style="margin-top:8px;">Health Score</div>
+      </div>
+    </div>
+
+    <!-- Upload + Draft -->
+    <div class="glass-card animate-in stagger-2">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">The draft</h2>
+          <p class="card-subtitle">Paste or upload your content for review</p>
+        </div>
+        <button class="card-action">Clear all</button>
+      </div>
+      <div class="upload-zone">
+        <svg class="upload-icon"><use href="#i-upload"/></svg>
+        <h3 class="upload-title">Drop your file here</h3>
+        <p class="upload-desc">PDF, TXT, MD, or image · OCR supported · up to 10 MB</p>
+      </div>
+      <textarea class="premium-textarea" placeholder="Or paste your copy here…" style="margin-top:16px;"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+        <span style="font-size:11px;color:var(--muted);">0 words · 0 characters</span>
+        <button class="magnetic-btn glow-accent">Analyze draft →</button>
+      </div>
+    </div>
+
+    <!-- Findings -->
+    <div class="glass-card animate-in stagger-3">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Findings</h2>
+          <p class="card-subtitle">3 issues found in your draft</p>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <span class="severity-badge high">1 high</span>
+          <span class="severity-badge medium">1 medium</span>
+          <span class="severity-badge review">1 review</span>
+        </div>
+      </div>
+      <div class="finding-card high animate-in stagger-1">
+        <div class="finding-header">
+          <span class="finding-id">MOZ-01</span>
+          <span class="finding-title">Avoid implied endorsement</span>
+        </div>
+        <p class="finding-detail">This wording can imply Mozilla approved or endorses the product.</p>
+        <div class="finding-quote">"officially endorsed by Mozilla"</div>
+      </div>
+      <div class="finding-card medium animate-in stagger-2">
+        <div class="finding-header">
+          <span class="finding-id">MOZ-02</span>
+          <span class="finding-title">Do not turn the mark into a product name</span>
+        </div>
+        <p class="finding-detail">Using Mozilla as part of a product name can make the mark appear to identify your own offering.</p>
+        <div class="finding-quote">"Mozilla's new collaboration workspace"</div>
+      </div>
+      <div class="finding-card review animate-in stagger-3">
+        <div class="finding-header">
+          <span class="finding-id">MOZ-04</span>
+          <span class="finding-title">Add a clear trademark attribution</span>
+        </div>
+        <p class="finding-detail">A Mozilla mark appears. Check that the page includes required trademark attribution.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right Panel -->
+  <aside class="right-panel">
+    <div class="panel-section animate-in stagger-1">
+      <div class="panel-title">Active Rule Pack</div>
+      <div class="glass-card" style="padding:18px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--tan);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px;">M</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink);">Mozilla Demo</div>
+            <div style="font-size:11px;color:var(--muted);">Trademark & voice checks</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="severity-badge high">1 high</span>
+          <span class="severity-badge medium">1 medium</span>
+          <span class="severity-badge review">1 review</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section animate-in stagger-2">
+      <div class="panel-title">AI Polish</div>
+      <button class="ai-polish-btn">
+        <span>✨ AI Polish</span>
+      </button>
+      <p style="font-size:11px;color:var(--muted);text-align:center;">Online (Groq) or offline (transformers.js)</p>
+    </div>
+
+    <div class="panel-section animate-in stagger-3">
+      <div class="panel-title">Quick Actions</div>
+      <button class="quick-btn">
+        <svg class="icon"><use href="#i-copy"/></svg> Copy revised draft
+      </button>
+      <button class="quick-btn">
+        <svg class="icon"><use href="#i-download"/></svg> Download report
+      </button>
+      <button class="quick-btn">
+        <svg class="icon"><use href="#i-upload"/></svg> Export PDF
+      </button>
+    </div>
+
+    <div class="panel-section animate-in stagger-4">
+      <div class="panel-title">Recent Scans</div>
+      <div style="text-align:center;padding:24px 0;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--quiet)" stroke-width="1.5" style="margin:0 auto 8px;display:block;opacity:0.5;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <p style="font-size:12px;color:var(--muted);margin:0;">No scans yet</p>
+        <p style="font-size:10px;color:var(--quiet);margin:4px 0 0;">Run your first analysis to see history</p>
+      </div>
+    </div>
+
+    <div class="panel-section animate-in stagger-5">
+      <div class="panel-title">Brand Health</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="progress-ring">
+          <svg width="64" height="64">
+            <circle class="bg" cx="32" cy="32" r="26"/>
+            <circle class="fg" cx="32" cy="32" r="26" style="stroke-dashoffset:40;"/>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:24px;font-weight:700;color:var(--ink);">72%</div>
+          <div style="font-size:11px;color:var(--muted);">Compliance score</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- SVG Sprite -->
+<svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 8 12 3 7 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/></symbol>
+</svg>
+
+<script>
+// Generate floating particles
+const field = document.getElementById('particles');
+for (let i = 0; i < 20; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'particle-dot';
+  dot.style.left = Math.random() * 100 + '%';
+  dot.style.top = Math.random() * 100 + '%';
+  dot.style.animationDelay = (Math.random() * 8) + 's';
+  dot.style.animationDuration = (6 + Math.random() * 4) + 's';
+  field.appendChild(dot);
+}
+
+// Magnetic button effect
+document.querySelectorAll('.magnetic-btn').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// Upload zone drag effect
+const zone = document.querySelector('.upload-zone');
+if (zone) {
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', (e) => { e.preventDefault(); zone.classList.remove('dragover'); });
+}
+</script>
+</body>
+</html>
