@@ -139,19 +139,55 @@ function login() {
   toast('Welcome to ' + name + ' workspace!');
 }
 
-function findMatches(text) {
+function findMatches(text, destination) {
   const findings = [];
-  for (const rule of state.company.rules) {
+  const dest = destination || ($('channelSelect')?.value || 'Website');
+  // Destination-specific checks
+  const destRules = getDestinationRules(dest, text);
+  for (const rule of [...state.company.rules, ...destRules]) {
     const regex = new RegExp(rule.pattern.source, rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`);
     let count=0;
     for (const match of text.matchAll(regex)) {
       if (!match[0]) continue;
       if (rule.id === 'MOZ-04' && count > 0) break;
       count++;
-      findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: replacementFor(rule.id,match[0]), source: rule.source, url: rule.url, status: 'open' });
+      findings.push({ id: `${rule.id}-${match.index}`, ruleId: rule.id, start: match.index, end: match.index + match[0].length, quote: match[0], title: rule.title, severity: rule.severity, detail: rule.detail, fix: replacementFor(rule.id,match[0]) || rule.fix || '', source: rule.source, url: rule.url, status: 'open' });
+    }
+  }
+  // Character limit check for X
+  if (dest === 'X' && text.length > 280) {
+    findings.push({ id: 'DEST-X-CHAR', ruleId: 'DEST-X', start: 280, end: text.length, quote: text.slice(280, 300) + '...', title: 'Exceeds X character limit', severity: 'high', detail: `X posts are limited to 280 characters. Your draft is ${text.length} characters (${text.length - 280} over).`, fix: 'Shorten to 280 characters or less.', source: 'X Platform Guidelines', url: 'https://help.twitter.com/en/using-twitter/x-premium', status: 'open' });
+  }
+  // LinkedIn length check
+  if (dest === 'LinkedIn' && text.length > 1300) {
+    findings.push({ id: 'DEST-LI-LEN', ruleId: 'DEST-LI', start: 1300, end: text.length, quote: text.slice(1300, 1320) + '...', title: 'Exceeds LinkedIn recommended length', severity: 'medium', detail: `LinkedIn posts perform best under 1,300 characters. Your draft is ${text.length} characters.`, fix: 'Consider shortening for better engagement.', source: 'LinkedIn Best Practices', url: 'https://www.linkedin.com/help', status: 'open' });
+  }
+  // Instagram caption check
+  if (dest === 'Instagram' && text.length > 2200) {
+    findings.push({ id: 'DEST-IG-CAP', ruleId: 'DEST-IG', start: 2200, end: text.length, quote: text.slice(2200, 2220) + '...', title: 'Exceeds Instagram caption limit', severity: 'high', detail: `Instagram captions are limited to 2,200 characters. Your draft is ${text.length} characters.`, fix: 'Shorten to 2,200 characters or less.', source: 'Instagram Help Center', url: 'https://help.instagram.com', status: 'open' });
+  }
+  // Email subject line check
+  if (dest === 'Email') {
+    const lines = text.split('\n');
+    if (lines[0] && lines[0].length > 60) {
+      findings.push({ id: 'DEST-EMAIL-SUBJ', ruleId: 'DEST-EMAIL', start: 0, end: lines[0].length, quote: lines[0].slice(0, 40) + '...', title: 'Email subject line too long', severity: 'medium', detail: `Email subject lines perform best under 60 characters. First line is ${lines[0].length} characters.`, fix: 'Shorten the subject line to under 60 characters.', source: 'Email Marketing Best Practices', url: '#', status: 'open' });
     }
   }
   return findings.sort((a,b) => a.start - b.start);
+}
+
+function getDestinationRules(dest, text) {
+  const rules = [];
+  if (dest === 'Print') {
+    const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+    if (wordCount > 300) {
+      rules.push({ id: 'DEST-PRINT-LEN', title: 'Print copy may be too long', pattern: /.*/, severity: 'review', detail: `Print materials work best under 300 words. Your draft has ${wordCount} words.`, fix: 'Consider condensing for print format.', source: 'Print Design Guidelines', url: '#', flags: 'g' });
+    }
+  }
+  if (dest === 'Internal') {
+    // No specific limits for internal comms
+  }
+  return rules;
 }
 
 function drawHighlight() {
@@ -173,11 +209,22 @@ function drawFindings() {
   const list = $('findingList'); if (!list) return;
   const open = state.findings.filter(f => f.status === 'open');
   if ($('findingCount')) $('findingCount').textContent = String(open.length);
-  if ($('findingsSummary')) $('findingsSummary').textContent = open.length ? `${open.length} item${open.length === 1 ? '' : 's'} need your review` : 'No matching rule issues were found';
+  const totalRules = state.company.rules.length + (state.findings.filter(f=>f.ruleId&&f.ruleId.startsWith('DEST')).length > 0 ? 1 : 0);
+  const blockers = open.filter(f=>f.severity==='high').length;
+  const warnings = open.filter(f=>f.severity==='medium').length;
+  const reviews = open.filter(f=>f.severity==='review').length;
+  const passed = Math.max(0, (state.company.rules.length) - open.length);
+  if ($('findingsSummary')) $('findingsSummary').textContent = open.length ? `${passed} checks passed · ${warnings} warning${warnings===1?'':'s'} · ${blockers} blocker${blockers===1?'':'s'} · ${reviews} advisory` : 'No matching rule issues were found — but a clean scan is not approval.';
   $('noFindings') && ($('noFindings').hidden = open.length > 0);
   reveal('findingsSection',true); reveal('noFindings',open.length===0);
   list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div>${f.fix ? `<label class="suggestion-label" for="fix-${esc(f.id)}">EDITABLE REPLACEMENT</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea>` : '<p class="finding-ruleline">This needs human verification; the prototype has no safe automatic replacement.</p>'}<div class="finding-buttons">${f.fix ? `<button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button>` : ''}<button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Dismiss</button></div></div></article>`).join('');
-  list.querySelectorAll('.finding-trigger').forEach(btn => btn.addEventListener('click', () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); const mark=document.querySelector(`mark[data-finding-id="${btn.dataset.id||item.id.replace('card-','')}"]`); if(mark){mark.scrollIntoView({behavior:'smooth',block:'center'});mark.classList.add('focused');setTimeout(()=>mark.classList.remove('focused'),1400);} }));
+  list.querySelectorAll('.finding-trigger').forEach(btn => {
+    btn.setAttribute('tabindex', '0');
+    btn.setAttribute('role', 'button');
+    const toggle = () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); const mark=document.querySelector(`mark[data-finding-id="${btn.dataset.id||item.id.replace('card-','')}"]`); if(mark){mark.scrollIntoView({behavior:'smooth',block:'center'});mark.classList.add('focused');setTimeout(()=>mark.classList.remove('focused'),1400);} };
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  });
   list.querySelectorAll('.apply-fix').forEach(btn => btn.addEventListener('click', () => applyFix(btn.dataset.id)));
   list.querySelectorAll('.dismiss-finding').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f)f.status='ignored'; drawFindings(); drawHighlight(); }));
 }
@@ -261,35 +308,23 @@ function shareEmail() {
   toast('Opening email client...');
 }
 
-function shareTwitter() {
-  const text = getDraftText();
-  if (!text) { toast('Write a draft first'); return; }
-  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text.slice(0, 280))}`;
-  window.open(url, '_blank', 'width=600,height=400');
-  toast('Opening X/Twitter...');
-}
-
-function shareLinkedin() {
-  const text = getDraftText();
-  if (!text) { toast('Write a draft first'); return; }
-  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
-  window.open(url, '_blank', 'width=600,height=400');
-  toast('Opening LinkedIn...');
-}
-
 function shareCopy() {
   const text = getDraftText();
   if (!text) { toast('Write a draft first'); return; }
   navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!')).catch(() => toast('Copy failed'));
 }
 
-function shareInstagram() {
+function shareDownload() {
   const text = getDraftText();
   if (!text) { toast('Write a draft first'); return; }
-  navigator.clipboard.writeText(text).then(() => {
-    toast('Copied! Opening Instagram...');
-    window.open('https://www.instagram.com/', '_blank');
-  }).catch(() => toast('Copy failed'));
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'draft.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Downloaded draft.txt');
 }
 
 
@@ -305,7 +340,7 @@ function rescan() {
 function analyze() {
   const text=$('draftInput')?.value.trim() || '';
   if(!text){ toast('Add or upload draft text first'); $('draftInput')?.focus(); return; }
-  state.draft=text; state.findings=findMatches(text); drawHighlight(); drawFindings(); updateRevised();
+  state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised();
   if($('analysisMessage'))$('analysisMessage').textContent=`Checked against ${state.company.rules.length} demo rules · processed in this browser`;
   reveal('analysisMessage',true); reveal('revisedSection',true);
   const record={company:state.company.name,channel:$('channelSelect')?.value||'Website',date:new Date().toLocaleString(),count:state.findings.length,source:$('sourceFileName')?.textContent||'Pasted copy'}; state.history.unshift(record); drawHistory(); toast(`Review complete · ${state.findings.length} match${state.findings.length===1?'':'es'} to review`);
@@ -354,6 +389,7 @@ async function handleDraft(file) {
     else if(file.type.startsWith('text/')||/\.(txt|md)$/i.test(file.name)) text=await file.text();
     else if(file.type.startsWith('image/') && window.Tesseract){ toast('Running OCR on image...'); const {data:{text:t}}=await window.Tesseract.recognize(file,'eng',{logger:m=>{}}); text=t; }
     else {toast('Use a text file, PDF, or image');return;}
+    if (!text.trim()) { toast('No text could be extracted from this file. Try a different format.'); return; }
     $('draftInput').value=text; $('draftMeta') && ($('draftMeta').textContent=`${text.trim().split(/\s+/).filter(Boolean).length} words · ${text.length.toLocaleString()} characters`); $('pdfMeta') && ($('pdfMeta').textContent=file.name.toLowerCase().endsWith('.pdf')?'Text extracted from PDF · page references are not included in this prototype':'Text file loaded'); toast('Draft loaded in browser');
   } catch(error) { toast(error.message || 'Could not read that file'); }
 }
@@ -425,7 +461,9 @@ async function polishWithAi() {
       text = await polishOffline(state.revised, findings);
     }
     if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ${mode} · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only. Re-run Analyze to verify.</p>`;
-    toast(`AI polish complete (${mode})`);
+    const polishedFindings = findMatches(text, $('channelSelect')?.value);
+    const newCount = polishedFindings.length;
+    toast(`AI polish complete (${mode}) · ${newCount} finding${newCount===1?'':'s'} in polished version`);
   } catch (e) {
     // If online fails, try offline
     if (online) {
@@ -454,13 +492,11 @@ function bind() {
   $('analyzeButton')?.addEventListener('click',analyze);
   $('voiceBtn')?.addEventListener('click',initVoice);
   $('shareEmail')?.addEventListener('click',shareEmail);
-  $('shareTwitter')?.addEventListener('click',shareTwitter);
-  $('shareLinkedin')?.addEventListener('click',shareLinkedin);
   $('shareCopy')?.addEventListener('click',shareCopy);
-  $('shareInstagram')?.addEventListener('click',shareInstagram); $('loadSample')?.addEventListener('click',()=>{$('draftInput').value=SAMPLE;$('sourceFileName').textContent='sample-launch-copy.txt';reveal('sourceFileName',true);updateWordCount();toast('Sample draft loaded');});
+  $('shareDownload')?.addEventListener('click',shareDownload); $('loadSample')?.addEventListener('click',()=>{$('draftInput').value=SAMPLE;$('sourceFileName').textContent='sample-launch-copy.txt';reveal('sourceFileName',true);updateWordCount();toast('Sample draft loaded');});
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
-  $('channelSelect')?.addEventListener('change',updateRevised); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
+  $('channelSelect')?.addEventListener('change',()=>{if(state.findings.length){analyze();}else{updateRevised();}}); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
   $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();toast('Session history cleared');});
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});

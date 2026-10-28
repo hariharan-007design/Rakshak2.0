@@ -8,12 +8,13 @@
     <title>Rakshak 2.0 — Brand review</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Eczar:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Eczar:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" href="./assets/rakshak-logo.png" />
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./warm-theme.css" />
   </head>
   <body>
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
     <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
       <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 5-3.3 8.3-8 10.5-4.7-2.2-8-5.5-8-10.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
       <symbol id="i-review" viewBox="0 0 24 24"><path d="M4 5.5h16M4 12h10M4 18.5h8"/><circle cx="18" cy="16.5" r="3.5"/><path d="m20.5 19 2 2"/></symbol>
@@ -104,7 +105,7 @@
               <option value="other">Other</option>
             </select><svg class="icon"><use href="#i-chevron" /></svg></div>
             <label for="companyNameInput">COMPANY / BRAND NAME</label>
-            <input id="companyNameInput" type="text" placeholder="e.g. Acme Corp" required style="width:100%;height:45px;border:1px solid #49433b;background:#151411;padding:0 13px;font-size:12px;color:#f4efe6;border-radius:2px;" />
+            <input id="companyNameInput" type="text" placeholder="e.g. Acme Corp" required class="login-input" />
             <label for="passwordInput">ACCESS CODE</label>
             <div class="password-wrap"><input id="passwordInput" type="password" autocomplete="current-password" placeholder="Enter access code" required /><button class="show-password" id="togglePassword" type="button" aria-label="Show access code">Show</button></div>
             <div class="demo-hint" id="demoHint"></div>
@@ -142,7 +143,7 @@
         <div class="sidebar-bottom"></div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent">
         <header class="topbar"><div class="breadcrumb"><button class="back-btn" id="backButton" type="button" aria-label="Go back">←</button><span>Workspace</span><svg class="icon"><use href="#i-chevron" /></svg><strong id="breadcrumbCurrent">Review draft</strong></div><div class="topbar-right"><label for="channelSelect" class="channel-label">DESTINATION</label><div class="channel-select-wrap"><select id="channelSelect" aria-label="Select destination"><option value="Website">Website</option><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option><option value="Email">Email</option><option value="Print">Print</option><option value="Internal">Internal</option></select><svg class="icon"><use href="#i-chevron" /></svg></div><span class="topbar-divider"></span><span class="user-chip" id="userChip">M</span></div></header>
 
         <section class="view active-view" id="reviewView" data-title="Review draft">
@@ -161,12 +162,10 @@
                 <div class="draft-preview hidden" id="highlightPanel"><div class="preview-label">ORIGINAL DRAFT <span>Flagged text is highlighted below</span></div><div class="highlighted-copy" id="highlightedCopy"></div></div>
                 <div class="draft-actions"><span class="rule-mode"><svg class="icon"><use href="#i-shield" /></svg> Curated rules · AI advisory available</span><button class="button button-outline" id="voiceBtn" type="button">🎤 Voice</button><button class="button button-primary" id="analyzeButton" type="button">Analyze draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
     <div class="share-bar">
-      <span class="share-label">Share draft:</span>
-      <button class="share-btn share-email" id="shareEmail" type="button">✉️ Email</button>
-      <button class="share-btn share-twitter" id="shareTwitter" type="button">𝕏 Post</button>
-      <button class="share-btn share-linkedin" id="shareLinkedin" type="button">💼 LinkedIn</button>
+      <span class="share-label">Export / collaborate:</span>
       <button class="share-btn share-copy" id="shareCopy" type="button">📋 Copy</button>
-      <button class="share-btn share-instagram" id="shareInstagram" type="button">📸 Instagram</button>
+      <button class="share-btn share-email" id="shareEmail" type="button">✉️ Email</button>
+      <button class="share-btn share-download" id="shareDownload" type="button">⬇️ Download</button>
     </div>
                 <div class="analysis-message hidden" id="analysisMessage" role="status"></div>
               </section>
@@ -203,8 +202,16 @@
         </section>
 
         <section class="view" id="logoView" data-title="Logo">
-          <div class="page-heading"><div><h1>Logo <em>review.</em></h1><p>Logo checks use the same uploaded draft. No separate upload.</p></div></div>
-          <p class="section-note">Logo-related findings from the current draft appear in Review findings. Upload one draft and all checks run on it.</p>
+          <div class="page-heading"><div><h1>Logo <em>review.</em></h1><p>Upload a logo image for basic file-quality checks.</p></div></div>
+          <div class="content-section">
+            <label class="upload-choice" for="logoFile" style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:16px;border:1px dashed var(--line);border-radius:8px;width:100%;max-width:400px;">
+              <svg class="icon"><use href="#i-image" /></svg>
+              <span><strong>Upload logo</strong><small>PNG, JPG, SVG, WebP · up to 5 MB</small></span>
+              <input id="logoFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
+            </label>
+            <div id="logoResult" class="hidden" style="margin-top:16px;"></div>
+            <p class="section-note" style="margin-top:12px;">Checks: file format, dimensions, file size, transparency. Visual brand matching (colors, clear space, variants) is planned for a future version.</p>
+          </div>
         </section>
 
         <section class="view" id="historyView" data-title="Review history">
@@ -214,7 +221,7 @@
 
         <section class="view" id="settingsView" data-title="Profile & settings">
           <div class="page-heading"><div><h1>Profile & <em>settings.</em></h1><p>Local demo preferences for this browser session.</p></div></div>
-          <div class="settings-page"><div class="settings-row"><div><strong>Current company</strong><span id="settingsCompany">Mozilla Demo</span></div><button class="button button-outline" id="settingsChangeCompany" type="button">Change company</button></div><div class="settings-row"><div><strong>AI polish</strong><span>BYO API key (Groq/OpenAI-compatible). Key stays in this browser. Used only to rewrite suggestions; rules stay deterministic.</span></div><div class="ai-settings"><input id="aiKeyInput" type="password" placeholder="gsk_... / sk-..." autocomplete="off" /><input id="aiBaseInput" type="text" placeholder="https://api.groq.com/openai/v1" /><input id="aiModelInput" type="text" placeholder="openai/gpt-oss-20b" /><button class="button button-outline" id="saveAiKey" type="button">Save key</button><button class="button button-text" id="clearAiKey" type="button">Clear</button><span class="settings-status" id="aiKeyStatus">NOT SET</span></div></div><div class="settings-row"><div><strong>Data handling</strong><span>Drafts and logos are processed in this browser. They are not saved after you close the tab.</span></div><span class="settings-status">SESSION ONLY</span></div><div class="settings-row"><div><strong>Authentication</strong><span>This public prototype uses shared demo codes. It does not protect real company data.</span></div><span class="settings-status warning">DEMO GATE</span></div><div class="settings-row"><div><strong>Website destination</strong><span>Choose Website, LinkedIn, Instagram, X, or Facebook in the top bar.</span></div></div></div>
+          <div class="settings-page"><div class="settings-row"><div><strong>Current company</strong><span id="settingsCompany">Mozilla Demo</span></div><button class="button button-outline" id="settingsChangeCompany" type="button">Change company</button></div><div class="settings-row"><div><strong>AI polish</strong><span>Two modes: (1) Cloud — BYO API key (Groq/OpenAI). Draft text is sent to the provider you choose. (2) Offline — in-browser model (transformers.js, ~500MB download). No data leaves your browser. Rules always stay deterministic. Key stays in this browser only.</span></div><div class="ai-settings"><input id="aiKeyInput" type="password" placeholder="gsk_... / sk-..." autocomplete="off" /><input id="aiBaseInput" type="text" placeholder="https://api.groq.com/openai/v1" /><input id="aiModelInput" type="text" placeholder="openai/gpt-oss-20b" /><button class="button button-outline" id="saveAiKey" type="button">Save key</button><button class="button button-text" id="clearAiKey" type="button">Clear</button><span class="settings-status" id="aiKeyStatus">NOT SET</span></div></div><div class="settings-row"><div><strong>Data handling</strong><span>Drafts and logos are processed in this browser. They are not saved after you close the tab.</span></div><span class="settings-status">SESSION ONLY</span></div><div class="settings-row"><div><strong>Authentication</strong><span>This public prototype uses shared demo codes. It does not protect real company data.</span></div><span class="settings-status warning">DEMO GATE</span></div><div class="settings-row"><div><strong>Website destination</strong><span>Choose Website, LinkedIn, Instagram, X, or Facebook in the top bar.</span></div></div></div>
         </section>
         <footer class="app-footer"><span>RAKSHAK 2.0 <b>·</b> BRAND REVIEW WORKSPACE</span><span>Text rules + logo file review <b>·</b> Human approval required</span></footer>
       </main>
@@ -229,15 +236,36 @@
       const splash = document.getElementById('splashScreen');
       const login = document.getElementById('loginScreen');
       if (!splash) return;
+      // Skip splash if already seen this session
+      if (sessionStorage.getItem('rakshak_splash_seen')) {
+        splash.style.display = 'none';
+        if (login) login.style.display = 'flex';
+        return;
+      }
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const duration = reduced ? 500 : 3200;
-      setTimeout(() => {
+      const duration = reduced ? 300 : 1200;
+      let skipped = false;
+      function skipSplash() {
+        if (skipped) return;
+        skipped = true;
+        sessionStorage.setItem('rakshak_splash_seen', '1');
         splash.classList.add('exit');
         setTimeout(() => {
           splash.style.display = 'none';
           if (login) login.style.display = 'flex';
-        }, 600);
-      }, duration);
+        }, 400);
+      }
+      // Skip on key press
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === 'Escape' || e.key === ' ') skipSplash();
+      });
+      // Skip button
+      const skipBtn = document.createElement('button');
+      skipBtn.textContent = 'Skip →';
+      skipBtn.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:100;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;backdrop-filter:blur(4px);';
+      skipBtn.addEventListener('click', skipSplash);
+      splash.appendChild(skipBtn);
+      setTimeout(skipSplash, duration);
     })();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js"></script>
