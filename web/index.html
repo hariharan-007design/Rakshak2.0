@@ -175,7 +175,7 @@
               <section class="findings-section hidden" id="findingsSection" aria-live="polite">
                 <div class="findings-title-row"><div><span class="section-number">02</span><h2>Review findings</h2><p id="findingsSummary">Each item is linked to a specific rule.</p></div><span class="finding-count" id="findingCount">0</span></div>
                 <div class="finding-list" id="findingList"></div>
-                <div class="no-findings hidden" id="noFindings"><svg class="icon"><use href="#i-check" /></svg><div><strong>No configured rule matched this draft.</strong><span>A clean scan is not an approval. Review the copy before publishing.</span></div></div>
+                <div class="no-findings hidden" id="noFindings"><svg class="icon"><use href="#i-check" /></svg><div><strong>No configured rule matched this draft.</strong><span>A clean scan is not an approval. Review the copy before publishing.</span><div class="no-findings-actions"><button class="button button-text" onclick="document.getElementById('loadSample').click()">Load sample draft</button><button class="button button-text" onclick="document.getElementById('channelSelect').focus()">Change destination</button><button class="button button-text" onclick="showView('guidelines')">View active rules</button></div></div></div>
               </section>
 
               <section class="content-section revised-section hidden" id="revisedSection" aria-labelledby="revisedTitle">

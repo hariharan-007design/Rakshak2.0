@@ -716,3 +716,17 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .rail-footer { margin-top: 10px !important; }
 .rail-pdf { margin-top: 12px !important; padding-top: 8px !important; }
 
+/* ─── Finding diff preview ─────────────────────────────────── */
+.finding-diff { margin: 8px 0; padding: 8px; background: var(--card); border-radius: 4px; font-size: 10px; line-height: 1.6; }
+.diff-label { font-weight: 700; color: var(--muted); font-size: 8px; letter-spacing: 0.1em; }
+.diff-original { color: var(--red); text-decoration: line-through; }
+.diff-revised { color: var(--green); font-weight: 600; }
+.finding-buttons .button { min-height: 26px; padding: 0 8px; font-size: 9px; }
+.finding-buttons .reject-fix { border-color: var(--red); color: var(--red); }
+.finding-buttons .reject-fix:hover { background: var(--red-wash); }
+.finding-buttons .override-fix { color: var(--muted); }
+
+/* ─── No-findings actions ─────────────────────────────────── */
+.no-findings-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.no-findings-actions .button { min-height: 24px; padding: 0 8px; font-size: 9px; }
+
