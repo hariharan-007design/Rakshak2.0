@@ -202,15 +202,32 @@
         </section>
 
         <section class="view" id="logoView" data-title="Logo">
-          <div class="page-heading"><div><h1>Logo <em>review.</em></h1><p>Upload a logo image for basic file-quality checks.</p></div></div>
+          <div class="page-heading"><div><h1>Logo <em>review.</em></h1><p>Compare an uploaded logo against the brand reference. Detects dimension, aspect ratio, color, transparency, and pixel-level differences.</p></div></div>
           <div class="content-section">
-            <label class="upload-choice" for="logoFile" style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:16px;border:1px dashed var(--line);border-radius:8px;width:100%;max-width:400px;">
-              <svg class="icon"><use href="#i-image" /></svg>
-              <span><strong>Upload logo</strong><small>PNG, JPG, SVG, WebP · up to 5 MB</small></span>
-              <input id="logoFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
-            </label>
+            <div class="logo-upload-row">
+              <div class="logo-ref-box">
+                <span class="logo-box-label">BRAND REFERENCE</span>
+                <img id="logoRefImg" src="./assets/rakshak-logo.png" alt="Brand reference logo" class="logo-preview-img" />
+                <span class="logo-box-meta" id="logoRefMeta">Loading...</span>
+              </div>
+              <div class="logo-upload-box">
+                <span class="logo-box-label">UPLOADED LOGO</span>
+                <label class="logo-drop-zone" for="logoFile">
+                  <svg class="icon"><use href="#i-upload" /></svg>
+                  <strong>Drop or click to upload</strong>
+                  <small>PNG, JPG, SVG, WebP · up to 5 MB</small>
+                  <input id="logoFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
+                </label>
+                <img id="logoUploadedImg" class="logo-preview-img hidden" alt="Uploaded logo" />
+                <span class="logo-box-meta hidden" id="logoUploadedMeta"></span>
+              </div>
+            </div>
             <div id="logoResult" class="hidden" style="margin-top:16px;"></div>
-            <p class="section-note" style="margin-top:12px;">Checks: file format, dimensions, file size, transparency. Visual brand matching (colors, clear space, variants) is planned for a future version.</p>
+            <div id="logoDiffCanvas" class="hidden" style="margin-top:16px;">
+              <span class="logo-box-label">PIXEL DIFFERENCE MAP</span>
+              <canvas id="diffCanvas" style="max-width:100%;border:1px solid var(--line);border-radius:4px;background:#111;"></canvas>
+              <p class="section-note" style="margin-top:8px;">Red pixels indicate differences from the reference. Green = identical.</p>
+            </div>
           </div>
         </section>
 

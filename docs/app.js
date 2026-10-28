@@ -412,17 +412,133 @@ async function handleDraft(file) {
 async function inspectLogo(file) {
   if(!file)return;
   if(file.size>5*1024*1024){toast('Logo must be under 5 MB');return;}
-  const url=URL.createObjectURL(file); const img=new Image();
-  img.onload=()=>{
-    const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
-    let alpha=false, transparent=0, sampled=0;
-    try {const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;const stride=Math.max(1,Math.floor(Math.sqrt(canvas.width*canvas.height/250000)));for(let y=0;y<canvas.height;y+=stride)for(let x=0;x<canvas.width;x+=stride){const a=data[(y*canvas.width+x)*4+3];sampled++;if(a<250){transparent++;if(a<10)alpha=true;}}}catch{}
-    const ratio=sampled?transparent/sampled:0; const concerns=[];if(Math.min(img.naturalWidth,img.naturalHeight)<300)concerns.push('Small for high-resolution placement');if(ratio<0.015)concerns.push('Little transparent/clear space around the artwork');if(file.size>2*1024*1024)concerns.push('Large file — consider optimizing before upload');
-    state.logo={file:file.name,width:img.naturalWidth,height:img.naturalHeight,alpha,concerns};
-    if($('logoResult')){$('logoResult').innerHTML=`<div class="logo-check"><img src="${url}" alt="Uploaded logo preview"><div><b>${esc(file.name)}</b><small>${img.naturalWidth} × ${img.naturalHeight}px · ${Math.round(file.size/1024)} KB</small><p>${concerns.length?concerns.map(esc).join(' · '):'No basic file-quality issues detected.'}</p><small>File checks only · not a brand approval</small></div></div>`;reveal('logoResult',true);}
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  img.onload=async()=>{
+    const refImg = $('logoRefImg');
+    if (!refImg || !refImg.complete) { toast('Reference logo not loaded'); return; }
+    const uploadedImg = $('logoUploadedImg');
+    if (uploadedImg) { uploadedImg.src = url; uploadedImg.classList.remove('hidden'); }
+    const uploadedMeta = $('logoUploadedMeta');
+    if (uploadedMeta) { uploadedMeta.textContent = `${img.naturalWidth} × ${img.naturalHeight}px · ${Math.round(file.size/1024)} KB · ${file.type}`; uploadedMeta.classList.remove('hidden'); }
+    const findings = compareLogos(refImg, img, file);
+    if ($('logoResult')) {
+      const html = findings.map(f => `<div class="logo-finding ${f.severity}"><span class="logo-finding-icon">${f.icon}</span><div><strong>${esc(f.title)}</strong><small>${esc(f.detail)}</small></div></div>`).join('');
+      $('logoResult').innerHTML = `<div class="logo-findings">${html}</div>`;
+      $('logoResult').classList.remove('hidden');
+    }
+    drawLogoDiff(refImg, img);
+    const issues = findings.filter(f=>f.severity==='high').length;
+    toast(`Logo review complete · ${issues} issue${issues===1?'':'s'} found`);
   };
   img.onerror=()=>toast('Could not preview this logo file');img.src=url;
 }
+
+function checkTransparency(img) {
+  const c = document.createElement('canvas');
+  c.width = Math.min(img.naturalWidth, 100);
+  c.height = Math.min(img.naturalHeight, 100);
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  const data = ctx.getImageData(0, 0, c.width, c.height).data;
+  for (let i = 3; i < data.length; i += 4) { if (data[i] < 255) return true; }
+  return false;
+}
+
+function getDominantColors(img) {
+  const c = document.createElement('canvas');
+  c.width = 50; c.height = 50;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, 50, 50);
+  const data = ctx.getImageData(0, 0, 50, 50).data;
+  const colors = {};
+  for (let i = 0; i < data.length; i += 4) {
+    const r = Math.round(data[i]/32)*32;
+    const g = Math.round(data[i+1]/32)*32;
+    const b = Math.round(data[i+2]/32)*32;
+    const key = `${r},${g},${b}`;
+    colors[key] = (colors[key]||0) + 1;
+  }
+  return Object.entries(colors).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
+}
+
+function compareColors(ref, up) {
+  if (!ref.length || !up.length) return 0;
+  let matches = 0;
+  for (const rc of ref) { if (up.includes(rc)) matches++; }
+  return matches / Math.max(ref.length, up.length);
+}
+
+function getPixelDiff(refImg, upImg) {
+  const w = Math.min(refImg.naturalWidth, upImg.naturalWidth, 200);
+  const h = Math.min(refImg.naturalHeight, upImg.naturalHeight, 200);
+  const c1 = document.createElement('canvas'); c1.width = w; c1.height = h;
+  const c2 = document.createElement('canvas'); c2.width = w; c2.height = h;
+  c1.getContext('2d').drawImage(refImg, 0, 0, w, h);
+  c2.getContext('2d').drawImage(upImg, 0, 0, w, h);
+  const d1 = c1.getContext('2d').getImageData(0, 0, w, h).data;
+  const d2 = c2.getContext('2d').getImageData(0, 0, w, h).data;
+  let diff = 0; const total = w * h;
+  for (let i = 0; i < d1.length; i += 4) {
+    const dr = Math.abs(d1[i]-d2[i]);
+    const dg = Math.abs(d1[i+1]-d2[i+1]);
+    const db = Math.abs(d1[i+2]-d2[i+2]);
+    if (dr + dg + db > 30) diff++;
+  }
+  return diff / total;
+}
+
+function compareLogos(refImg, uploadedImg, file) {
+  const findings = [];
+  const refW = refImg.naturalWidth, refH = refImg.naturalHeight;
+  const upW = uploadedImg.naturalWidth, upH = uploadedImg.naturalHeight;
+  if (upW < 120 || upH < 120) findings.push({ severity:'high', icon:'⚠️', title:'Too small', detail:`Uploaded is ${upW}×${upH}px. Minimum recommended: 120×120px.` });
+  const refRatio = refW / refH;
+  const upRatio = upW / upH;
+  if (Math.abs(refRatio - upRatio) > 0.1) findings.push({ severity:'high', icon:'📐', title:'Aspect ratio mismatch', detail:`Reference: ${refRatio.toFixed(2)}:1. Uploaded: ${upRatio.toFixed(2)}:1. Logo may be distorted.` });
+  if (file.size > 1024*1024) findings.push({ severity:'medium', icon:'📦', title:'Large file size', detail:`${Math.round(file.size/1024)} KB. Optimize to under 1 MB for web use.` });
+  if (!file.type.includes('png') && !file.type.includes('svg')) findings.push({ severity:'medium', icon:'🎨', title:'Format not recommended', detail:`${file.type} may not support transparency. Use PNG or SVG.` });
+  const hasAlpha = checkTransparency(uploadedImg);
+  if (!hasAlpha) findings.push({ severity:'medium', icon:'🔲', title:'No transparency detected', detail:'Logo should have transparent background for versatile use.' });
+  const refColors = getDominantColors(refImg);
+  const upColors = getDominantColors(uploadedImg);
+  const colorMatch = compareColors(refColors, upColors);
+  if (colorMatch < 0.7) findings.push({ severity:'high', icon:'🎨', title:'Color palette mismatch', detail:`Only ${Math.round(colorMatch*100)}% color similarity. Colors may have been altered.` });
+  const diffPercent = getPixelDiff(refImg, uploadedImg);
+  if (diffPercent > 0.15) findings.push({ severity:'high', icon:'🔍', title:'Significant pixel differences', detail:`${Math.round(diffPercent*100)}% of pixels differ from reference. Logo may be modified.` });
+  else if (diffPercent > 0.05) findings.push({ severity:'review', icon:'🔍', title:'Minor pixel differences', detail:`${Math.round(diffPercent*100)}% of pixels differ. Could be compression or resizing.` });
+  if (findings.length === 0) findings.push({ severity:'low', icon:'✅', title:'No issues detected', detail:'Logo matches reference in dimensions, colors, and pixels.' });
+  return findings;
+}
+
+function drawLogoDiff(refImg, upImg) {
+  const canvas = $('diffCanvas');
+  if (!canvas) return;
+  const w = Math.min(refImg.naturalWidth, upImg.naturalWidth, 300);
+  const h = Math.min(refImg.naturalHeight, upImg.naturalHeight, 300);
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const c1 = document.createElement('canvas'); c1.width = w; c1.height = h;
+  const c2 = document.createElement('canvas'); c2.width = w; c2.height = h;
+  c1.getContext('2d').drawImage(refImg, 0, 0, w, h);
+  c2.getContext('2d').drawImage(upImg, 0, 0, w, h);
+  const d1 = c1.getContext('2d').getImageData(0, 0, w, h).data;
+  const d2 = c2.getContext('2d').getImageData(0, 0, w, h).data;
+  const out = ctx.createImageData(w, h);
+  for (let i = 0; i < d1.length; i += 4) {
+    const dr = Math.abs(d1[i]-d2[i]);
+    const dg = Math.abs(d1[i+1]-d2[i+1]);
+    const db = Math.abs(d1[i+2]-d2[i+2]);
+    if (dr + dg + db > 30) {
+      out.data[i] = 255; out.data[i+1] = 60; out.data[i+2] = 60; out.data[i+3] = 200;
+    } else {
+      out.data[i] = d1[i]; out.data[i+1] = d1[i+1]; out.data[i+2] = d1[i+2]; out.data[i+3] = 80;
+    }
+  }
+  ctx.putImageData(out, 0, 0);
+  $('logoDiffCanvas').classList.remove('hidden');
+}
+
 
 function downloadReport() {
   const channel = $('channelSelect')?.value || 'Website';
