@@ -331,16 +331,29 @@ function shareDownload() {
 function rescan() {
   const revised = ($('revisedCopy')?.textContent || '').trim();
   if (!revised) { toast('No revised draft to re-scan'); return; }
+  const prevFindings = [...state.findings];
   $('draftInput').value = revised;
   updateWordCount();
+  const prevCount = prevFindings.length;
   analyze();
-  toast('Re-scanning revised draft...');
+  const newCount = state.findings.length;
+  const resolved = prevFindings.filter(pf => !state.findings.some(nf => nf.ruleId === pf.ruleId && nf.quote === pf.quote)).length;
+  const remaining = newCount - (prevCount - resolved);
+  const msg = `${resolved} resolved · ${Math.max(0, newCount - (prevCount - resolved))} remaining · ${Math.max(0, newCount - prevCount + resolved)} new`;
+  toast(`Re-scan: ${msg}`);
+  if ($('analysisMessage')) $('analysisMessage').textContent = `Re-scan complete · ${msg} · ${state.company.rules.length} rules checked`;
 }
 
 function analyze() {
   const text=$('draftInput')?.value.trim() || '';
   if(!text){ toast('Add or upload draft text first'); $('draftInput')?.focus(); return; }
-  state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised();
+  try {
+    state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised();
+  } catch (e) {
+    toast('Analysis failed: ' + (e.message || 'Unknown error'));
+    console.error('Analyze error:', e);
+    return;
+  }
   if($('analysisMessage'))$('analysisMessage').textContent=`Checked against ${state.company.rules.length} demo rules · processed in this browser`;
   reveal('analysisMessage',true); reveal('revisedSection',true);
   const record={company:state.company.name,channel:$('channelSelect')?.value||'Website',date:new Date().toLocaleString(),count:state.findings.length,source:$('sourceFileName')?.textContent||'Pasted copy'}; state.history.unshift(record); drawHistory(); toast(`Review complete · ${state.findings.length} match${state.findings.length===1?'':'es'} to review`);
@@ -410,9 +423,40 @@ async function inspectLogo(file) {
 }
 
 function downloadReport() {
-  const findings=state.findings.map(f=>`${f.ruleId} | ${f.severity} | ${f.status} | ${f.title}\nMatched: ${f.quote}\nGuidance: ${f.detail}\nSource: ${f.source} ${f.url}\n`).join('\n');
-  const report=`RAKSHAK 2.0 · REVIEW REPORT\nCompany: ${state.company.name}\nChannel: ${$('channelSelect')?.value||'Website'}\nGenerated: ${new Date().toISOString()}\n\nFINDINGS\n${findings||'No findings.'}\nREVISED DRAFT\n${state.revised}`;
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([report],{type:'text/plain'}));a.download=`rakshak-review-${state.company.name.toLowerCase().replace(/\W+/g,'-')}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const channel = $('channelSelect')?.value || 'Website';
+  const blockers = state.findings.filter(f=>f.severity==='high').length;
+  const warnings = state.findings.filter(f=>f.severity==='medium').length;
+  const reviews = state.findings.filter(f=>f.severity==='review').length;
+  const findings = state.findings.map(f=>`${f.ruleId} | ${f.severity.toUpperCase()} | ${f.status.toUpperCase()} | ${f.title}\nMatched text: "${f.quote}"\nGuidance: ${f.detail}\nSuggested fix: ${f.fix||'n/a'}\nSource: ${f.source}\nURL: ${f.url}\n`).join('\n---\n');
+  const report = `RAKSHAK 2.0 · REVIEW REPORT
+Company: ${state.company.name}
+Industry: ${localStorage.getItem('rakshak_profile') ? JSON.parse(localStorage.getItem('rakshak_profile')).industry : 'n/a'}
+Channel: ${channel}
+Rules checked: ${state.company.rules.length}
+Generated: ${new Date().toISOString()}
+
+COMPLIANCE SUMMARY
+Passed: ${Math.max(0, state.company.rules.length - state.findings.length)}
+Warnings: ${warnings}
+Blockers: ${blockers}
+Advisory: ${reviews}
+Total findings: ${state.findings.length}
+
+FINDINGS
+${findings || 'No findings.'}
+
+REVISED DRAFT
+${state.revised || '(none)'}
+
+ORIGINAL DRAFT
+${state.draft || '(none)'}
+
+---
+This report is a pre-screening aid, not a compliance guarantee.
+Rules are deterministic (regex). AI polish is advisory only.
+`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([report],{type:'text/plain'}));a.download=`rakshak-review-${state.company.name.toLowerCase().replace(/\W+/g,'-')}-${new Date().toISOString().slice(0,10)}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('Report downloaded');
 }
 
 function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
