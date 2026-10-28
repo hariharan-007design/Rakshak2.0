@@ -684,3 +684,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-proof { justify-content: center !important; }
 .login-form { justify-self: center !important; max-width: 420px !important; width: 100% !important; }
 
+/* ─── Focused highlight mark ──────────────────────────────── */
+.highlighted-copy mark.focused { background: var(--orange) !important; color: #fff !important; box-shadow: 0 0 0 3px var(--orange); }
+.finding-item.focused { box-shadow: 0 0 0 2px var(--tan); border-radius: 4px; }
+

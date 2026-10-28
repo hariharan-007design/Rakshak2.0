@@ -177,7 +177,7 @@ function drawFindings() {
   $('noFindings') && ($('noFindings').hidden = open.length > 0);
   reveal('findingsSection',true); reveal('noFindings',open.length===0);
   list.innerHTML = open.map((f,i) => `<article class="finding-item" id="card-${esc(f.id)}"><button class="finding-trigger" aria-expanded="false"><span class="finding-index">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(f.title)}</strong><small>${esc(f.ruleId)} · “${esc(f.quote)}”</small></span><span class="finding-severity ${f.severity==='review'?'advisory':''}">${esc(f.severity)}</span><svg class="icon"><use href="#i-chevron" /></svg></button><div class="finding-detail"><p>${esc(f.detail)}</p><div class="finding-ruleline">Guideline: ${esc(f.source)}${f.url !== '#' ? ` · <a href="${esc(f.url)}" target="_blank" rel="noreferrer">Open source ↗</a>` : ''}</div>${f.fix ? `<label class="suggestion-label" for="fix-${esc(f.id)}">EDITABLE REPLACEMENT</label><textarea class="suggestion-input" id="fix-${esc(f.id)}" rows="2">${esc(f.fix)}</textarea>` : '<p class="finding-ruleline">This needs human verification; the prototype has no safe automatic replacement.</p>'}<div class="finding-buttons">${f.fix ? `<button class="button button-outline apply-fix" data-id="${esc(f.id)}">Apply suggestion</button>` : ''}<button class="button button-text dismiss-finding" data-id="${esc(f.id)}">Dismiss</button></div></div></article>`).join('');
-  list.querySelectorAll('.finding-trigger').forEach(btn => btn.addEventListener('click', () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); }));
+  list.querySelectorAll('.finding-trigger').forEach(btn => btn.addEventListener('click', () => { const item=btn.parentElement; item.classList.toggle('open'); btn.setAttribute('aria-expanded',String(item.classList.contains('open'))); const mark=document.querySelector(`mark[data-finding-id="${btn.dataset.id||item.id.replace('card-','')}"]`); if(mark){mark.scrollIntoView({behavior:'smooth',block:'center'});mark.classList.add('focused');setTimeout(()=>mark.classList.remove('focused'),1400);} }));
   list.querySelectorAll('.apply-fix').forEach(btn => btn.addEventListener('click', () => applyFix(btn.dataset.id)));
   list.querySelectorAll('.dismiss-finding').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f)f.status='ignored'; drawFindings(); drawHighlight(); }));
 }
@@ -292,6 +292,15 @@ function shareInstagram() {
   }).catch(() => toast('Copy failed'));
 }
 
+
+function rescan() {
+  const revised = ($('revisedCopy')?.textContent || '').trim();
+  if (!revised) { toast('No revised draft to re-scan'); return; }
+  $('draftInput').value = revised;
+  updateWordCount();
+  analyze();
+  toast('Re-scanning revised draft...');
+}
 
 function analyze() {
   const text=$('draftInput')?.value.trim() || '';
@@ -452,7 +461,7 @@ function bind() {
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
   $('channelSelect')?.addEventListener('change',updateRevised); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
-  $('downloadReport')?.addEventListener('click',downloadReport); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();toast('Session history cleared');});
+  $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();toast('Session history cleared');});
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
