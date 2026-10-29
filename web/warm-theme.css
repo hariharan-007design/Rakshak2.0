@@ -872,7 +872,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 
 /* ═══ REFERENCE DESIGN: Deep Espresso + Cream + Burnt Orange ═══ */
 .login-screen {
-  background: #2C1B18 !important;
+  background: #1f1410 !important;
   position: relative;
   overflow: hidden;
 }
@@ -939,7 +939,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   line-height: 1.6 !important;
 }
 .login-form {
-  background: #F2EFE5 !important;
+  background: #f2efe6 !important;
   border: none !important;
   border-radius: 20px !important;
   padding: 40px !important;
@@ -947,7 +947,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   backdrop-filter: none !important;
 }
 .login-form h2 {
-  color: #1A1A1A !important;
+  color: #2b221b !important;
   font-family: 'Playfair Display', serif !important;
   font-size: 32px !important;
   font-weight: 700 !important;
@@ -975,9 +975,10 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 /* Form inputs */
 .login-form input,
 .login-form select {
-  background: #FFFFFF !important;
-  border: 1px solid #D9D0C0 !important;
-  color: #1A1A1A !important;
+  background: #2b221b !important;
+  border: 1px solid #3a3028 !important;
+  color: #f2efe6 !important;
+  color: #2b221b !important;
   border-radius: 8px !important;
 }
 .login-form input:focus,
