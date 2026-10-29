@@ -905,3 +905,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-message { background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(8px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important; }
 .login-form { background: rgba(255,255,255,0.9) !important; backdrop-filter: blur(8px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important; }
 .login-screen { padding: 0 !important; }
+
+/* Page heading compact */
+.page-heading { margin-bottom: 8px !important; }
+.page-heading h1 { font-size: 32px !important; margin: 0 !important; }
+.page-heading p { margin: 4px 0 0 !important; font-size: 11px !important; }
+.content-section { padding: 6px 0 8px !important; }
