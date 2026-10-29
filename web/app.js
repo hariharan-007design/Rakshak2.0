@@ -111,6 +111,19 @@ function getCompanies() {
 function saveCompanies(companies) {
   localStorage.setItem('rakshak_companies', JSON.stringify(companies));
 }
+function updateDemoHint() {
+  const hint = $('demoHint');
+  if (!hint) return;
+  const name = ($('companySelect')?.value || '').trim();
+  const companies = getCompanies();
+  const company = companies.find(c => c.name === name);
+  if (company) {
+    hint.textContent = `Demo access code: ${company.code} · Prototype only`;
+  } else {
+    hint.textContent = 'Select a company or create a new one';
+  }
+}
+
 function populateCompanySelect() {
   const select = $('companySelect');
   if (!select) return;
@@ -875,7 +888,8 @@ function bind() {
       img.onload = () => { if ($('logoRefMeta')) $('logoRefMeta').textContent = `${img.naturalWidth} × ${img.naturalHeight}px · ${val}`; toast('Reference: ' + val); };
     }
   });
-  $('industrySelect')?.addEventListener('change', populateCompanySelect);
+  $('industrySelect')?.addEventListener('change', () => { populateCompanySelect(); updateDemoHint(); });
+  $('companySelect')?.addEventListener('change', updateDemoHint);
   const newBtn = $('newCompanyBtn');
   if (newBtn) newBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.remove('hidden'); });
   const closeBtn = $('closeNewCompany');
@@ -891,6 +905,7 @@ function bind() {
     companies.push({ name, code, industry });
     saveCompanies(companies);
     populateCompanySelect();
+  updateDemoHint();
     const select = $('companySelect');
     if (select) select.value = name;
     const m = $('newCompanyModal');

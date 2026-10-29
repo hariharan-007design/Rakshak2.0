@@ -829,3 +829,50 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .section-note { margin: 4px 0 8px !important; }
 .rail-rule { padding: 6px 0 !important; }
 .guidelines-rules { gap: 0 16px !important; }
+
+/* Login page background - warm workspace gradient */
+.login-screen {
+  background: 
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(212,120,42,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(122,95,58,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(250,247,242,0.3) 0%, transparent 70%),
+    linear-gradient(135deg, #2C2416 0%, #3D3020 30%, #5A4530 60%, #7A5F3A 100%);
+  position: relative;
+  overflow: hidden;
+}
+.login-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px);
+  pointer-events: none;
+}
+.login-screen::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(212,120,42,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.login-shell {
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(0px);
+}
+.login-message {
+  background: rgba(44,36,22,0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 24px;
+}
+.login-form {
+  background: rgba(250,247,242,0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
