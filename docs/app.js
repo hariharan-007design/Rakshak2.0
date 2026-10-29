@@ -758,6 +758,23 @@ function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
   $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login();});
+  $('logoRefFile')?.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const img = $('logoRefImg');
+    if (img) { img.src = url; img.onload = () => { if ($('logoRefMeta')) $('logoRefMeta').textContent = `${img.naturalWidth} × ${img.naturalHeight}px`; }; }
+    toast('Reference logo updated');
+  });
+  $('logoDatasetSelect')?.addEventListener('change', e => {
+    const val = e.target.value;
+    if (!val) return;
+    const img = $('logoRefImg');
+    if (img) {
+      img.src = `./logos/${val}.png`;
+      img.onload = () => { if ($('logoRefMeta')) $('logoRefMeta').textContent = `${img.naturalWidth} × ${img.naturalHeight}px · ${val}`; toast('Reference: ' + val); };
+    }
+  });
   $('industrySelect')?.addEventListener('change', populateCompanySelect);
   const newBtn = $('newCompanyBtn');
   if (newBtn) newBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.remove('hidden'); });
