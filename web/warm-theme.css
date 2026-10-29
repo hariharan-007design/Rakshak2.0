@@ -954,22 +954,16 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   color: #4A90D9 !important;
 }
 
-/* Blurred background behind logo */
+/* Blurred background behind logo text only */
 .login-brand {
-  position: relative;
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 16px;
-}
-.login-brand::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(61, 43, 31, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  z-index: -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(61, 43, 31, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .login-logo {
   position: relative;
