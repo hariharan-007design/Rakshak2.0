@@ -911,3 +911,19 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .page-heading h1 { font-size: 32px !important; margin: 0 !important; }
 .page-heading p { margin: 4px 0 0 !important; font-size: 11px !important; }
 .content-section { padding: 6px 0 8px !important; }
+
+/* Mobile responsive */
+@media (max-width: 860px) {
+  .login-content { grid-template-columns: 1fr !important; justify-items: center !important; gap: 24px !important; padding: 40px 5% !important; text-align: center !important; }
+  .login-message { background: rgba(255,255,255,0.7) !important; }
+  .sidebar { width: 205px !important; }
+  .main-area { margin-left: 205px !important; }
+  .review-layout { grid-template-columns: 1fr !important; }
+  .view { padding: 12px 16px !important; }
+  .page-heading h1 { font-size: 28px !important; }
+}
+@media (max-width: 640px) {
+  .sidebar { position: sticky; top: 0; width: 100% !important; height: auto; }
+  .main-area { margin-left: 0 !important; }
+  .login-content { padding: 24px 16px !important; }
+}
