@@ -410,7 +410,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-shell { margin: 0 !important; border-radius: 0 !important; min-height: 100vh !important; }
 /* ─── Login Page Fonts ────────────────────────────────────── */
 .login-brand-name { font-family: 'Eczar', serif !important; font-weight: 700 !important; letter-spacing: 0.5px !important; }
-.login-content h1, .login-shell h1 { font-family: 'Fraunces', serif !important; font-weight: 600 !important; font-style: italic !important; }
+.login-content h1, .login-shell h1 { font-family: 'Merriweather', serif !important; font-weight: 700 !important; font-style: italic !important; }
 .login-content p, .login-form, .login-form input, .login-form select, .login-form label, .login-submit { font-family: 'Quicksand', sans-serif !important; }
 .login-disclaimer, .login-footer, .login-proof { font-family: 'Quicksand', sans-serif !important; }
 .login-message { font-family: 'Bodoni Moda', serif !important; font-style: italic !important; }
@@ -682,9 +682,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-content { display: grid !important; grid-template-columns: 1fr 1fr !important; align-items: center !important; gap: 40px !important; padding: 60px 8% !important; text-align: left !important; max-width: 1200px !important; margin: 0 auto !important; }
 .login-message { background: rgba(250,247,242,0.08); padding: 32px; border-radius: 12px; backdrop-filter: blur(4px); }
 .login-form { background: rgba(250,247,242,0.95); padding: 32px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-@media (max-width: 860px) {
-  .login-content { grid-template-columns: 1fr !important; justify-items: center !important; gap: 24px !important; padding: 40px 5% !important; text-align: center !important; }
-}
+
 .login-message { max-width: 560px !important; text-align: center !important; }
 .login-message h1 { max-width: 100% !important; }
 .login-message > p { max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
