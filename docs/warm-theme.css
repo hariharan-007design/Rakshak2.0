@@ -879,3 +879,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
+
+/* Desktop alignment: reduce top space, use full width */
+.view { padding-top: 16px !important; max-width: 100% !important; }
+.topbar { height: 48px !important; }
+.content-section { padding: 10px 0 12px !important; border-top: 1px solid var(--line); }
+.section-head { margin-bottom: 6px !important; }
+.section-note { margin: 2px 0 6px !important; font-size: 11px !important; }
+.review-layout { gap: 16px !important; }
