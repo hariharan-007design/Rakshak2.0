@@ -348,9 +348,10 @@ function updateRevised() {
 
 // ─── Voice Recognition ─────────────────────────────────────
 let recognition = null;
+let originalDraftText = '';
 function initVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { toast('Voice recognition not supported in this browser'); return; }
+  if (!SpeechRecognition) { toast('Voice recognition not supported in this browser. Use Chrome or Edge.'); return; }
   if (recognition) { recognition.stop(); recognition = null; return; }
   recognition = new SpeechRecognition();
   recognition.lang = 'en-US';
@@ -358,6 +359,7 @@ function initVoice() {
   recognition.continuous = true;
   const btn = $('voiceBtn');
   const input = $('draftInput');
+  originalDraftText = (input?.value || '').trim();
   recognition.onstart = () => { if (btn) { btn.classList.add('recording'); btn.textContent = '⏹ Stop'; } toast('Listening... speak now'); };
   let finalTranscript = '';
   recognition.onresult = (e) => {
@@ -370,13 +372,19 @@ function initVoice() {
       }
     }
     if (input) {
-      input.value = ($('draftInput')?.value.split('\n')[0] || '') + finalTranscript + interim;
+      const separator = originalDraftText && finalTranscript ? '\n\n' : '';
+      input.value = originalDraftText + separator + finalTranscript + interim;
       input.dispatchEvent(new Event('input'));
     }
   };
-  recognition.onerror = (e) => { toast('Voice error: ' + e.error); stopVoice(); };
+  recognition.onerror = (e) => {
+    if (e.error === 'no-speech') { toast('No speech detected. Try again.'); }
+    else if (e.error === 'not-allowed') { toast('Microphone access denied. Allow mic in browser settings.'); }
+    else { toast('Voice error: ' + e.error); }
+    stopVoice();
+  };
   recognition.onend = () => { stopVoice(); };
-  recognition.start();
+  try { recognition.start(); } catch (e) { toast('Could not start voice recognition: ' + e.message); stopVoice(); }
 }
 function stopVoice() {
   if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
