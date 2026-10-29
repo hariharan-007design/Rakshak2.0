@@ -138,8 +138,15 @@ function populateCompanySelect() {
   }
   select.innerHTML = companies.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
   if (companies.length > 0) {
-    select.value = companies[0].name;
     select.selectedIndex = 0;
+    select.value = companies[0].name;
+  }
+  // Update hint immediately with first company's code
+  const hint = $('demoHint');
+  if (hint && companies.length > 0) {
+    hint.textContent = `Demo access code: ${companies[0].code} · Prototype only`;
+  } else if (hint) {
+    hint.textContent = 'Select a company or create a new one';
   }
 }
 

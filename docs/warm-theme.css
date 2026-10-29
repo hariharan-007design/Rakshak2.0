@@ -680,7 +680,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 
 /* ─── Login page centered layout ──────────────────────────── */
 .login-content { display: grid !important; grid-template-columns: 1fr 1fr !important; align-items: center !important; gap: 40px !important; padding: 60px 8% !important; text-align: left !important; max-width: 1200px !important; margin: 0 auto !important; }
-.login-message { background: rgba(250,247,242,0.08); padding: 32px; border-radius: 12px; backdrop-filter: blur(4px); }
+.login-message { background: rgba(250,247,242,0.08); padding: 32px; border-radius: 12px; backdrop-filter: none; }
 .login-form { background: rgba(250,247,242,0.95); padding: 32px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
 
 .login-message { max-width: 560px !important; text-align: center !important; }
@@ -1093,15 +1093,15 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 }
 /* Login shell cards on top */
 .login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; padding: 40px 8% !important; position: relative; z-index: 1; }
-.login-message { background: rgba(250,247,242,0.85) !important; backdrop-filter: blur(12px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
-.login-form { background: rgba(250,247,242,0.92) !important; backdrop-filter: blur(12px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
+.login-message { background: rgba(250,247,242,0.85) !important; backdrop-filter: none !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
+.login-form { background: rgba(250,247,242,0.92) !important; backdrop-filter: none !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
 
 /* ═══ MODAL (Emil Kowalski style) ═══ */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(20, 16, 10, 0.6);
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
   display: flex;
   align-items: center;
   justify-content: center;
