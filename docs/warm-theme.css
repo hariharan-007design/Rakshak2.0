@@ -677,7 +677,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .no-findings span { color: var(--muted) !important; }
 
 /* ─── Login page centered layout ──────────────────────────── */
-.login-content { grid-template-columns: 1.08fr .92fr !important; align-items: center !important; gap: 60px !important; padding: 65px 9% !important; text-align: left !important; }
+.login-content { display: grid !important; grid-template-columns: 1fr 1fr !important; align-items: center !important; gap: 40px !important; padding: 60px 8% !important; text-align: left !important; max-width: 1200px !important; margin: 0 auto !important; }
+.login-message { background: rgba(250,247,242,0.08); padding: 32px; border-radius: 12px; backdrop-filter: blur(4px); }
+.login-form { background: rgba(250,247,242,0.95); padding: 32px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
 @media (max-width: 860px) {
   .login-content { grid-template-columns: 1fr !important; justify-items: center !important; gap: 24px !important; padding: 40px 5% !important; text-align: center !important; }
 }
