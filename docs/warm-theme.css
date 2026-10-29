@@ -796,3 +796,20 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .chatbot-avatar-picker .avatar-btn { background: none; border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 14px; }
 .chatbot-avatar-picker .avatar-btn:hover { background: var(--surface-2); }
 
+
+/* Channel Preview */
+.channel-preview-section { margin-top: 16px; }
+.channel-preview-content { padding: 12px; }
+.cp-x, .cp-li, .cp-ig, .cp-email, .cp-web { background: var(--surface-2); border-radius: 8px; padding: 16px; border: 1px solid var(--border); }
+.cp-x-header, .cp-li-header, .cp-ig-header { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.cp-x-avatar, .cp-li-avatar, .cp-ig-avatar { font-size: 24px; }
+.cp-x-meta, .cp-li-meta { font-size: 12px; color: var(--muted); }
+.cp-x-body, .cp-li-body, .cp-ig-body, .cp-email-body, .cp-web-body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin-bottom: 12px; }
+.cp-x-bar, .cp-li-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.cp-x-fill, .cp-li-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+.cp-li-fill { background: var(--accent); }
+.cp-x-count, .cp-li-count, .cp-ig-count, .cp-web-count { font-size: 11px; color: var(--muted); }
+.cp-ig-tip { font-size: 11px; color: var(--accent); margin-top: 8px; }
+.cp-email-header { font-size: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.cp-email-header div { margin-bottom: 4px; }
+.cp-web-badge { display: inline-block; padding: 2px 8px; background: var(--accent); color: white; border-radius: 4px; font-size: 10px; margin-bottom: 8px; }

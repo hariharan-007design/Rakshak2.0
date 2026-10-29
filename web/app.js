@@ -286,9 +286,39 @@ function channelFormat(text) {
   return text;
 }
 
+function renderChannelPreview() {
+  const section = $('channelPreviewSection');
+  const container = $('channelPreviewContent');
+  const tag = $('channelPreviewTag');
+  if (!section || !container) return;
+  const dest = $('channelSelect')?.value || 'Website';
+  const text = ($('revisedCopy')?.textContent || $('draftInput')?.value || '').trim();
+  if (tag) tag.textContent = dest;
+  section.classList.remove('hidden');
+  const len = text.length;
+
+  if (dest === 'X') {
+    const pct = Math.min(100, (len / 280) * 100);
+    const color = len > 280 ? '#dc2626' : len > 250 ? '#d97706' : '#16a34a';
+    container.innerHTML = `<div class="cp-x"><div class="cp-x-header"><div class="cp-x-avatar">🐦</div><div class="cp-x-meta"><strong>@yourbrand</strong> · now</div></div><div class="cp-x-body">${esc(text)}</div><div class="cp-x-bar"><div class="cp-x-fill" style="width:${pct}%;background:${color}"></div></div><div class="cp-x-count" style="color:${color}">${len} / 280 characters ${len > 280 ? '⚠️ OVER LIMIT' : ''}</div></div>`;
+  } else if (dest === 'LinkedIn') {
+    const pct = Math.min(100, (len / 1300) * 100);
+    container.innerHTML = `<div class="cp-li"><div class="cp-li-header"><div class="cp-li-avatar">💼</div><div><strong>Your Brand</strong><br><small>Company · 1,234 followers</small></div></div><div class="cp-li-body">${esc(text)}</div><div class="cp-li-bar"><div class="cp-li-fill" style="width:${pct}%"></div></div><div class="cp-li-count">${len} / 1,300 recommended · ${len > 1300 ? '⚠️ Too long' : '✓ Good length'}</div></div>`;
+  } else if (dest === 'Instagram') {
+    container.innerHTML = `<div class="cp-ig"><div class="cp-ig-header"><div class="cp-ig-avatar">📸</div><strong>yourbrand</strong></div><div class="cp-ig-body">${esc(text)}</div><div class="cp-ig-count">${len} / 2,200 characters · ${len > 2200 ? '⚠️ OVER LIMIT' : '✓ OK'}</div><div class="cp-ig-tip">💡 Tip: Add 5-10 relevant hashtags for better reach</div></div>`;
+  } else if (dest === 'Email') {
+    const lines = text.split('\n');
+    const subject = lines[0] || '';
+    const body = lines.slice(1).join('\n') || text;
+    container.innerHTML = `<div class="cp-email"><div class="cp-email-header"><div><strong>From:</strong> yourbrand@company.com</div><div><strong>Subject:</strong> ${esc(subject)} ${subject.length > 60 ? '⚠️ (' + subject.length + ' chars, aim for <60)' : '✓'}</div></div><div class="cp-email-body">${esc(body)}</div></div>`;
+  } else {
+    container.innerHTML = `<div class="cp-web"><div class="cp-web-badge">${dest}</div><div class="cp-web-body">${esc(text)}</div><div class="cp-web-count">${len} characters</div></div>`;
+  }
+}
+
 function updateRevised() {
   state.revised=channelFormat(state.draft);
-  if($('revisedCopy'))$('revisedCopy').textContent=state.revised;
+  if($('revisedCopy'))$('revisedCopy').textContent=state.revised; renderChannelPreview();
   if($('channelTag'))$('channelTag').textContent=$('channelSelect')?.value || 'Website';
   if($('charWarning')) { const limit=($('channelSelect')?.value==='X')?280:null; $('charWarning').textContent=limit&&state.revised.length>limit?`${state.revised.length-limit} characters over X's 280 character limit`:`${state.revised.length} characters`; $('charWarning').classList.toggle('warning',!!limit&&state.revised.length>limit); }
 }
@@ -385,7 +415,7 @@ function analyze() {
   const text=$('draftInput')?.value.trim() || '';
   if(!text){ toast('Add or upload draft text first'); $('draftInput')?.focus(); return; }
   try {
-    state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised();
+    state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised(); renderChannelPreview();
     const profile = localStorage.getItem('rakshak_profile');
     if (profile) { const p = JSON.parse(profile); localStorage.setItem('rakshak_history_' + p.name, JSON.stringify(state.history)); }
   } catch (e) {
@@ -853,7 +883,7 @@ function bind() {
   $('shareDownload')?.addEventListener('click',shareDownload); $('loadSample')?.addEventListener('click',()=>{$('draftInput').value=SAMPLE;$('sourceFileName').textContent='sample-launch-copy.txt';reveal('sourceFileName',true);updateWordCount();toast('Sample draft loaded');});
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
-  $('channelSelect')?.addEventListener('change',()=>{if(state.findings.length){analyze();}else{updateRevised();}}); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
+  $('channelSelect')?.addEventListener('change',()=>{if(state.findings.length){analyze();}else{updateRevised();} renderChannelPreview();}); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
   $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();toast('Session history cleared');});
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});
