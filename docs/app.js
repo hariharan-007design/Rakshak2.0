@@ -124,7 +124,6 @@ function populateCompanySelect() {
 }
 
 function login() {
-  try {
   const industry = $('industrySelect')?.value || 'tech';
   const companyName = ($('companySelect')?.value || '').trim();
   const code = ($('passwordInput')?.value || '').trim();
@@ -138,6 +137,7 @@ function login() {
   const industryMap = { tech:'acme', healthcare:'pharma', finance:'finra', realestate:'acme', education:'acme', chemical:'ghs', media:'mozilla', ecommerce:'mailchimp', other:'acme' };
   const key = industryMap[industry] || 'acme';
   const demoCompany = DEMO_COMPANIES[key];
+  if (!demoCompany) { toast('Industry pack not found'); return; }
   const profile = { industry, name: companyName, code, key, mark: companyName[0].toUpperCase() };
   localStorage.setItem('rakshak_profile', JSON.stringify(profile));
   const originalName = demoCompany.name;
@@ -158,11 +158,13 @@ function login() {
   if ($('railCompany')) $('railCompany').textContent = companyName;
   if ($('guidelinesCompany')) $('guidelinesCompany').textContent = companyName;
   if ($('settingsCompany')) $('settingsCompany').textContent = companyName;
-  $('draftInput') && ($('draftInput').value = ''); showView('review');
+  if ($('draftInput')) $('draftInput').value = '';
+  showView('review');
   const savedHistory = localStorage.getItem('rakshak_history_' + companyName);
   state.history = savedHistory ? JSON.parse(savedHistory) : [];
   drawHistory();
-  toast('Welcome to ' + companyName + ' workspace!'); }
+  toast('Welcome to ' + companyName + ' workspace!');
+}
 
 function findMatches(text, destination) {
   const findings = [];
@@ -199,7 +201,6 @@ function findMatches(text, destination) {
     }
   }
   return findings.sort((a,b) => a.start - b.start);
-  } catch(err) { console.error('Login error:', err); toast('Login failed: ' + err.message); }
 }
 
 function getDestinationRules(dest, text) {
