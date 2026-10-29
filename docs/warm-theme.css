@@ -889,7 +889,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(242, 239, 229, 0.6);
+  background: rgba(242, 239, 229, 0.8);
   transform: translate(-50%, -50%);
   transition: all 0.3s ease;
   pointer-events: auto;
@@ -898,7 +898,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .dot:hover {
   width: 12px;
   height: 12px;
-  background: rgba(242, 239, 229, 0.6);
+  background: rgba(242, 239, 229, 0.8);
   box-shadow: 0 0 8px rgba(242, 239, 229, 0.4);
 }
 /* Noise texture overlay */
@@ -938,8 +938,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   box-shadow: 0 16px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(242,239,229,0.08) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
-  padding: 40px 48px !important;
-  gap: 48px !important;
+  padding: 48px 56px !important;
+  gap: 56px !important;
+  min-height: 400px !important;
   max-width: 100% !important;
 }
 
