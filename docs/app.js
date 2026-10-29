@@ -238,6 +238,11 @@ function drawHighlight() {
 
 function drawFindings() {
   const list = $('findingList'); if (!list) return;
+  if (!state.findings.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><h3>No issues found</h3><p>Your draft passes all ${state.company.rules.length} rules for ${$('channelSelect')?.value || 'Website'}.</p><div class="empty-actions"><button class="button button-outline" onclick="document.getElementById('loadSample')?.click()">Load sample draft</button><button class="button button-outline" onclick="showView('guidelines')">View rules</button></div></div>`;
+    if ($('findingCount')) $('findingCount').textContent = '0 findings';
+    return;
+  }
   const open = state.findings.filter(f => f.status === 'open');
   if ($('findingCount')) $('findingCount').textContent = String(open.length);
   const totalRules = state.company.rules.length + (state.findings.filter(f=>f.ruleId&&f.ruleId.startsWith('DEST')).length > 0 ? 1 : 0);
