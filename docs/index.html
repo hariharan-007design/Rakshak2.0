@@ -126,15 +126,31 @@
             <p class="login-disclaimer">Your workspace is stored locally in this browser. Do not enter confidential material on shared devices.</p>
           </form>
           <!-- New company modal -->
-          <div class="modal-overlay hidden" id="newCompanyModal">
-            <div class="modal">
-              <div class="modal-header"><h3 class="modal-title">Register New Company</h3><button class="modal-close" id="closeNewCompany" type="button">✕</button></div>
+          <div class="modal-overlay" id="newCompanyModal" style="display:none;opacity:0;transition:opacity 200ms ease-out;">
+            <div class="modal" style="transform:scale(0.95);opacity:0;transition:transform 200ms ease-out, opacity 200ms ease-out;">
+              <div class="modal-header">
+                <div>
+                  <span class="modal-kicker">NEW WORKSPACE</span>
+                  <h3 class="modal-title">Register Company</h3>
+                </div>
+                <button class="modal-close" id="closeNewCompany" type="button" aria-label="Close">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
               <div class="modal-body">
-                <label for="newCompanyName">COMPANY NAME</label>
-                <input id="newCompanyName" type="text" placeholder="e.g. Acme Corp" class="login-input" />
-                <label for="newCompanyCode">ACCESS CODE</label>
-                <input id="newCompanyCode" type="password" placeholder="Create an access code" class="login-input" />
-                <button class="button button-primary" id="createCompanyBtn" type="button" style="width:100%;margin-top:12px;">Create Workspace</button>
+                <div class="modal-field">
+                  <label for="newCompanyName">COMPANY NAME</label>
+                  <input id="newCompanyName" type="text" placeholder="e.g. Acme Corp" class="modal-input" autocomplete="organization" />
+                </div>
+                <div class="modal-field">
+                  <label for="newCompanyCode">ACCESS CODE</label>
+                  <input id="newCompanyCode" type="password" placeholder="Create a secure code" class="modal-input" autocomplete="new-password" />
+                  <small class="modal-hint">You'll use this to sign in later</small>
+                </div>
+                <button class="modal-submit" id="createCompanyBtn" type="button">
+                  <span>Create Workspace</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
               </div>
             </div>
           </div>

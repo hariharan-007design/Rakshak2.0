@@ -902,10 +902,33 @@ function bind() {
   });
   $('industrySelect')?.addEventListener('change', () => { populateCompanySelect(); setTimeout(updateDemoHint, 50); });
   $('companySelect')?.addEventListener('change', updateDemoHint);
+  function showModal() {
+    const m = $('newCompanyModal');
+    if (!m) return;
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+      m.style.opacity = '1';
+      const modal = m.querySelector('.modal');
+      if (modal) { modal.style.transform = 'scale(1)'; modal.style.opacity = '1'; }
+    });
+  }
+  function hideModal() {
+    const m = $('newCompanyModal');
+    if (!m) return;
+    m.style.opacity = '0';
+    const modal = m.querySelector('.modal');
+    if (modal) { modal.style.transform = 'scale(0.95)'; modal.style.opacity = '0'; }
+    setTimeout(() => { m.style.display = 'none'; }, 200);
+  }
   const newBtn = $('newCompanyBtn');
-  if (newBtn) newBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.remove('hidden'); });
+  if (newBtn) newBtn.addEventListener('click', showModal);
   const closeBtn = $('closeNewCompany');
-  if (closeBtn) closeBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.add('hidden'); });
+  if (closeBtn) closeBtn.addEventListener('click', hideModal);
+  // Close on overlay click
+  const overlay = $('newCompanyModal');
+  if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) hideModal(); });
+  // Close on Escape
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay?.style.display === 'flex') hideModal(); });
   const createBtn = $('createCompanyBtn');
   if (createBtn) createBtn.addEventListener('click', () => {
     const name = ($('newCompanyName')?.value || '').trim();
@@ -920,8 +943,7 @@ function bind() {
   updateDemoHint();
     const select = $('companySelect');
     if (select) select.value = name;
-    const m = $('newCompanyModal');
-    if (m) m.classList.add('hidden');
+    hideModal();
     toast('Company created: ' + name);
   });
   
