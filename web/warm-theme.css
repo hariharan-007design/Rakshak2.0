@@ -870,19 +870,19 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .splash-screen.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
 #loginScreen { transition: opacity 0.6s ease, transform 0.6s ease; }
 
-/* ═══ BROWN BACKGROUND WITH STATIC DOT GRID + NOISE ═══ */
+/* ═══ BROWN BACKGROUND WITH VISIBLE DOT GRID + NOISE ═══ */
 .login-screen {
   background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%);
   position: relative;
   overflow: hidden;
 }
-/* Static dot grid pattern (no cursor tracking) */
+/* Visible dot grid pattern */
 .login-screen::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(242, 239, 229, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(242, 239, 229, 0.15) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
   pointer-events: none;
   z-index: 0;
 }
@@ -891,11 +891,23 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
   background-size: 256px 256px;
   pointer-events: none;
   z-index: 0;
   mix-blend-mode: overlay;
+}
+/* Soft box around logo + quote + login */
+.login-shell {
+  background: rgba(61, 43, 31, 0.6) !important;
+  border: 1px solid rgba(242, 239, 229, 0.12) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(242,239,229,0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  padding: 40px !important;
+  position: relative;
+  z-index: 1;
 }
 /* Login shell cards on top */
 .login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; padding: 40px 8% !important; position: relative; z-index: 1; }
