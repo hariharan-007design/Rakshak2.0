@@ -306,7 +306,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes orbit-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .logo-text-block { text-align: center; margin-top: 12px; position: relative; z-index: 2; }
-.logo-title { font-family: 'Eczar', Georgia, serif; font-size: 36px; font-weight: 700; letter-spacing: 8px; color: var(--text-dark, var(--ink)); animation: text-reveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) 0.9s both; clip-path: inset(0 100% 0 0); position: relative; }
+.logo-title { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; letter-spacing: 8px; color: var(--text-dark, var(--ink)); animation: text-reveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) 0.9s both; clip-path: inset(0 100% 0 0); position: relative; }
 .logo-title::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--orange), var(--brown)); animation: underline-grow 800ms cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
 @keyframes text-reveal { to { clip-path: inset(0 0% 0 0); } }
 @keyframes underline-grow { to { width: 100%; } }
@@ -314,7 +314,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .logo-version { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; color: var(--orange); letter-spacing: 4px; margin-top: 6px; animation: fade-in 700ms ease-out 1.4s both; opacity: 0; }
 @keyframes fade-in { to { opacity: 1; } }
 
-.tagline { font-family: 'Space Grotesk', sans-serif; font-size: 16px; color: var(--text-mid, var(--muted)); letter-spacing: 2px; margin-top: 24px; animation: fade-in 700ms ease-out 1.8s both; opacity: 0; }
+.tagline { font-family: 'Playfair Display', sans-serif; font-size: 16px; color: var(--text-mid, var(--muted)); letter-spacing: 2px; margin-top: 24px; animation: fade-in 700ms ease-out 1.8s both; opacity: 0; }
 
 .loading-track { position: absolute; bottom: 90px; width: 200px; height: 3px; background: rgba(139, 111, 71, 0.12); border-radius: 3px; overflow: hidden; z-index: 2; }
 .loading-fill { height: 100%; background: linear-gradient(90deg, var(--brown), var(--orange), var(--brown)); background-size: 200% 100%; border-radius: 3px; animation: loading-progress 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards, shimmer 1.8s linear infinite; width: 0; }
@@ -394,7 +394,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-brand-name,
 .profile-wordmark strong,
 .org-copy strong {
-  font-family: 'Eczar', Georgia, serif !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
   font-weight: 700 !important;
   letter-spacing: 2px !important;
 }
@@ -409,11 +409,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-screen { padding: 0 !important; min-height: 100vh !important; }
 .login-shell { margin: 0 !important; border-radius: 0 !important; min-height: 100vh !important; }
 /* ─── Login Page Fonts ────────────────────────────────────── */
-.login-brand-name { font-family: 'Eczar', serif !important; font-weight: 700 !important; letter-spacing: 0.5px !important; }
-.login-content h1, .login-shell h1 { font-family: 'Merriweather', serif !important; font-weight: 700 !important; font-style: italic !important; }
+.login-brand-name { font-family: 'Playfair Display', serif !important; font-weight: 700 !important; letter-spacing: 0.5px !important; }
+.login-content h1, .login-shell h1 { font-family: 'Playfair Display', serif !important; font-weight: 700 !important; font-style: italic !important; }
 .login-content p, .login-form, .login-form input, .login-form select, .login-form label, .login-submit { font-family: 'Quicksand', sans-serif !important; }
 .login-disclaimer, .login-footer, .login-proof { font-family: 'Quicksand', sans-serif !important; }
-.login-message { font-family: 'Bodoni Moda', serif !important; font-style: italic !important; }
+.login-message { font-family: 'Playfair Display', serif !important; font-style: italic !important; }
 
 /* ─── Share Bar ────────────────────────────────────────────── */
 .share-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 0; margin-top: 8px; border-top: 1px solid var(--line); }
