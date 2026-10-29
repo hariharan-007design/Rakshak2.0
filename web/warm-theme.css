@@ -32,7 +32,7 @@
 }
 
 body { background: var(--bg); color: var(--ink); }
-::selection { background: #8B6F47; color: #fff; }
+::selection { background: #8B6F47; color: #FAF7F2; }
 
 /* ─── Login Screen ────────────────────────────────────────── */
 .login-screen { background: var(--bg); }
@@ -55,7 +55,7 @@ label { color: var(--quiet); }
 .select-wrap, .password-wrap { background: var(--surface-2); border: 1px solid var(--line); }
 select, input { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
 select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(--orange-glow); }
-.button-primary { background: var(--brown); color: #fff; border-color: var(--brown); }
+.button-primary { background: var(--brown); color: #FAF7F2; border-color: var(--brown); }
 .button-primary:hover { background: #6B5335; }
 .button-outline { background: var(--surface); color: var(--brown); border-color: var(--line); }
 .button-outline:hover { background: var(--tan-wash); border-color: var(--tan); }
@@ -73,11 +73,11 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 .profile-wordmark small { color: var(--quiet); }
 .profile-menu { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .profile-menu-head { border-bottom: 1px solid var(--line-soft); }
-.profile-avatar { background: var(--tan); color: #fff; }
+.profile-avatar { background: var(--tan); color: #FAF7F2; }
 .profile-menu-line { background: var(--line-soft); }
 .org-switcher { color: var(--ink); }
 .org-switcher:hover { background: var(--tan-wash); }
-.org-mark { background: var(--tan); color: #fff; }
+.org-mark { background: var(--tan); color: #FAF7F2; }
 .org-copy strong { color: var(--ink); }
 .org-copy small { color: var(--quiet); }
 .sidebar-divider { background: var(--line-soft); }
@@ -85,7 +85,7 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 .side-tab { color: var(--muted); }
 .side-tab:hover { background: var(--tan-wash); color: var(--ink); }
 .side-tab.active { background: var(--surface); color: var(--brown); border-left: 3px solid var(--orange); }
-.side-tab .nav-badge { background: var(--orange); color: #fff; }
+.side-tab .nav-badge { background: var(--orange); color: #FAF7F2; }
 .sidebar-bottom { border-top: 1px solid var(--line-soft); }
 .sidebar-logo { background: var(--surface-2); border: 1px solid var(--line); }
 
@@ -97,7 +97,7 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 .channel-label { color: var(--quiet); }
 .channel-select-wrap select { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); }
 .topbar-divider { background: var(--line-soft); }
-.user-chip { background: var(--tan); color: #fff; }
+.user-chip { background: var(--tan); color: #FAF7F2; }
 
 /* ─── Main Area ───────────────────────────────────────────── */
 .main-area { background: var(--bg); }
@@ -126,7 +126,7 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 .findings-section { background: var(--surface); }
 .findings-title-row h2 { color: var(--ink); }
 .findings-summary { color: var(--muted); }
-.finding-count { background: var(--orange); color: #fff; }
+.finding-count { background: var(--orange); color: #FAF7F2; }
 .finding-item { background: var(--surface-2); border: 1px solid var(--line-soft); }
 .finding-item:hover { background: var(--tan-wash); }
 .finding-item.focused { background: var(--tan-wash); outline: 1px solid var(--tan); }
@@ -163,7 +163,7 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 /* ─── Guidelines View ─────────────────────────────────────── */
 .guidelines-page { color: var(--ink); }
 .guidelines-summary { background: var(--surface); border: 1px solid var(--line-soft); }
-.guidelines-company-mark { background: var(--tan); color: #fff; }
+.guidelines-company-mark { background: var(--tan); color: #FAF7F2; }
 .guidelines-rules { color: var(--ink); }
 .guideline-rule { background: var(--surface); border: 1px solid var(--line-soft); }
 .guideline-rule span { color: var(--orange); }
@@ -356,11 +356,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   /* ─── Fix upload-choice text & nav-badge ──────────────────── */
 .upload-choice strong { color: var(--ink) !important; font-size: 11px !important; }
 .upload-choice small { color: var(--muted) !important; font-size: 10px !important; }
-.side-tab .nav-badge { background: var(--tan) !important; color: #fff !important; }
+.side-tab .nav-badge { background: var(--tan) !important; color: #FAF7F2 !important; }
 /* ─── Fix Mozilla Demo box (dark bg → warm) ─────────────── */
-.profile-avatar { background: var(--tan) !important; color: #fff !important; }
-.org-mark { background: var(--tan) !important; color: #fff !important; }
-.guidelines-company-mark { background: var(--tan) !important; color: #fff !important; }
+.profile-avatar { background: var(--tan) !important; color: #FAF7F2 !important; }
+.org-mark { background: var(--tan) !important; color: #FAF7F2 !important; }
+.guidelines-company-mark { background: var(--tan) !important; color: #FAF7F2 !important; }
 .profile-menu-head { background: var(--surface) !important; }
 .guideline-rail { background: var(--surface) !important; }
 .content-section { background: var(--surface) !important; }
@@ -377,13 +377,13 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .settings-row span { color: var(--muted) !important; }
 /* ─── Fix org-switcher (Mozilla Demo box) dark bg ─────────── */
 .org-switcher { background: var(--surface) !important; border: 1px solid var(--line) !important; }
-.org-switcher .org-mark { background: var(--tan) !important; color: #fff !important; }
+.org-switcher .org-mark { background: var(--tan) !important; color: #FAF7F2 !important; }
 .org-switcher .org-copy strong { color: var(--ink) !important; }
 .org-switcher .org-copy small { color: var(--muted) !important; }
 .org-switcher > .icon { color: var(--muted) !important; }
 /* ─── Fix history badge count color ───────────────────────── */
-#historyBadge { background: var(--tan) !important; color: #fff !important; }
-.side-tab .nav-badge { background: var(--tan) !important; color: #fff !important; font-size: 9px !important; }
+#historyBadge { background: var(--tan) !important; color: #FAF7F2 !important; }
+.side-tab .nav-badge { background: var(--tan) !important; color: #FAF7F2 !important; font-size: 9px !important; }
 /* ─── Fix side-tab hover visibility ──────────────────────── */
 .side-tab { color: var(--muted); position: relative; }
 .side-tab:hover { background: var(--tan-wash); color: var(--ink); }
@@ -399,7 +399,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   letter-spacing: 2px !important;
 }
 /* ─── Voice Button ────────────────────────────────────────── */
-#voiceBtn.recording { background: var(--red) !important; color: #fff !important; animation: pulse 1s ease-in-out infinite; }
+#voiceBtn.recording { background: var(--red) !important; color: #FAF7F2 !important; animation: pulse 1s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 /* ─── Fix button-text hover (was white on light bg) ───────── */
 .button-text { color: var(--tan) !important; background: transparent !important; }
@@ -420,9 +420,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .share-label { font-size: 13px; color: var(--muted); font-weight: 500; margin-right: 4px; }
 .share-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .share-btn:hover { background: var(--tan-wash); border-color: var(--tan); transform: translateY(-1px); }
-.share-email:hover { background: #e8f4fd; border-color: #3b82f6; color: #1d4ed8; }
+.share-email:hover { background: #e8f4fd; border-color: #7A5F3A; color: #7A5F3A; }
 .share-twitter:hover { background: #f0f0f0; border-color: #000; color: #000; }
-.share-linkedin:hover { background: #e8f0fe; border-color: #0077b5; color: #0077b5; }
+.share-linkedin:hover { background: #e8f0fe; border-color: #7A5F3A; color: #7A5F3A; }
 .share-copy:hover { background: #f0fdf4; border-color: #16a34a; color: #16a34a; }
 .share-instagram:hover { background: #fce7f3; border-color: #e1306c; color: #e1306c; }
 
@@ -560,7 +560,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 /* ─── Button Enhancements ──────────────────────────────────── */
 .button-primary {
   background: linear-gradient(135deg, var(--brown) 0%, var(--orange) 100%) !important;
-  color: #fff !important;
+  color: #FAF7F2 !important;
   border: none !important;
   border-radius: 10px !important;
   padding: 10px 20px !important;
@@ -598,7 +598,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .magnetic-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px;
-  background: var(--brown); color: #fff; border: none;
+  background: var(--brown); color: #FAF7F2; border: none;
   font-size: 12px; font-weight: 600; cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
@@ -690,7 +690,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-form { justify-self: center !important; max-width: 420px !important; width: 100% !important; }
 
 /* ─── Focused highlight mark ──────────────────────────────── */
-.highlighted-copy mark.focused { background: var(--orange) !important; color: #fff !important; box-shadow: 0 0 0 3px var(--orange); }
+.highlighted-copy mark.focused { background: var(--orange) !important; color: #FAF7F2 !important; box-shadow: 0 0 0 3px var(--orange); }
 .finding-item.focused { box-shadow: 0 0 0 2px var(--tan); border-radius: 4px; }
 
 /* ─── Login input (replaces inline styles) ────────────────── */
@@ -817,7 +817,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .cp-ig-tip { font-size: 11px; color: var(--accent); margin-top: 8px; }
 .cp-email-header { font-size: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .cp-email-header div { margin-bottom: 4px; }
-.cp-web-badge { display: inline-block; padding: 2px 8px; background: var(--accent); color: white; border-radius: 4px; font-size: 10px; margin-bottom: 8px; }
+.cp-web-badge { display: inline-block; padding: 2px 8px; background: var(--accent); color: #FAF7F2; border-radius: 4px; font-size: 10px; margin-bottom: 8px; }
 
 /* Empty state */
 .empty-state { text-align: center; padding: 32px 16px; }
