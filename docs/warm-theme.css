@@ -927,3 +927,8 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   .main-area { margin-left: 0 !important; }
   .login-content { padding: 24px 16px !important; }
 }
+
+/* Splash to login transition */
+.splash-screen { transition: opacity 0.6s ease, transform 0.6s ease; }
+.splash-screen.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
+#loginScreen { transition: opacity 0.6s ease, transform 0.6s ease; }

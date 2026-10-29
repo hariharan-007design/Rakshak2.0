@@ -888,7 +888,7 @@ function bind() {
       img.onload = () => { if ($('logoRefMeta')) $('logoRefMeta').textContent = `${img.naturalWidth} × ${img.naturalHeight}px · ${val}`; toast('Reference: ' + val); };
     }
   });
-  $('industrySelect')?.addEventListener('change', () => { populateCompanySelect(); updateDemoHint(); });
+  $('industrySelect')?.addEventListener('change', () => { populateCompanySelect(); setTimeout(updateDemoHint, 50); });
   $('companySelect')?.addEventListener('change', updateDemoHint);
   const newBtn = $('newCompanyBtn');
   if (newBtn) newBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.remove('hidden'); });

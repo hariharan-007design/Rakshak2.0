@@ -304,7 +304,7 @@
       // Skip splash if already seen this session
       if (sessionStorage.getItem('rakshak_splash_seen')) {
         splash.style.display = 'none';
-        if (login) login.style.display = 'flex';
+        if (login) { login.style.display = 'flex'; login.style.opacity = '1'; login.style.transform = 'translateY(0)'; }
         return;
       }
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -315,10 +315,19 @@
         skipped = true;
         sessionStorage.setItem('rakshak_splash_seen', '1');
         splash.classList.add('exit');
+        if (login) {
+          login.style.display = 'flex';
+          login.style.opacity = '0';
+          login.style.transform = 'translateY(20px)';
+          requestAnimationFrame(() => {
+            login.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            login.style.opacity = '1';
+            login.style.transform = 'translateY(0)';
+          });
+        }
         setTimeout(() => {
           splash.style.display = 'none';
-          if (login) login.style.display = 'flex';
-        }, 400);
+        }, 600);
       }
       // Skip on key press
       document.addEventListener('keydown', (e) => {
