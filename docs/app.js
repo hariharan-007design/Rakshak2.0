@@ -137,7 +137,10 @@ function populateCompanySelect() {
     return;
   }
   select.innerHTML = companies.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
-  if (companies.length > 0) select.value = companies[0].name;
+  if (companies.length > 0) {
+    select.value = companies[0].name;
+    select.selectedIndex = 0;
+  }
 }
 
 function login() {
@@ -940,7 +943,7 @@ function bind() {
     companies.push({ name, code, industry });
     saveCompanies(companies);
     populateCompanySelect();
-  updateDemoHint();
+  setTimeout(updateDemoHint, 100);
     const select = $('companySelect');
     if (select) select.value = name;
     hideModal();

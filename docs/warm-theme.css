@@ -39,7 +39,7 @@ body { background: var(--bg); color: var(--ink); }
 .login-shell { border-color: var(--line); background: var(--surface); box-shadow: var(--shadow); }
 .login-brand { border-bottom-color: var(--line-soft); }
 .login-logo { background: var(--surface-2); border: 1px solid var(--line); }
-.login-brand-name { color: var(--ink); }
+.login-brand-name { color: #FAF7F2; }
 .login-brand-name span { color: var(--tan); }
 .login-content { color: var(--ink); }
 .login-message h1 { color: #2C2416; }
@@ -1211,3 +1211,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .modal-submit:active { transform: scale(0.97); }
 .modal-submit svg { transition: transform 150ms ease-out; }
 .modal-submit:hover svg { transform: translateX(3px); }
+
+/* Sidebar brand name visible on dark background */
+.sidebar .login-brand-name,
+.sidebar-logo strong,
+.profile-wordmark strong,
+.org-copy strong {
+  color: #FAF7F2 !important;
+}
