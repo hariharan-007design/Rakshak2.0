@@ -870,34 +870,49 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .splash-screen.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
 #loginScreen { transition: opacity 0.6s ease, transform 0.6s ease; }
 
-/* ═══ BROWN BACKGROUND WITH VISIBLE DOT GRID + NOISE ═══ */
+/* ═══ BROWN BACKGROUND WITH INTERACTIVE DOT GRID ═══ */
 .login-screen {
-  background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%) !important;
+  background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%);
   position: relative;
   overflow: hidden;
 }
-/* Visible dot grid pattern */
-.login-screen::before {
-  content: '';
+/* Dot grid container */
+.dot-grid {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(242, 239, 229, 0.15) 1.5px, transparent 1.5px);
-  background-size: 28px 28px;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: auto;
+}
+/* Individual dot */
+.dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(242, 239, 229, 0.35);
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  cursor: default;
+}
+.dot:hover {
+  width: 12px;
+  height: 12px;
+  background: rgba(242, 239, 229, 0.7);
+  box-shadow: 0 0 8px rgba(242, 239, 229, 0.4);
 }
 /* Noise texture overlay */
 .login-screen::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
   background-size: 256px 256px;
   pointer-events: none;
   z-index: 0;
   mix-blend-mode: overlay;
 }
-/* Soft box around logo + quote + login */
+/* Soft box around login */
 .login-shell, .login-shell.login-shell {
   background: rgba(61, 43, 31, 0.7) !important;
   border: 1px solid rgba(242, 239, 229, 0.12) !important;
