@@ -755,7 +755,18 @@ function initChatbot() {
 
 
 function bind() {
-  if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
+  // Seed demo companies if none exist
+  if (getCompanies().length === 0) {
+    const demoSeeds = [
+      { name: 'Mozilla', code: 'MOZ-2026', industry: 'media' },
+      { name: 'Mailchimp', code: 'MAIL-2026', industry: 'ecommerce' },
+      { name: 'Acme SaaS', code: 'ACME-2026', industry: 'tech' },
+      { name: 'Pharma Corp', code: 'PHARMA-2026', industry: 'healthcare' },
+      { name: 'ChemSafe Ltd', code: 'GHS-2026', industry: 'chemical' },
+      { name: 'FinServe Inc', code: 'FINRA-2026', industry: 'finance' },
+    ];
+    saveCompanies(demoSeeds);
+  }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
   $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login();});
   $('logoRefFile')?.addEventListener('change', e => {
