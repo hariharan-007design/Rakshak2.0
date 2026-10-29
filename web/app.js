@@ -478,7 +478,29 @@ async function handleDraft(file) {
 
 async function inspectLogo(file) {
   if(!file)return;
-  if(file.size>5*1024*1024){toast('Logo must be under 5 MB');return;}
+  if(file.size>10*1024*1024){toast('File must be under 10 MB');return;}
+  // Handle PDF: render first page to image
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+    if (!window.pdfjsLib) { toast('PDF engine not loaded'); return; }
+    toast('Extracting logo from PDF...');
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const page = await pdf.getPage(1);
+      const scale = 2;
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      file = new File([blob], file.name.replace('.pdf', '.png'), { type: 'image/png' });
+    } catch (e) {
+      toast('Could not extract from PDF: ' + e.message);
+      return;
+    }
+  }
   const url=URL.createObjectURL(file);
   const img=new Image();
   img.onload=async()=>{
