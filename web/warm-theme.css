@@ -953,3 +953,25 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-brand-name span {
   color: #4A90D9 !important;
 }
+
+/* Blurred background behind logo */
+.login-brand {
+  position: relative;
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 16px;
+}
+.login-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(61, 43, 31, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  z-index: -1;
+}
+.login-logo {
+  position: relative;
+  z-index: 1;
+}
