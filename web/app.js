@@ -115,7 +115,9 @@ function saveCompanies(companies) {
 function updateDemoHint() {
   const hint = $('demoHint');
   if (!hint) return;
-  const name = ($('companySelect')?.value || '').trim();
+  const select = $('companySelect');
+  if (!select || select.options.length === 0) { hint.textContent = 'Select a company or create a new one'; return; }
+  const name = select.value || select.options[0]?.value || '';
   const companies = getCompanies();
   const company = companies.find(c => c.name === name);
   if (company) {
@@ -135,6 +137,7 @@ function populateCompanySelect() {
     return;
   }
   select.innerHTML = companies.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  if (companies.length > 0) select.value = companies[0].name;
 }
 
 function login() {
