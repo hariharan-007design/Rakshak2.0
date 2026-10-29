@@ -159,6 +159,10 @@ function login() {
   if ($('guidelinesCompany')) $('guidelinesCompany').textContent = companyName;
   if ($('settingsCompany')) $('settingsCompany').textContent = companyName;
   if ($('draftInput')) $('draftInput').value = '';
+  const ws = $('workspace');
+  const ls = $('loginScreen');
+  if (ws) { ws.classList.remove('hidden'); ws.hidden = false; }
+  if (ls) { ls.classList.add('hidden'); ls.hidden = true; }
   showView('review');
   const savedHistory = localStorage.getItem('rakshak_history_' + companyName);
   state.history = savedHistory ? JSON.parse(savedHistory) : [];
@@ -848,7 +852,10 @@ function signOut() {
   state.findings=[];state.history=[];state.draft='';state.revised='';state.logo=null;
   if($('draftInput'))$('draftInput').value='';if($('passwordInput'))$('passwordInput').value='';
   localStorage.removeItem('rakshak_profile');
-  reveal('workspace',false); reveal('loginScreen',true);if($('profileMenu')){$('profileMenu').classList.add('hidden');$('profileMenu').classList.remove('open');}$('profileTrigger')?.setAttribute('aria-expanded','false');drawHistory();
+  const ws = $('workspace');
+  const ls = $('loginScreen');
+  if (ws) { ws.classList.add('hidden'); ws.hidden = true; }
+  if (ls) { ls.classList.remove('hidden'); ls.hidden = false; }if($('profileMenu')){$('profileMenu').classList.add('hidden');$('profileMenu').classList.remove('open');}$('profileTrigger')?.setAttribute('aria-expanded','false');drawHistory();
 }
 
 function updateWordCount() { const value=$('draftInput')?.value||''; if($('draftMeta'))$('draftMeta').textContent=`${value.trim().split(/\s+/).filter(Boolean).length} words · ${value.length.toLocaleString()} characters`; }
