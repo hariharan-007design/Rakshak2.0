@@ -91,7 +91,7 @@
             <div class="login-proof"><svg class="icon"><use href="#i-lock" /></svg><span>Demo mode · Files stay in this browser session</span></div>
           </div>
           <form class="login-form" id="loginForm">
-            <div class="form-heading"><h2>Open your workspace</h2><p>Select an industry and enter your brand details.</p></div>
+            <div class="form-heading"><h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p></div>
             <label for="industrySelect">INDUSTRY</label>
             <div class="select-wrap"><select id="industrySelect" required>
               <option value="tech">Technology / SaaS</option>
@@ -104,14 +104,30 @@
               <option value="ecommerce">E-commerce / Retail</option>
               <option value="other">Other</option>
             </select><svg class="icon"><use href="#i-chevron" /></svg></div>
-            <label for="companyNameInput">COMPANY / BRAND NAME</label>
-            <input id="companyNameInput" type="text" placeholder="e.g. Acme Corp" required class="login-input" />
+            <label for="companySelect">COMPANY / BRAND</label>
+            <div class="select-wrap"><select id="companySelect" required></select><svg class="icon"><use href="#i-chevron" /></svg></div>
+            <div style="display:flex;gap:8px;margin-top:4px;">
+              <button type="button" class="button button-outline" id="newCompanyBtn" style="flex:1;min-height:32px;font-size:10px;">+ New Company</button>
+            </div>
             <label for="passwordInput">ACCESS CODE</label>
             <div class="password-wrap"><input id="passwordInput" type="password" autocomplete="current-password" placeholder="Enter access code" required /><button class="show-password" id="togglePassword" type="button" aria-label="Show access code">Show</button></div>
-            <div class="demo-hint" id="demoHint">Enter any code to try the demo (e.g. DEMO-2026)</div>
+            <div class="demo-hint" id="demoHint">Select a company or create a new one</div>
             <button class="button button-primary login-submit" type="submit">Continue to workspace <svg class="icon"><use href="#i-arrow" /></svg></button>
             <p class="login-disclaimer">Your workspace is stored locally in this browser. Do not enter confidential material on shared devices.</p>
           </form>
+          <!-- New company modal -->
+          <div class="modal-overlay hidden" id="newCompanyModal">
+            <div class="modal">
+              <div class="modal-header"><h3 class="modal-title">Register New Company</h3><button class="modal-close" id="closeNewCompany" type="button">✕</button></div>
+              <div class="modal-body">
+                <label for="newCompanyName">COMPANY NAME</label>
+                <input id="newCompanyName" type="text" placeholder="e.g. Acme Corp" class="login-input" />
+                <label for="newCompanyCode">ACCESS CODE</label>
+                <input id="newCompanyCode" type="password" placeholder="Create an access code" class="login-input" />
+                <button class="button button-primary" id="createCompanyBtn" type="button" style="width:100%;margin-top:12px;">Create Workspace</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="login-footer"><span>RAKSHAK 2.0 <b>·</b> BRAND REVIEW WORKSPACE</span><span>RULE-BASED REVIEW <b>·</b> HUMAN DECIDES</span></div>
       </section>
@@ -181,7 +197,7 @@
               <section class="content-section revised-section hidden" id="revisedSection" aria-labelledby="revisedTitle">
                 <div class="section-head"><div><span class="section-number">03</span><h2 id="revisedTitle">Revised draft</h2></div><span class="channel-tag" id="channelTag">Website</span></div>
                 <p class="section-note" id="channelNote">Accepted fixes are applied. Your original meaning is preserved for human review.</p>
-                <div class="revised-copy" id="revisedCopy"></div>
+                <div class="revised-copy" id="revisedCopy" contenteditable="true" spellcheck="true"></div>
                 <div class="revised-footer"><span class="char-warning" id="charWarning"></span><div><button class="button button-outline" id="polishAi" type="button">AI polish</button><button class="button button-outline" id="copyRevised" type="button"><svg class="icon"><use href="#i-copy" /></svg> Copy draft</button><button class="button button-primary" id="downloadReport" type="button">Download report <svg class="icon"><use href="#i-arrow" /></svg></button><button class="button button-outline" id="rescanButton" type="button">Re-scan <svg class="icon"><use href="#i-review" /></svg></button></div></div><div class="ai-polish-result hidden" id="aiPolishResult"></div>
               </section>
             </div>
@@ -314,5 +330,35 @@
     })();
   </script>
   <script type="module" src="./app.js"></script>
-  </body>
+  
+  <!-- ═══ AI CHATBOT (Pet) ═══ -->
+  <div class="chatbot-widget" id="chatbotWidget">
+    <button class="chatbot-toggle" id="chatbotToggle" type="button" aria-label="Open AI assistant">
+      <span class="chatbot-avatar" id="chatbotAvatar">🤖</span>
+    </button>
+    <div class="chatbot-panel hidden" id="chatbotPanel">
+      <div class="chatbot-header">
+        <span class="chatbot-avatar" id="chatbotAvatarHeader">🤖</span>
+        <strong>Rakshak Assistant</strong>
+        <button class="chatbot-close" id="chatbotClose" type="button" aria-label="Close chat">✕</button>
+      </div>
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chatbot-msg bot">Hi! I'm your brand guardian assistant. Ask me anything about your draft, rules, or compliance. 🛡️</div>
+      </div>
+      <div class="chatbot-input-row">
+        <input id="chatbotInput" type="text" placeholder="Ask about your draft..." />
+        <button id="chatbotSend" type="button">Send</button>
+      </div>
+      <div class="chatbot-avatar-picker">
+        <span>Pet:</span>
+        <button class="avatar-btn" data-avatar="🤖">🤖</button>
+        <button class="avatar-btn" data-avatar="🛡️">🛡️</button>
+        <button class="avatar-btn" data-avatar="🦊">🦊</button>
+        <button class="avatar-btn" data-avatar="🐱">🐱</button>
+        <button class="avatar-btn" data-avatar="🦉">🦉</button>
+      </div>
+    </div>
+  </div>
+
+</body>
 </html>

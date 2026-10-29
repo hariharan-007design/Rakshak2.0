@@ -104,40 +104,64 @@ function showView(view) {
   if($('profileMenu')){$('profileMenu').classList.remove('open');$('profileMenu').classList.add('hidden');}$('profileTrigger')?.setAttribute('aria-expanded','false');
 }
 
+function getCompanies() {
+  const stored = localStorage.getItem('rakshak_companies');
+  return stored ? JSON.parse(stored) : [];
+}
+function saveCompanies(companies) {
+  localStorage.setItem('rakshak_companies', JSON.stringify(companies));
+}
+function populateCompanySelect() {
+  const select = $('companySelect');
+  if (!select) return;
+  const industry = $('industrySelect')?.value || 'tech';
+  const companies = getCompanies().filter(c => c.industry === industry);
+  if (companies.length === 0) {
+    select.innerHTML = '<option value="">No companies yet — create one</option>';
+    return;
+  }
+  select.innerHTML = companies.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+}
+
 function login() {
   const industry = $('industrySelect')?.value || 'tech';
-  const name = ($('companyNameInput')?.value || '').trim();
+  const companyName = ($('companySelect')?.value || '').trim();
   const code = ($('passwordInput')?.value || '').trim();
-  if (!name) { toast('Enter your company or brand name'); return; }
+  if (!companyName) { toast('Select or create a company'); return; }
   if (!code) { toast('Enter an access code'); return; }
+  const companies = getCompanies();
+  const company = companies.find(c => c.name === companyName && c.industry === industry);
+  if (!company) { toast('Company not found. Create one first.'); return; }
+  if (company.code.toUpperCase() !== code.toUpperCase()) { $('passwordInput').setAttribute('aria-invalid','true'); toast('Access code does not match'); return; }
+  $('passwordInput').removeAttribute('aria-invalid');
   const industryMap = { tech:'acme', healthcare:'pharma', finance:'finra', realestate:'acme', education:'acme', chemical:'ghs', media:'mozilla', ecommerce:'mailchimp', other:'acme' };
   const key = industryMap[industry] || 'acme';
-  const company = DEMO_COMPANIES[key];
-  const profile = { industry, name, code, key, mark: name[0].toUpperCase() };
+  const demoCompany = DEMO_COMPANIES[key];
+  const profile = { industry, name: companyName, code, key, mark: companyName[0].toUpperCase() };
   localStorage.setItem('rakshak_profile', JSON.stringify(profile));
-  $('passwordInput').removeAttribute('aria-invalid');
-  const originalName = company.name;
-  const originalMark = company.mark;
-  company.name = name;
-  company.mark = name[0].toUpperCase();
+  const originalName = demoCompany.name;
+  const originalMark = demoCompany.mark;
+  demoCompany.name = companyName;
+  demoCompany.mark = companyName[0].toUpperCase();
   setCompany(key);
-  company.name = originalName;
-  company.mark = originalMark;
-  state.company.name = name;
-  state.company.mark = name[0].toUpperCase();
-  if ($('profileCompany')) $('profileCompany').textContent = name;
-  if ($('orgName')) $('orgName').textContent = name;
-  if ($('orgMark')) $('orgMark').textContent = name[0].toUpperCase();
-  if ($('profileInitial')) $('profileInitial').textContent = name[0].toUpperCase();
-  if ($('userChip')) $('userChip').textContent = name[0].toUpperCase();
-  if ($('headingCompany')) $('headingCompany').textContent = name;
-  if ($('railCompany')) $('railCompany').textContent = name;
-  if ($('guidelinesCompany')) $('guidelinesCompany').textContent = name;
-  if ($('settingsCompany')) $('settingsCompany').textContent = name;
-  reveal('loginScreen',false); reveal('workspace',true);
+  demoCompany.name = originalName;
+  demoCompany.mark = originalMark;
+  state.company.name = companyName;
+  state.company.mark = companyName[0].toUpperCase();
+  if ($('profileCompany')) $('profileCompany').textContent = companyName;
+  if ($('orgName')) $('orgName').textContent = companyName;
+  if ($('orgMark')) $('orgMark').textContent = companyName[0].toUpperCase();
+  if ($('profileInitial')) $('profileInitial').textContent = companyName[0].toUpperCase();
+  if ($('userChip')) $('userChip').textContent = companyName[0].toUpperCase();
+  if ($('headingCompany')) $('headingCompany').textContent = companyName;
+  if ($('railCompany')) $('railCompany').textContent = companyName;
+  if ($('guidelinesCompany')) $('guidelinesCompany').textContent = companyName;
+  if ($('settingsCompany')) $('settingsCompany').textContent = companyName;
   $('draftInput') && ($('draftInput').value = ''); showView('review');
-  toast('Welcome to ' + name + ' workspace!');
-}
+  const savedHistory = localStorage.getItem('rakshak_history_' + companyName);
+  state.history = savedHistory ? JSON.parse(savedHistory) : [];
+  drawHistory();
+  toast('Welcome to ' + companyName + ' workspace!'); }
 
 function findMatches(text, destination) {
   const findings = [];
@@ -276,14 +300,18 @@ function initVoice() {
   const btn = $('voiceBtn');
   const input = $('draftInput');
   recognition.onstart = () => { if (btn) { btn.classList.add('recording'); btn.textContent = '⏹ Stop'; } toast('Listening... speak now'); };
+  let finalTranscript = '';
   recognition.onresult = (e) => {
-    let transcript = '';
+    let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
-      transcript += e.results[i][0].transcript;
+      if (e.results[i].isFinal) {
+        finalTranscript += e.results[i][0].transcript + ' ';
+      } else {
+        interim += e.results[i][0].transcript;
+      }
     }
     if (input) {
-      const cur = input.value;
-      input.value = cur ? cur + ' ' + transcript : transcript;
+      input.value = ($('draftInput')?.value.split('\n')[0] || '') + finalTranscript + interim;
       input.dispatchEvent(new Event('input'));
     }
   };
@@ -351,6 +379,8 @@ function analyze() {
   if(!text){ toast('Add or upload draft text first'); $('draftInput')?.focus(); return; }
   try {
     state.draft=text; state.findings=findMatches(text, $('channelSelect')?.value); drawHighlight(); drawFindings(); updateRevised();
+    const profile = localStorage.getItem('rakshak_profile');
+    if (profile) { const p = JSON.parse(profile); localStorage.setItem('rakshak_history_' + p.name, JSON.stringify(state.history)); }
   } catch (e) {
     toast('Analysis failed: ' + (e.message || 'Unknown error'));
     console.error('Analyze error:', e);
@@ -641,10 +671,115 @@ async function polishWithAi() {
   }
 }
 
+
+// ─── AI Chatbot (Pet Assistant) ─────────────────────────────
+function initChatbot() {
+  const toggle = $('chatbotToggle');
+  const panel = $('chatbotPanel');
+  const close = $('chatbotClose');
+  const input = $('chatbotInput');
+  const send = $('chatbotSend');
+  const messages = $('chatbotMessages');
+  if (!toggle || !panel) return;
+
+  // Restore avatar from localStorage
+  const savedAvatar = localStorage.getItem('rakshak_chatbot_avatar') || '🤖';
+  const avatars = document.querySelectorAll('.chatbot-avatar');
+  avatars.forEach(a => a.textContent = savedAvatar);
+
+  toggle.addEventListener('click', () => panel.classList.toggle('hidden'));
+  close?.addEventListener('click', () => panel.classList.add('hidden'));
+
+  document.querySelectorAll('.avatar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const av = btn.dataset.avatar;
+      localStorage.setItem('rakshak_chatbot_avatar', av);
+      document.querySelectorAll('.chatbot-avatar').forEach(a => a.textContent = av);
+      toast('Pet changed to ' + av);
+    });
+  });
+
+  async function sendMessage() {
+    const text = (input?.value || '').trim();
+    if (!text) return;
+    if (input) input.value = '';
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chatbot-msg user';
+    userMsg.textContent = text;
+    messages?.appendChild(userMsg);
+    messages?.scrollTo(0, messages.scrollHeight);
+
+    // Get AI response
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chatbot-msg bot';
+    botMsg.textContent = 'Thinking...';
+    messages?.appendChild(botMsg);
+    messages?.scrollTo(0, messages.scrollHeight);
+
+    const draft = ($('draftInput')?.value || '').trim();
+    const findings = state.findings.map(f => `${f.ruleId}: ${f.title}`).join(', ') || 'none';
+    const prompt = `You are a helpful brand compliance assistant. The user's draft has these findings: ${findings}. User asks: ${text}. Answer helpfully and concisely.`;
+
+    try {
+      let reply = '';
+      if (navigator.onLine && aiKey()) {
+        const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${aiKey()}` },
+          body: JSON.stringify({ model: aiModel(), messages: [{ role: 'user', content: prompt }], temperature: 0.5, max_tokens: 200 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          reply = data?.choices?.[0]?.message?.content?.trim() || 'No response';
+        } else {
+          throw new Error('API error');
+        }
+      } else if (window.transformers) {
+        const pipe = await loadOfflineModel();
+        const out = await pipe(prompt, { max_new_tokens: 128, temperature: 0.5, do_sample: true });
+        reply = (out?.[0]?.generated_text || '').replace(prompt, '').trim() || 'No response';
+      } else {
+        reply = 'AI is not available. Set an API key in Settings or wait for offline model to load.';
+      }
+      botMsg.textContent = reply;
+    } catch (e) {
+      botMsg.textContent = 'Sorry, I encountered an error. Try again or check your API key in Settings.';
+    }
+    messages?.scrollTo(0, messages.scrollHeight);
+  }
+
+  send?.addEventListener('click', sendMessage);
+  input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+}
+
+
 function bind() {
   if($('companySelect')){ $('companySelect').innerHTML=Object.entries(DEMO_COMPANIES).map(([key,co])=>`<option value="${key}">${esc(co.name)} · Demo workspace</option>`).join(''); $('companySelect').value='mozilla'; }
   if($('demoHint'))$('demoHint').textContent=`Demo access code: ${DEMO_COMPANIES.mozilla.code} · Prototype only`;
   $('loginForm')?.addEventListener('submit',e=>{e.preventDefault();login();});
+  $('industrySelect')?.addEventListener('change', populateCompanySelect);
+  const newBtn = $('newCompanyBtn');
+  if (newBtn) newBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.remove('hidden'); });
+  const closeBtn = $('closeNewCompany');
+  if (closeBtn) closeBtn.addEventListener('click', () => { const m = $('newCompanyModal'); if (m) m.classList.add('hidden'); });
+  const createBtn = $('createCompanyBtn');
+  if (createBtn) createBtn.addEventListener('click', () => {
+    const name = ($('newCompanyName')?.value || '').trim();
+    const code = ($('newCompanyCode')?.value || '').trim();
+    const industry = $('industrySelect')?.value || 'tech';
+    if (!name || !code) { toast('Enter company name and access code'); return; }
+    const companies = getCompanies();
+    if (companies.find(c => c.name === name && c.industry === industry)) { toast('Company already exists'); return; }
+    companies.push({ name, code, industry });
+    saveCompanies(companies);
+    populateCompanySelect();
+    const select = $('companySelect');
+    if (select) select.value = name;
+    const m = $('newCompanyModal');
+    if (m) m.classList.add('hidden');
+    toast('Company created: ' + name);
+  });
   
   $('togglePassword')?.addEventListener('click',()=>{const p=$('passwordInput');p.type=p.type==='password'?'text':'password';$('togglePassword').textContent=p.type==='password'?'Show':'Hide';$('togglePassword').setAttribute('aria-label',p.type==='password'?'Show access code':'Hide access code');});
   $('profileTrigger')?.addEventListener('click',()=>{const menu=$('profileMenu');if(!menu)return;const opening=menu.classList.contains('hidden');menu.classList.toggle('hidden',!opening);menu.classList.toggle('open',opening);$('profileTrigger').setAttribute('aria-expanded',String(opening));});
@@ -668,12 +803,20 @@ function bind() {
   $('saveAiKey')?.addEventListener('click',()=>{const k=$('aiKeyInput')?.value.trim()||''; if(k) localStorage.setItem('rakshak_ai_key',k); else localStorage.removeItem('rakshak_ai_key'); const b=$('aiBaseInput')?.value.trim(); if(b) localStorage.setItem('rakshak_ai_base',b); const m=$('aiModelInput')?.value.trim(); if(m) localStorage.setItem('rakshak_ai_model',m); refreshAiStatus(); toast(k?'AI key saved in this browser':'AI key cleared');});
   $('clearAiKey')?.addEventListener('click',()=>{localStorage.removeItem('rakshak_ai_key'); if($('aiKeyInput'))$('aiKeyInput').value=''; refreshAiStatus(); toast('AI key cleared');});
   refreshAiStatus();
+  initChatbot();
+  populateCompanySelect();
 
 }
 
 function signOut() {
+  const profile = localStorage.getItem('rakshak_profile');
+  if (profile && state.history.length) {
+    const p = JSON.parse(profile);
+    localStorage.setItem('rakshak_history_' + p.name, JSON.stringify(state.history));
+  }
   state.findings=[];state.history=[];state.draft='';state.revised='';state.logo=null;
   if($('draftInput'))$('draftInput').value='';if($('passwordInput'))$('passwordInput').value='';
+  localStorage.removeItem('rakshak_profile');
   reveal('workspace',false); reveal('loginScreen',true);if($('profileMenu')){$('profileMenu').classList.add('hidden');$('profileMenu').classList.remove('open');}$('profileTrigger')?.setAttribute('aria-expanded','false');drawHistory();
 }
 
