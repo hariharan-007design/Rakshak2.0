@@ -880,10 +880,21 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
-/* Desktop alignment: reduce top space, use full width */
-.view { padding-top: 16px !important; max-width: 100% !important; }
-.topbar { height: 48px !important; }
-.content-section { padding: 10px 0 12px !important; border-top: 1px solid var(--line); }
-.section-head { margin-bottom: 6px !important; }
-.section-note { margin: 2px 0 6px !important; font-size: 11px !important; }
-.review-layout { gap: 16px !important; }
+/* Desktop alignment: aggressive compact layout */
+.sidebar { width: 220px !important; }
+.main-area { margin-left: 220px !important; }
+.view { padding: 12px clamp(16px, 3vw, 40px) !important; max-width: 100% !important; }
+.topbar { height: 44px !important; }
+.content-section { padding: 8px 0 10px !important; }
+.section-head { margin-bottom: 4px !important; }
+.section-note { margin: 2px 0 4px !important; font-size: 11px !important; }
+.review-layout { grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.6fr) !important; gap: 12px !important; }
+.guideline-rail { padding: 12px !important; }
+.rail-rule { padding: 4px 0 !important; }
+6px !important; }
+
+/* Sidebar compact */
+.sidebar .nav-item { padding: 8px 12px !important; font-size: 12px !important; }
+.sidebar .profile-trigger { padding: 8px 12px !important; }
+.sidebar .workspace-label { font-size: 9px !important; }
+.sidebar .brand-name { font-size: 14px !important; }
