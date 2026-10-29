@@ -42,7 +42,9 @@ body { background: var(--bg); color: var(--ink); }
 .login-brand-name { color: var(--ink); }
 .login-brand-name span { color: var(--tan); }
 .login-content { color: var(--ink); }
-.login-message h1 { color: var(--ink); }
+.login-message h1 { color: #2C2416; }
+.login-message p { color: #5A4530; }
+.tiny-label { color: #7A5F3A; }
 .login-message h1 em { color: var(--orange); }
 .login-message p { color: var(--muted); }
 .login-proof { color: var(--quiet); }
@@ -408,7 +410,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-shell { margin: 0 !important; border-radius: 0 !important; min-height: 100vh !important; }
 /* ─── Login Page Fonts ────────────────────────────────────── */
 .login-brand-name { font-family: 'Eczar', serif !important; font-weight: 700 !important; letter-spacing: 0.5px !important; }
-.login-content h1, .login-shell h1 { font-family: 'Bodoni Moda', serif !important; font-weight: 600 !important; font-style: italic !important; }
+.login-content h1, .login-shell h1 { font-family: 'Fraunces', serif !important; font-weight: 600 !important; font-style: italic !important; }
 .login-content p, .login-form, .login-form input, .login-form select, .login-form label, .login-submit { font-family: 'Quicksand', sans-serif !important; }
 .login-disclaimer, .login-footer, .login-proof { font-family: 'Quicksand', sans-serif !important; }
 .login-message { font-family: 'Bodoni Moda', serif !important; font-style: italic !important; }
@@ -838,10 +840,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 /* Login page background - warm workspace gradient */
 .login-screen {
   background: 
-    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(212,120,42,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(122,95,58,0.2) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(250,247,242,0.3) 0%, transparent 70%),
-    linear-gradient(135deg, #2C2416 0%, #3D3020 30%, #5A4530 60%, #7A5F3A 100%);
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(212,120,42,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(122,95,58,0.1) 0%, transparent 50%),
+    linear-gradient(135deg, #F5F0E8 0%, #EDE5D8 30%, #E5D9C8 60%, #D8C9B0 100%);
   position: relative;
   overflow: hidden;
 }
@@ -902,5 +903,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .sidebar .brand-name { font-size: 14px !important; }
 
 /* Login: transparent shell, full-width gradient */
-.login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; }
+.login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; padding: 40px 8% !important; }
+.login-message { background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(8px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important; }
+.login-form { background: rgba(255,255,255,0.9) !important; backdrop-filter: blur(8px) !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important; }
 .login-screen { padding: 0 !important; }
