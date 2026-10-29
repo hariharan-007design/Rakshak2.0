@@ -96,6 +96,7 @@ function setCompany(key) {
 }
 
 function showView(view) {
+  window.scrollTo(0, 0);
   if (state.currentView && state.currentView !== view) state.previousView = state.currentView;
   state.currentView = view;
   document.querySelectorAll('[data-view]').forEach(tab => tab.classList.toggle('active', tab.dataset.view === view));
