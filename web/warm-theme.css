@@ -870,18 +870,18 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .splash-screen.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
 #loginScreen { transition: opacity 0.6s ease, transform 0.6s ease; }
 
-/* ═══ SOFT WARM BACKGROUND WITH DOT GRID + NOISE ═══ */
+/* ═══ BROWN BACKGROUND WITH STATIC DOT GRID + NOISE ═══ */
 .login-screen {
-  background: linear-gradient(135deg, #f5e6d0 0%, #ecd5b0 50%, #e4c58e 100%);
+  background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%);
   position: relative;
   overflow: hidden;
 }
-/* Dot grid pattern */
+/* Static dot grid pattern (no cursor tracking) */
 .login-screen::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(139, 90, 43, 0.12) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(242, 239, 229, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
@@ -895,7 +895,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   background-size: 256px 256px;
   pointer-events: none;
   z-index: 0;
-  mix-blend-mode: multiply;
+  mix-blend-mode: overlay;
 }
 /* Login shell cards on top */
 .login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; padding: 40px 8% !important; position: relative; z-index: 1; }
