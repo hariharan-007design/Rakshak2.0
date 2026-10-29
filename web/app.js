@@ -124,6 +124,7 @@ function populateCompanySelect() {
 }
 
 function login() {
+  try {
   const industry = $('industrySelect')?.value || 'tech';
   const companyName = ($('companySelect')?.value || '').trim();
   const code = ($('passwordInput')?.value || '').trim();
@@ -198,6 +199,7 @@ function findMatches(text, destination) {
     }
   }
   return findings.sort((a,b) => a.start - b.start);
+  } catch(err) { console.error('Login error:', err); toast('Login failed: ' + err.message); }
 }
 
 function getDestinationRules(dest, text) {
