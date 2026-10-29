@@ -706,6 +706,7 @@ function initChatbot() {
     });
   });
 
+  const chatHistory = [];
   async function sendMessage() {
     const text = (input?.value || '').trim();
     if (!text) return;
@@ -716,6 +717,7 @@ function initChatbot() {
     userMsg.textContent = text;
     messages?.appendChild(userMsg);
     messages?.scrollTo(0, messages.scrollHeight);
+    chatHistory.push({ role: 'user', content: text });
 
     // Get AI response
     const botMsg = document.createElement('div');
@@ -725,31 +727,54 @@ function initChatbot() {
     messages?.scrollTo(0, messages.scrollHeight);
 
     const draft = ($('draftInput')?.value || '').trim();
-    const findings = state.findings.map(f => `${f.ruleId}: ${f.title}`).join(', ') || 'none';
-    const prompt = `You are a helpful brand compliance assistant. The user's draft has these findings: ${findings}. User asks: ${text}. Answer helpfully and concisely.`;
+    const findings = state.findings.map(f => `${f.ruleId}: ${f.title} (${f.severity})`).join(', ') || 'none';
+    const dest = $('channelSelect')?.value || 'Website';
+    const systemPrompt = `You are Rakshak, a helpful brand compliance assistant pet. You help users review content for brand compliance. Current context: destination=${dest}, findings=${findings}, draft length=${draft.length} chars. Answer helpfully, concisely, and with personality. If the user asks about their draft, reference the findings.`;
 
     try {
       let reply = '';
       if (navigator.onLine && aiKey()) {
+        // Build messages with conversation history
+        const msgs = [{ role: 'system', content: systemPrompt }, ...chatHistory.slice(-6)];
         const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${aiKey()}` },
-          body: JSON.stringify({ model: aiModel(), messages: [{ role: 'user', content: prompt }], temperature: 0.5, max_tokens: 200 })
+          body: JSON.stringify({ model: aiModel(), messages: msgs, temperature: 0.7, max_tokens: 300, stream: true })
         });
         if (res.ok) {
-          const data = await res.json();
-          reply = data?.choices?.[0]?.message?.content?.trim() || 'No response';
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          botMsg.textContent = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n').filter(l => l.trim().startsWith('data:'));
+            for (const line of lines) {
+              const data = line.replace(/^data:\s*/, '').trim();
+              if (data === '[DONE]') continue;
+              try {
+                const json = JSON.parse(data);
+                const token = json?.choices?.[0]?.delta?.content || '';
+                if (token) { reply += token; botMsg.textContent = reply; messages?.scrollTo(0, messages.scrollHeight); }
+              } catch {}
+            }
+          }
+          if (!reply) reply = 'No response';
         } else {
-          throw new Error('API error');
+          throw new Error('API error ' + res.status);
         }
       } else if (window.transformers) {
         const pipe = await loadOfflineModel();
-        const out = await pipe(prompt, { max_new_tokens: 128, temperature: 0.5, do_sample: true });
+        const prompt = `${systemPrompt}\n${chatHistory.map(m => m.role + ': ' + m.content).join('\n')}\nassistant:`;
+        const out = await pipe(prompt, { max_new_tokens: 128, temperature: 0.7, do_sample: true });
         reply = (out?.[0]?.generated_text || '').replace(prompt, '').trim() || 'No response';
+        botMsg.textContent = reply;
       } else {
         reply = 'AI is not available. Set an API key in Settings or wait for offline model to load.';
+        botMsg.textContent = reply;
       }
-      botMsg.textContent = reply;
+      chatHistory.push({ role: 'assistant', content: reply });
     } catch (e) {
       botMsg.textContent = 'Sorry, I encountered an error. Try again or check your API key in Settings.';
     }
