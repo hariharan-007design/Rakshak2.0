@@ -900,3 +900,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .sidebar .profile-trigger { padding: 8px 12px !important; }
 .sidebar .workspace-label { font-size: 9px !important; }
 .sidebar .brand-name { font-size: 14px !important; }
+
+/* Login: transparent shell, full-width gradient */
+.login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; }
+.login-screen { padding: 0 !important; }
