@@ -930,7 +930,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   font-weight: 700 !important;
 }
 
-/* Soft box around quote + login form only */
+/* Soft box around quote + login form only - right proportion */
 .login-content {
   background: rgba(61, 43, 31, 0.5) !important;
   border: 1px solid rgba(242, 239, 229, 0.12) !important;
@@ -938,8 +938,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   box-shadow: 0 16px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(242,239,229,0.08) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
-  padding: 32px !important;
+  padding: 40px 48px !important;
+  gap: 48px !important;
+  max-width: 100% !important;
 }
+
 
 /* Logo background blur highlight */
 .login-logo {
