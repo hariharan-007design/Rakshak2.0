@@ -872,7 +872,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 
 /* ═══ BROWN BACKGROUND WITH VISIBLE DOT GRID + NOISE ═══ */
 .login-screen {
-  background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%);
+  background: linear-gradient(135deg, #3d2b1f 0%, #4a3425 50%, #3d2b1f 100%) !important;
   position: relative;
   overflow: hidden;
 }
@@ -898,8 +898,8 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   mix-blend-mode: overlay;
 }
 /* Soft box around logo + quote + login */
-.login-shell {
-  background: rgba(61, 43, 31, 0.6) !important;
+.login-shell, .login-shell.login-shell {
+  background: rgba(61, 43, 31, 0.7) !important;
   border: 1px solid rgba(242, 239, 229, 0.12) !important;
   border-radius: 24px !important;
   box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(242,239,229,0.08) !important;
