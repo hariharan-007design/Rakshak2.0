@@ -677,7 +677,10 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .no-findings span { color: var(--muted) !important; }
 
 /* ─── Login page centered layout ──────────────────────────── */
-.login-content { grid-template-columns: 1fr !important; justify-items: center !important; gap: 24px !important; padding: 40px 5% !important; text-align: center !important; }
+.login-content { grid-template-columns: 1.08fr .92fr !important; align-items: center !important; gap: 60px !important; padding: 65px 9% !important; text-align: left !important; }
+@media (max-width: 860px) {
+  .login-content { grid-template-columns: 1fr !important; justify-items: center !important; gap: 24px !important; padding: 40px 5% !important; text-align: center !important; }
+}
 .login-message { max-width: 560px !important; text-align: center !important; }
 .login-message h1 { max-width: 100% !important; }
 .login-message > p { max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
