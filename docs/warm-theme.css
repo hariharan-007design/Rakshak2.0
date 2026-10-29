@@ -870,227 +870,110 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .splash-screen.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
 #loginScreen { transition: opacity 0.6s ease, transform 0.6s ease; }
 
-/* ═══ 2D ANIMATED WORKSPACE BACKGROUND ═══ */
+/* ═══ 2D ANIMATED COLORFUL WORKSPACE BACKGROUND ═══ */
 .login-screen {
-  background: linear-gradient(160deg, #1a1510 0%, #2C2416 40%, #3D3020 70%, #5A4530 100%);
+  background: linear-gradient(135deg, #1a1025 0%, #2d1b3d 25%, #1b2a3d 50%, #1a2520 75%, #2a1f15 100%);
   position: relative;
   overflow: hidden;
 }
-/* Ambient light glow */
+/* Animated gradient orbs */
 .login-screen::before {
   content: '';
   position: absolute;
-  top: -10%;
-  right: 10%;
-  width: 50%;
+  top: -20%;
+  left: -10%;
+  width: 60%;
   height: 60%;
-  background: radial-gradient(ellipse, rgba(212,120,42,0.12) 0%, transparent 70%);
-  animation: ambientGlow 8s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(212,120,42,0.15) 0%, rgba(139,90,43,0.08) 40%, transparent 70%);
+  animation: orbFloat1 12s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
+  filter: blur(60px);
 }
-/* Desk surface */
 .login-screen::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 35%;
-  background: linear-gradient(180deg, transparent 0%, rgba(90,69,48,0.3) 20%, rgba(44,36,22,0.8) 100%);
+  bottom: -20%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(90,120,180,0.12) 0%, rgba(60,90,140,0.06) 40%, transparent 70%);
+  animation: orbFloat2 15s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
+  filter: blur(60px);
 }
-@keyframes ambientGlow {
-  0% { opacity: 0.6; transform: scale(1) translate(0, 0); }
-  100% { opacity: 1; transform: scale(1.1) translate(-5%, 5%); }
+@keyframes orbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(10%, 15%) scale(1.2); }
 }
-/* Floating dust particles */
-.login-screen .particle {
+@keyframes orbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-15%, -10%) scale(1.15); }
+}
+/* Floating sticker elements */
+.login-screen .sticker {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(212,120,42,0.4);
-  border-radius: 50%;
+  z-index: 0;
   pointer-events: none;
-  z-index: 0;
-  animation: floatParticle 12s linear infinite;
+  font-size: 24px;
+  opacity: 0.15;
+  animation: stickerFloat 8s ease-in-out infinite;
 }
-@keyframes floatParticle {
-  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-  10% { opacity: 0.6; }
-  90% { opacity: 0.6; }
-  100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+@keyframes stickerFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(5deg); }
+  50% { transform: translateY(-8px) rotate(-3deg); }
+  75% { transform: translateY(-20px) rotate(8deg); }
 }
-/* Desk lamp */
-.login-screen .desk-lamp {
-  position: absolute;
-  bottom: 30%;
-  left: 8%;
-  width: 60px;
-  height: 120px;
-  z-index: 0;
-  opacity: 0.7;
-}
-.login-screen .lamp-base {
-  position: absolute;
-  bottom: 0;
-  left: 20px;
-  width: 20px;
-  height: 8px;
-  background: #5A4530;
-  border-radius: 4px;
-}
-.login-screen .lamp-arm {
-  position: absolute;
-  bottom: 8px;
-  left: 28px;
-  width: 4px;
-  height: 80px;
-  background: #7A5F3A;
-  transform-origin: bottom;
-  transform: rotate(-15deg);
-  animation: lampSway 6s ease-in-out infinite alternate;
-}
-.login-screen .lamp-shade {
-  position: absolute;
-  top: -5px;
-  left: -8px;
-  width: 20px;
-  height: 15px;
-  background: #D4782A;
-  border-radius: 3px 3px 0 0;
-  box-shadow: 0 0 30px 10px rgba(212,120,42,0.3);
-  animation: lampGlow 4s ease-in-out infinite alternate;
-}
-@keyframes lampSway {
-  0% { transform: rotate(-15deg); }
-  100% { transform: rotate(-10deg); }
-}
-@keyframes lampGlow {
-  0% { box-shadow: 0 0 30px 10px rgba(212,120,42,0.3); }
-  100% { box-shadow: 0 0 40px 15px rgba(212,120,42,0.5); }
-}
-/* Laptop on desk */
-.login-screen .laptop {
-  position: absolute;
-  bottom: 28%;
-  right: 12%;
-  width: 120px;
-  height: 80px;
-  z-index: 0;
-  opacity: 0.6;
-}
-.login-screen .laptop-screen {
-  position: absolute;
-  top: 0;
-  left: 10px;
-  width: 100px;
-  height: 65px;
-  background: linear-gradient(135deg, #1a1510 0%, #2C2416 100%);
-  border: 2px solid #5A4530;
-  border-radius: 4px 4px 0 0;
-  box-shadow: 0 0 20px 5px rgba(212,120,42,0.15);
-  animation: screenFlicker 3s ease-in-out infinite;
-}
-.login-screen .laptop-base {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 120px;
-  height: 15px;
-  background: #5A4530;
-  border-radius: 0 0 4px 4px;
-}
-.login-screen .laptop-keyboard {
-  position: absolute;
-  bottom: 2px;
-  left: 15px;
-  width: 90px;
-  height: 8px;
-  background: repeating-linear-gradient(90deg, #3D3020 0px, #3D3020 6px, #2C2416 6px, #2C2416 8px);
-  border-radius: 2px;
-}
-@keyframes screenFlicker {
-  0%, 100% { box-shadow: 0 0 20px 5px rgba(212,120,42,0.15); }
-  50% { box-shadow: 0 0 25px 8px rgba(212,120,42,0.25); }
-}
-/* Plant */
-.login-screen .plant {
-  position: absolute;
-  bottom: 28%;
-  left: 25%;
-  width: 40px;
-  height: 60px;
-  z-index: 0;
-  opacity: 0.5;
-}
-.login-screen .plant-pot {
-  position: absolute;
-  bottom: 0;
-  left: 10px;
-  width: 20px;
-  height: 15px;
-  background: #7A5F3A;
-  border-radius: 0 0 4px 4px;
-}
-.login-screen .plant-leaves {
-  position: absolute;
-  bottom: 15px;
-  left: 5px;
-  width: 30px;
-  height: 40px;
-  background: radial-gradient(ellipse at 50% 80%, #5A7A3A 0%, #3A5A2A 60%, transparent 100%);
-  border-radius: 50% 50% 0 0;
-  animation: leafSway 5s ease-in-out infinite alternate;
-  transform-origin: bottom center;
-}
-@keyframes leafSway {
-  0% { transform: rotate(-3deg); }
-  100% { transform: rotate(3deg); }
-}
-/* Coffee cup */
-.login-screen .coffee {
-  position: absolute;
-  bottom: 29%;
-  right: 35%;
-  width: 20px;
-  height: 25px;
-  z-index: 0;
-  opacity: 0.5;
-}
-.login-screen .cup {
-  width: 20px;
-  height: 18px;
-  background: #8B6F47;
-  border-radius: 0 0 6px 6px;
+/* Soft card container for logo + quote + form */
+.login-shell {
+  background: rgba(250, 247, 242, 0.12) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(250, 247, 242, 0.15) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: 1100px !important;
+  padding: 48px !important;
   position: relative;
+  z-index: 1;
 }
-.login-screen .cup::before {
-  content: '';
-  position: absolute;
-  right: -6px;
-  top: 3px;
-  width: 6px;
-  height: 8px;
-  border: 2px solid #8B6F47;
-  border-left: none;
-  border-radius: 0 4px 4px 0;
+.login-content {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 40px !important;
+  align-items: center !important;
 }
-.login-screen .steam {
-  position: absolute;
-  top: -8px;
-  left: 5px;
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-  animation: steamRise 3s ease-in-out infinite;
+.login-message {
+  background: rgba(250, 247, 242, 0.08) !important;
+  border: 1px solid rgba(250, 247, 242, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 32px !important;
+  backdrop-filter: none !important;
 }
-@keyframes steamRise {
-  0% { transform: translateY(0) scale(1); opacity: 0.4; }
-  50% { transform: translateY(-15px) scale(1.3); opacity: 0.2; }
-  100% { transform: translateY(-30px) scale(0.8); opacity: 0; }
+.login-form {
+  background: rgba(250, 247, 242, 0.92) !important;
+  border: 1px solid rgba(250, 247, 242, 0.2) !important;
+  border-radius: 16px !important;
+  padding: 32px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+  backdrop-filter: none !important;
 }
+.login-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.login-brand-name {
+  color: #FAF7F2 !important;
+  font-family: 'Playfair Display', serif !important;
+}
+.login-brand-name span { color: #D4782A !important; }
+.login-message h1 { color: #FAF7F2 !important; }
+.login-message p { color: rgba(250,247,242,0.8) !important; }
+.tiny-label { color: #D4782A !important; }
 /* Login shell cards on top */
 .login-shell { background: transparent !important; border: none !important; box-shadow: none !important; min-height: 100vh !important; width: 100% !important; max-width: 100% !important; padding: 40px 8% !important; position: relative; z-index: 1; }
 .login-message { background: rgba(250,247,242,0.85) !important; backdrop-filter: none !important; padding: 32px !important; border-radius: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
