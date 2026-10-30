@@ -1,4 +1,4 @@
-# Rakshak 2.0 — Round 3 Submission
+ Rakshak 2.0 — Round 3 Submission
 
 Futurestack Hackathon — We Code Coders
 Team: ssshariharan82 | Leader: Hariharan S | College: St. Joseph's College of Engineering
@@ -203,6 +203,161 @@ README.md covers: how to run (`python -m http.server 8000 --directory web`), liv
 - Deliver the three Round-2-named improvements as real features (OCR + page citations; real auth/RBAC; publishing + metrics) in a follow-up release, not as half-working demo code.
 
 Accessibility should be built and checked against WCAG 2.2. Enterprise application security should use OWASP ASVS 5.0.0. Connected publishing should follow OAuth 2.0 Security Best Current Practice (RFC 9700). AI risk management can use the NIST AI Risk Management Framework.
+
+---
+
+## Visuals — Architecture & Flows
+
+### System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Browser (GitHub Pages)                   │
+├─────────────────────────────────────────────────────────────┤
+│  index.html  │  app.js  │  styles.css  │  vendor/pdfjs     │
+├─────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
+│  │ Rule Packs   │  │  Scan Engine │  │  UI Layer       │   │
+│  │ (JSON)       │  │  (regex)     │  │  (shadcn-like)  │   │
+│  │ Mozilla      │  │  banned      │  │  findings panel │   │
+│  │ Mailchimp    │  │  phrases,    │  │  diff view      │   │
+│  │ Acme SaaS    │  │  terms,      │  │  theme toggle   │   │
+│  │ Pharma MLR   │  │  disclaimers │  │                 │   │
+│  │ Chemical GHS │  │  color hex   │  │                 │   │
+│  │ FINRA        │  │  date/cert   │  │                 │   │
+│  └──────────────┘  └──────────────┘  └─────────────────┘   │
+├─────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
+│  │ PDF.js       │  │  AI Polish   │  │  Storage        │   │
+│  │ (text-based) │  │  (BYO Groq   │  │  localStorage  │   │
+│  │              │  │  key, opt-in)│  │  IndexedDB     │   │
+│  └──────────────┘  └──────────────┘  └─────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+        │                                    │
+        ▼                                    ▼
+   No backend, no server, no cloud for deterministic scan.
+   Optional: external OpenAI-compatible API (Groq) for AI polish only.
+```
+
+### Main Review Flow (User Journey)
+
+```
+┌─────────┐     ┌──────────────┐     ┌─────────────┐
+│  Start  │────▶│  Select      │────▶│  Enter      │
+│         │     │  Company     │     │  Access     │
+│         │     │  Workspace   │     │  Code       │
+└─────────┘     └──────────────┘     └──────┬──────┘
+                                            │
+                                            ▼
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Review      │◀────│  Analyze     │◀────│  Paste /     │
+│  Findings    │     │  Draft       │     │  Upload      │
+│  (accept/    │     │  (regex      │     │  .txt/.md/   │
+│   ignore)    │     │   scan)      │     │  .pdf        │
+└──────┬───────┘     └──────────────┘     └──────────────┘
+       │
+       ▼
+┌──────────────┐     ┌──────────────┐
+│  Apply       │────▶│  Export      │
+│  Fixes       │     │  Revised     │
+│  (edited)    │     │  Draft +     │
+└──────────────┘     │  Audit Report│
+                     └──────────────┘
+```
+
+### Data Flow
+
+```
+Draft Input (.txt/.md/PDF)
+        │
+        ▼
+   ┌─────────┐
+   │ PDF.js  │  (if PDF) → extract text
+   └────┬────┘
+        │
+        ▼
+   ┌─────────────────────────────┐
+   │  Load Active Rule Pack      │
+   │  (JSON: rule ID, pattern,   │
+   │   explanation, source URL)  │
+   └────┬────────────────────────┘
+        │
+        ▼
+   ┌─────────────────────────────┐
+   │  Deterministic Scan         │
+   │  regex match per rule       │
+   │  → structured findings      │
+   │     (rule ID, span, fix)    │
+   └────┬────────────────────────┘
+        │
+        ├──────────────────────┐
+        ▼                      ▼
+   ┌─────────┐          ┌──────────────┐
+   │ Findings│          │  AI Polish   │  (optional, BYO key)
+   │ Panel   │          │  Groq/OpenAI │
+   │ (UI)    │          │  rewrite     │
+   └────┬────┘          └──────┬───────┘
+        │                      │
+        ▼                      ▼
+   ┌─────────────────────────────────┐
+   │  Human Decision (accept/ignore) │
+   └────┬────────────────────────────┘
+        │
+        ▼
+   ┌─────────────────────────────────┐
+   │  Revised Draft + Audit Report   │
+   │  (download / copy)              │
+   └─────────────────────────────────┘
+```
+
+### Round 3 Hardening Flow (What Shipped)
+
+```
+Round 2 Prototype
+        │
+        ├── Reliability fixes ──┐
+        │   (drag-drop, empty    │
+        │    state, modal z,     │
+        │    dark mode)          │
+        │                        │
+        ├── Usability fixes ─────┤──▶  Round 3 Final Product
+        │   (sidebar, theme,     │      (deployed, documented,
+        │    logo, login)        │       tested, honest limits)
+        │                        │
+        └── Documentation ───────┘
+            (README, access codes,
+             known limits, roadmap)
+```
+
+### Three Named Improvements — Delivery Status
+
+```
+Round 2 Commitment          Round 3 Outcome
+─────────────────────────   ──────────────────────────────────
+1. Multimodal review        NOT delivered (OCR, page citations,
+   (OCR, logo matching)     asset matching). Partial: text-PDF
+                            extraction + logo heuristics exist.
+
+2. Enterprise governance    NOT delivered (real auth/RBAC).
+   (auth, RBAC, audit)     Demo codes documented as non-auth.
+                            Workspaces + history in-memory only.
+
+3. Controlled publishing    PARTIAL (approval step indicator +
+   (publish, metrics)       in-memory history). No real
+                            publishing; metrics not tracked.
+```
+
+### Deployment Architecture
+
+```
+Source: github.com/hariharan-007design/Rakshak2.0
+        │
+        ├── GitHub Pages ──▶ https://hariharan-007design.github.io/Rakshak2.0/
+        │                   (static, no build, no backend)
+        │
+        └── Local run: python -m http.server 8000 --directory web
+            (PDF.js requires HTTP, not file://)
+```
 
 ---
 
