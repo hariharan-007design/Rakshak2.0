@@ -1140,6 +1140,29 @@ async function deleteSavedFile(id) {
 }
 
 
+
+// Workspace theme toggle
+(function() {
+  const toggle = document.getElementById('wsThemeToggle');
+  const login = document.getElementById('loginScreen');
+  const ws = document.getElementById('workspace');
+  if (!toggle) return;
+  function applyTheme(theme) {
+    if (login) login.setAttribute('data-theme', theme);
+    if (ws) ws.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+    toggle.className = 'theme-toggle ' + (theme === 'light' ? 'light-mode' : 'dark-mode');
+    localStorage.setItem('rakshak_theme', theme);
+  }
+  const saved = localStorage.getItem('rakshak_theme') || 'light';
+  applyTheme(saved);
+  toggle.addEventListener('click', () => {
+    const current = (document.body.getAttribute('data-theme') || 'light');
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  });
+})();
+
 bind(); loadPdfJs();
 // Init DB
 openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init failed", e));

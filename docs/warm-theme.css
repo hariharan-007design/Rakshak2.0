@@ -842,12 +842,12 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .login-screen { padding: 0 !important; }
 
 /* Page heading compact - aggressive */
-.page-heading { margin: 0 0 4px 0 !important; padding: 0 !important; }
+.page-heading { margin: 0 0 2px 0 !important; padding: 0 !important; }
 .page-heading h1 { font-size: 28px !important; margin: 0 !important; line-height: 1.1 !important; }
 .page-heading p { margin: 2px 0 0 !important; font-size: 11px !important; }
 .content-section { padding: 4px 0 6px !important; margin: 0 !important; }
-.view { padding: 8px clamp(16px, 3vw, 40px) !important; margin: 0 !important; }
-.topbar { height: 40px !important; }
+.view { padding: 4px clamp(16px, 3vw, 40px) !important; margin: 0 !important; }
+.topbar { height: 36px !important; }
 
 /* Mobile responsive */
 @media (max-width: 860px) {
@@ -997,4 +997,40 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 @keyframes sunGlow {
   0%, 100% { box-shadow: 0 0 8px 2px rgba(255,200,50,0.4), 0 4px 16px rgba(0,0,0,0.15); }
   50% { box-shadow: 0 0 16px 4px rgba(255,200,50,0.6), 0 4px 16px rgba(0,0,0,0.15); }
+}
+
+/* ═══ THEME-AWARE TEXT COLORS ═══ */
+/* Light mode: all text dark */
+[data-theme="light"] .ws-main h1,
+[data-theme="light"] .ws-card h3,
+[data-theme="light"] .page-heading h1,
+[data-theme="light"] .login-left h1,
+[data-theme="light"] .login-right h2,
+[data-theme="light"] .brand-name,
+[data-theme="light"] .ws-sidebar .logo {
+  color: #1a1a2e !important;
+}
+[data-theme="light"] .ws-main .sub,
+[data-theme="light"] .ws-card .rule,
+[data-theme="light"] .login-left p,
+[data-theme="light"] .login-right p,
+[data-theme="light"] .ws-sidebar .nav a {
+  color: #4a4a5a !important;
+}
+/* Dark mode: all text light */
+[data-theme="dark"] .ws-main h1,
+[data-theme="dark"] .ws-card h3,
+[data-theme="dark"] .page-heading h1,
+[data-theme="dark"] .login-left h1,
+[data-theme="dark"] .login-right h2,
+[data-theme="dark"] .brand-name,
+[data-theme="dark"] .ws-sidebar .logo {
+  color: #FAF7F2 !important;
+}
+[data-theme="dark"] .ws-main .sub,
+[data-theme="dark"] .ws-card .rule,
+[data-theme="dark"] .login-left p,
+[data-theme="dark"] .login-right p,
+[data-theme="dark"] .ws-sidebar .nav a {
+  color: #b0a898 !important;
 }

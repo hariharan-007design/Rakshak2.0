@@ -245,7 +245,7 @@
       </aside>
 
       <main class="main-area" id="mainContent">
-        <header class="topbar"><div class="breadcrumb"><button class="back-btn" id="backButton" type="button" aria-label="Go back">←</button><span>Workspace</span><svg class="icon"><use href="#i-chevron" /></svg><strong id="breadcrumbCurrent">Review draft</strong></div><div class="topbar-right"><label for="channelSelect" class="channel-label">DESTINATION</label><div class="channel-select-wrap"><select id="channelSelect" aria-label="Select destination"><option value="Website">Website</option><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option><option value="Email">Email</option><option value="Print">Print</option><option value="Internal">Internal</option></select><svg class="icon"><use href="#i-chevron" /></svg></div><span class="topbar-divider"></span><span class="user-chip" id="userChip">M</span></div></header>
+        <header class="topbar"><div class="breadcrumb"><button class="back-btn" id="backButton" type="button" aria-label="Go back">←</button><span>Workspace</span><svg class="icon"><use href="#i-chevron" /></svg><strong id="breadcrumbCurrent">Review draft</strong></div><div class="topbar-right"><button class="theme-toggle" id="wsThemeToggle" type="button" title="Toggle theme" style="width:36px;height:36px;font-size:18px;margin-right:8px;">☀️</button><label for="channelSelect" class="channel-label">DESTINATION</label><div class="channel-select-wrap"><select id="channelSelect" aria-label="Select destination"><option value="Website">Website</option><option value="LinkedIn">LinkedIn</option><option value="Instagram">Instagram</option><option value="X">X</option><option value="Facebook">Facebook</option><option value="Email">Email</option><option value="Print">Print</option><option value="Internal">Internal</option></select><svg class="icon"><use href="#i-chevron" /></svg></div><span class="topbar-divider"></span><span class="user-chip" id="userChip">M</span></div></header>
 
         <section class="view active-view" id="reviewView" data-title="Review draft">
           <div class="page-heading"><div><h1>Review before it <em>ships.</em></h1><p>Check a draft against <strong id="headingCompany">Mozilla Demo</strong> rules. Every finding points to its source.</p></div><button class="button button-text" id="loadSample" type="button">Load sample draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
@@ -394,15 +394,27 @@
       // Load saved theme
       const saved = localStorage.getItem('rakshak_theme') || 'light';
       login.setAttribute('data-theme', saved);
+      document.body.setAttribute('data-theme', saved);
+      const ws = document.getElementById('workspace');
+      if (ws) ws.setAttribute('data-theme', saved);
       toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
       toggle.className = 'theme-toggle ' + (saved === 'light' ? 'light-mode' : 'dark-mode');
       toggle.addEventListener('click', function() {
         const current = login.getAttribute('data-theme');
         const next = current === 'light' ? 'dark' : 'light';
         login.setAttribute('data-theme', next);
+        document.body.setAttribute('data-theme', next);
+        const ws = document.getElementById('workspace');
+        if (ws) ws.setAttribute('data-theme', next);
         toggle.textContent = next === 'dark' ? '🌙' : '☀️';
         toggle.className = 'theme-toggle ' + (next === 'light' ? 'light-mode' : 'dark-mode');
         localStorage.setItem('rakshak_theme', next);
+        // Sync workspace toggle
+        const wsToggle = document.getElementById('wsThemeToggle');
+        if (wsToggle) {
+          wsToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+          wsToggle.className = 'theme-toggle ' + (next === 'light' ? 'light-mode' : 'dark-mode');
+        }
       });
     })();
   </script>
