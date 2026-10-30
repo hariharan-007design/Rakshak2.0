@@ -1034,3 +1034,23 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 [data-theme="dark"] .ws-sidebar .nav a {
   color: #b0a898 !important;
 }
+
+/* Logo: larger, centered, no line below */
+.login-logo {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto 8px !important;
+}
+.login-brand {
+  border: none !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 16px !important;
+  text-align: center !important;
+}
+.login-brand-name {
+  font-size: 28px !important;
+  text-align: center !important;
+}
