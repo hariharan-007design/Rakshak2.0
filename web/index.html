@@ -77,7 +77,8 @@
     <div class="loading-track"><div class="loading-fill"></div></div>
   </div>
 
-  <main class="login-screen" id="loginScreen" style="display:none;">
+  <main class="login-screen" id="loginScreen" style="display:none;" data-theme="light">
+  <button class="theme-toggle light-mode" id="themeToggle" title="Toggle theme">☀️</button>
   <div class="dot-grid" id="dotGrid"></div>
   <script>
     (function() {
@@ -379,6 +380,27 @@
   <!-- Particle Field -->
   <div class="particle-field" id="particles"></div>
 
+  <!-- ═══ THEME TOGGLE JS ═══ -->
+  <script>
+    (function() {
+      const toggle = document.getElementById('themeToggle');
+      const login = document.getElementById('loginScreen');
+      if (!toggle || !login) return;
+      // Load saved theme
+      const saved = localStorage.getItem('rakshak_theme') || 'light';
+      login.setAttribute('data-theme', saved);
+      toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+      toggle.className = 'theme-toggle ' + (saved === 'light' ? 'light-mode' : 'dark-mode');
+      toggle.addEventListener('click', function() {
+        const current = login.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        login.setAttribute('data-theme', next);
+        toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+        toggle.className = 'theme-toggle ' + (next === 'light' ? 'light-mode' : 'dark-mode');
+        localStorage.setItem('rakshak_theme', next);
+      });
+    })();
+  </script>
   <!-- ═══ SPLASH SCREEN JS ═══ -->
   <script>
     (function() {

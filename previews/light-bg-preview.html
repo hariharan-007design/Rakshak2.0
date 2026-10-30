@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Light Background Preview — Rakshak 2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #111; color: #333; }
+  .tabs { display: flex; gap: 8px; padding: 16px; background: #0a0a0a; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; background: #333; color: #aaa; transition: all 0.2s; }
+  .tab.active { background: #d97d4e; color: #fff; }
+  .tab:hover { background: #555; }
+  .preview { display: none; padding: 24px; }
+  .preview.active { display: block; }
+  .section { margin-bottom: 40px; }
+  .section h2 { font-size: 18px; margin-bottom: 12px; color: #d97d4e; font-family: 'Playfair Display', serif; }
+  .frame { border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+  
+  /* Option D - Warm White */
+  .opt-d.login { background: linear-gradient(135deg, #faf7f2 0%, #f5efe6 50%, #faf7f2 100%); }
+  .opt-d.workspace { background: #faf7f2; }
+  .opt-d .login-left h1, .opt-d .login-right h2, .opt-d .brand-name, .opt-d .ws-main h1, .opt-d .ws-card h3, .opt-d .ws-sidebar .logo { color: #2b221b; }
+  .opt-d .login-left p, .opt-d .login-right p, .opt-d .ws-main .sub, .opt-d .ws-card .rule { color: #5a4530; }
+  .opt-d .login-right { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.08); }
+  .opt-d .form-group select, .opt-d .form-group input { background: #fff; border: 1px solid #d9d0c0; color: #2b221b; }
+  .opt-d .form-group label { color: #8b6f47; }
+  .opt-d .ws-sidebar { background: rgba(0,0,0,0.04); border-right: 1px solid rgba(0,0,0,0.08); }
+  .opt-d .ws-sidebar .nav a { color: #5a4530; }
+  .opt-d .ws-sidebar .nav a.active { background: rgba(217,125,79,0.12); color: #d97d4e; }
+  .opt-d .ws-card { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06); }
+  .opt-d .ws-footer .btn-clear { border: 1px solid rgba(0,0,0,0.12); color: #5a4530; }
+  .opt-d .hint, .opt-d .note { color: #8b6f47; }
+  
+  /* Option E - Cool Grey */
+  .opt-e.login { background: linear-gradient(135deg, #f0f0f2 0%, #e8e8ec 50%, #f0f0f2 100%); }
+  .opt-e.workspace { background: #f0f0f2; }
+  .opt-e .login-left h1, .opt-e .login-right h2, .opt-e .brand-name, .opt-e .ws-main h1, .opt-e .ws-card h3, .opt-e .ws-sidebar .logo { color: #1a1a2e; }
+  .opt-e .login-left p, .opt-e .login-right p, .opt-e .ws-main .sub, .opt-e .ws-card .rule { color: #4a4a5a; }
+  .opt-e .login-right { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.08); }
+  .opt-e .form-group select, .opt-e .form-group input { background: #fff; border: 1px solid #c8c8d0; color: #1a1a2e; }
+  .opt-e .form-group label { color: #6a6a7a; }
+  .opt-e .ws-sidebar { background: rgba(0,0,0,0.04); border-right: 1px solid rgba(0,0,0,0.08); }
+  .opt-e .ws-sidebar .nav a { color: #4a4a5a; }
+  .opt-e .ws-sidebar .nav a.active { background: rgba(217,125,79,0.12); color: #d97d4e; }
+  .opt-e .ws-card { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06); }
+  .opt-e .ws-footer .btn-clear { border: 1px solid rgba(0,0,0,0.12); color: #4a4a5a; }
+  .opt-e .hint, .opt-e .note { color: #6a6a7a; }
+  .opt-e .login-left h1 span { color: #d97d4e; }
+  
+  /* Option F - Soft Beige */
+  .opt-f.login { background: linear-gradient(135deg, #f5f0e8 0%, #ede8dc 50%, #f5f0e8 100%); }
+  .opt-f.workspace { background: #f5f0e8; }
+  .opt-f .login-left h1, .opt-f .login-right h2, .opt-f .brand-name, .opt-f .ws-main h1, .opt-f .ws-card h3, .opt-f .ws-sidebar .logo { color: #3a3028; }
+  .opt-f .login-left p, .opt-f .login-right p, .opt-f .ws-main .sub, .opt-f .ws-card .rule { color: #6a5a48; }
+  .opt-f .login-right { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.06); }
+  .opt-f .form-group select, .opt-f .form-group input { background: #fff; border: 1px solid #d8d0c4; color: #3a3028; }
+  .opt-f .form-group label { color: #8a7a68; }
+  .opt-f .ws-sidebar { background: rgba(0,0,0,0.03); border-right: 1px solid rgba(0,0,0,0.06); }
+  .opt-f .ws-sidebar .nav a { color: #6a5a48; }
+  .opt-f .ws-sidebar .nav a.active { background: rgba(217,125,79,0.12); color: #d97d4e; }
+  .opt-f .ws-card { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); }
+  .opt-f .ws-footer .btn-clear { border: 1px solid rgba(0,0,0,0.1); color: #6a5a48; }
+  .opt-f .hint, .opt-f .note { color: #8a7a68; }
+  .opt-f .login-left h1 span { color: #d97d4e; }
+  
+  /* Option G - Warm Grey */
+  .opt-g.login { background: linear-gradient(135deg, #e8e4de 0%, #ddd8d0 50%, #e8e4de 100%); }
+  .opt-g.workspace { background: #e8e4de; }
+  .opt-g .login-left h1, .opt-g .login-right h2, .opt-g .brand-name, .opt-g .ws-main h1, .opt-g .ws-card h3, .opt-g .ws-sidebar .logo { color: #2a2520; }
+  .opt-g .login-left p, .opt-g .login-right p, .opt-g .ws-main .sub, .opt-g .ws-card .rule { color: #5a5048; }
+  .opt-g .login-right { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.06); }
+  .opt-g .form-group select, .opt-g .form-group input { background: #fff; border: 1px solid #c8c0b4; color: #2a2520; }
+  .opt-g .form-group label { color: #7a7068; }
+  .opt-g .ws-sidebar { background: rgba(0,0,0,0.03); border-right: 1px solid rgba(0,0,0,0.06); }
+  .opt-g .ws-sidebar .nav a { color: #5a5048; }
+  .opt-g .ws-sidebar .nav a.active { background: rgba(217,125,79,0.12); color: #d97d4e; }
+  .opt-g .ws-card { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); }
+  .opt-g .ws-footer .btn-clear { border: 1px solid rgba(0,0,0,0.1); color: #5a5048; }
+  .opt-g .hint, .opt-g .note { color: #7a7068; }
+  .opt-g .login-left h1 span { color: #d97d4e; }
+  
+  /* Option H - Pure White */
+  .opt-h.login { background: #ffffff; }
+  .opt-h.workspace { background: #ffffff; }
+  .opt-h .login-left h1, .opt-h .login-right h2, .opt-h .brand-name, .opt-h .ws-main h1, .opt-h .ws-card h3, .opt-h .ws-sidebar .logo { color: #1a1a1a; }
+  .opt-h .login-left p, .opt-h .login-right p, .opt-h .ws-main .sub, .opt-h .ws-card .rule { color: #555; }
+  .opt-h .login-right { background: #f8f8f8; border: 1px solid #e0e0e0; }
+  .opt-h .form-group select, .opt-h .form-group input { background: #fff; border: 1px solid #ccc; color: #1a1a1a; }
+  .opt-h .form-group label { color: #888; }
+  .opt-h .ws-sidebar { background: #f5f5f5; border-right: 1px solid #e0e0e0; }
+  .opt-h .ws-sidebar .nav a { color: #555; }
+  .opt-h .ws-sidebar .nav a.active { background: rgba(217,125,79,0.1); color: #d97d4e; }
+  .opt-h .ws-card { background: #f8f8f8; border: 1px solid #e8e8e8; }
+  .opt-h .ws-footer .btn-clear { border: 1px solid #ccc; color: #555; }
+  .opt-h .hint, .opt-h .note { color: #888; }
+  .opt-h .login-left h1 span { color: #d97d4e; }
+  
+  /* Common styles (same as before) */
+  .login-wrap { display: flex; min-height: 480px; align-items: center; justify-content: center; padding: 40px; position: relative; overflow: hidden; }
+  .login-wrap::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(139,90,43,0.08) 1.5px, transparent 1.5px); background-size: 28px 28px; pointer-events: none; }
+  .login-card { padding: 40px; max-width: 900px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; position: relative; z-index: 1; }
+  .login-left h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 36px; line-height: 1.1; margin-bottom: 12px; }
+  .login-left h1 span { color: #d97d4e; }
+  .login-left p { font-size: 14px; line-height: 1.6; }
+  .login-left .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .login-left .brand-name { font-family: 'Playfair Display', serif; font-size: 20px; }
+  .login-left .brand-name span { color: #4A90D9; }
+  .login-right h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 4px; }
+  .login-right p { font-size: 12px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.13em; margin-bottom: 6px; }
+  .form-group select, .form-group input { width: 100%; padding: 10px 12px; border-radius: 8px; font-size: 13px; }
+  .btn { width: 100%; padding: 12px; background: #d97d4e; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; margin-top: 8px; }
+  .hint { font-size: 10px; margin-top: 8px; text-align: center; }
+  
+  .ws-wrap { display: flex; min-height: 480px; }
+  .ws-sidebar { width: 200px; padding: 20px 16px; }
+  .ws-sidebar .logo { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 24px; }
+  .ws-sidebar .logo span { color: #4A90D9; }
+  .ws-sidebar .nav { display: flex; flex-direction: column; gap: 4px; }
+  .ws-sidebar .nav a { padding: 8px 12px; border-radius: 6px; font-size: 12px; text-decoration: none; display: block; }
+  .ws-main { flex: 1; padding: 24px 32px; }
+  .ws-main h1 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 4px; }
+  .ws-main .sub { font-size: 13px; margin-bottom: 20px; }
+  .ws-layout { display: grid; grid-template-columns: 1.5fr 0.7fr; gap: 24px; }
+  .ws-card { border-radius: 12px; padding: 20px; }
+  .ws-card h3 { font-size: 13px; margin-bottom: 12px; font-weight: 600; }
+  .ws-card .rule { padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 12px; }
+  .ws-card .rule:last-child { border-bottom: none; }
+  .ws-card .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 700; margin-left: 8px; }
+  .badge-high { background: rgba(217,125,79,0.15); color: #d97d4e; }
+  .badge-med { background: rgba(212,165,116,0.15); color: #8b6f47; }
+  .ws-footer { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
+  .ws-footer .btn-clear { padding: 10px 20px; background: transparent; border: 1px solid rgba(0,0,0,0.12); border-radius: 8px; font-size: 12px; cursor: pointer; }
+  .ws-footer .btn-run { padding: 10px 24px; background: #d97d4e; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .ws-footer .note { font-size: 10px; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab active" onclick="show('d')">D — Warm White</button>
+  <button class="tab" onclick="show('e')">E — Cool Grey</button>
+  <button class="tab" onclick="show('f')">F — Soft Beige</button>
+  <button class="tab" onclick="show('g')">G — Warm Grey</button>
+  <button class="tab" onclick="show('h')">H — Pure White</button>
+</div>
+
+<!-- Option D - Warm White -->
+<div id="d" class="preview active">
+  <div class="section"><h2>D — Warm White — Login</h2>
+    <div class="frame opt-d login"><div class="login-wrap"><div class="login-card">
+      <div class="login-left">
+        <div class="brand"><span style="font-size:24px;">🛡️</span><span class="brand-name">Rakshak <span>2.0</span></span></div>
+        <h1>Keep your brand<br/>in the <span>conversation.</span></h1>
+        <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
+      </div>
+      <div class="login-right">
+        <h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p>
+        <div class="form-group"><label>INDUSTRY</label><select><option>Technology / SaaS</option></select></div>
+        <div class="form-group"><label>COMPANY / BRAND</label><select><option>Acme SaaS</option></select></div>
+        <div class="form-group"><label>ACCESS CODE</label><input type="password" placeholder="Enter access code" /></div>
+        <button class="btn">Continue to workspace →</button>
+        <div class="hint">Demo access code: ACME-2026 · Prototype only</div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="section"><h2>D — Warm White — Workspace</h2>
+    <div class="frame opt-d workspace"><div class="ws-wrap">
+      <div class="ws-sidebar"><div class="logo">Rakshak <span>2.0</span></div><div class="nav"><a class="active">Review draft</a><a>Brand logo</a><a>Guidelines</a><a>Review history</a></div></div>
+      <div class="ws-main"><h1>Review before it ships</h1><p class="sub">Upload a draft or paste text to check against brand rules.</p>
+        <div class="ws-layout"><div class="ws-card"><h3>The draft</h3><p style="font-size:12px;opacity:0.5;">Upload PDF/TXT or paste text here...</p></div>
+        <div class="ws-card"><h3>Active Rule Pack — Acme SaaS</h3><div class="rule">AC-01 Qualify guaranteed outcomes <span class="badge badge-high">HIGH</span></div><div class="rule">AC-02 Replace vague superlatives <span class="badge badge-med">MEDIUM</span></div><div class="rule">AC-03 Add statistics sources <span class="badge badge-med">MEDIUM</span></div></div></div>
+        <div class="ws-footer"><button class="btn-clear">Clear</button><button class="btn-run">Run review →</button><span class="note">Nothing leaves the browser</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Option E - Cool Grey -->
+<div id="e" class="preview">
+  <div class="section"><h2>E — Cool Grey — Login</h2>
+    <div class="frame opt-e login"><div class="login-wrap"><div class="login-card">
+      <div class="login-left">
+        <div class="brand"><span style="font-size:24px;">🛡️</span><span class="brand-name">Rakshak <span>2.0</span></span></div>
+        <h1>Keep your brand<br/>in the <span>conversation.</span></h1>
+        <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
+      </div>
+      <div class="login-right">
+        <h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p>
+        <div class="form-group"><label>INDUSTRY</label><select><option>Technology / SaaS</option></select></div>
+        <div class="form-group"><label>COMPANY / BRAND</label><select><option>Acme SaaS</option></select></div>
+        <div class="form-group"><label>ACCESS CODE</label><input type="password" placeholder="Enter access code" /></div>
+        <button class="btn">Continue to workspace →</button>
+        <div class="hint">Demo access code: ACME-2026 · Prototype only</div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="section"><h2>E — Cool Grey — Workspace</h2>
+    <div class="frame opt-e workspace"><div class="ws-wrap">
+      <div class="ws-sidebar"><div class="logo">Rakshak <span>2.0</span></div><div class="nav"><a class="active">Review draft</a><a>Brand logo</a><a>Guidelines</a><a>Review history</a></div></div>
+      <div class="ws-main"><h1>Review before it ships</h1><p class="sub">Upload a draft or paste text to check against brand rules.</p>
+        <div class="ws-layout"><div class="ws-card"><h3>The draft</h3><p style="font-size:12px;opacity:0.5;">Upload PDF/TXT or paste text here...</p></div>
+        <div class="ws-card"><h3>Active Rule Pack — Acme SaaS</h3><div class="rule">AC-01 Qualify guaranteed outcomes <span class="badge badge-high">HIGH</span></div><div class="rule">AC-02 Replace vague superlatives <span class="badge badge-med">MEDIUM</span></div><div class="rule">AC-03 Add statistics sources <span class="badge badge-med">MEDIUM</span></div></div></div>
+        <div class="ws-footer"><button class="btn-clear">Clear</button><button class="btn-run">Run review →</button><span class="note">Nothing leaves the browser</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Option F - Soft Beige -->
+<div id="f" class="preview">
+  <div class="section"><h2>F — Soft Beige — Login</h2>
+    <div class="frame opt-f login"><div class="login-wrap"><div class="login-card">
+      <div class="login-left">
+        <div class="brand"><span style="font-size:24px;">🛡️</span><span class="brand-name">Rakshak <span>2.0</span></span></div>
+        <h1>Keep your brand<br/>in the <span>conversation.</span></h1>
+        <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
+      </div>
+      <div class="login-right">
+        <h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p>
+        <div class="form-group"><label>INDUSTRY</label><select><option>Technology / SaaS</option></select></div>
+        <div class="form-group"><label>COMPANY / BRAND</label><select><option>Acme SaaS</option></select></div>
+        <div class="form-group"><label>ACCESS CODE</label><input type="password" placeholder="Enter access code" /></div>
+        <button class="btn">Continue to workspace →</button>
+        <div class="hint">Demo access code: ACME-2026 · Prototype only</div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="section"><h2>F — Soft Beige — Workspace</h2>
+    <div class="frame opt-f workspace"><div class="ws-wrap">
+      <div class="ws-sidebar"><div class="logo">Rakshak <span>2.0</span></div><div class="nav"><a class="active">Review draft</a><a>Brand logo</a><a>Guidelines</a><a>Review history</a></div></div>
+      <div class="ws-main"><h1>Review before it ships</h1><p class="sub">Upload a draft or paste text to check against brand rules.</p>
+        <div class="ws-layout"><div class="ws-card"><h3>The draft</h3><p style="font-size:12px;opacity:0.5;">Upload PDF/TXT or paste text here...</p></div>
+        <div class="ws-card"><h3>Active Rule Pack — Acme SaaS</h3><div class="rule">AC-01 Qualify guaranteed outcomes <span class="badge badge-high">HIGH</span></div><div class="rule">AC-02 Replace vague superlatives <span class="badge badge-med">MEDIUM</span></div><div class="rule">AC-03 Add statistics sources <span class="badge badge-med">MEDIUM</span></div></div></div>
+        <div class="ws-footer"><button class="btn-clear">Clear</button><button class="btn-run">Run review →</button><span class="note">Nothing leaves the browser</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Option G - Warm Grey -->
+<div id="g" class="preview">
+  <div class="section"><h2>G — Warm Grey — Login</h2>
+    <div class="frame opt-g login"><div class="login-wrap"><div class="login-card">
+      <div class="login-left">
+        <div class="brand"><span style="font-size:24px;">🛡️</span><span class="brand-name">Rakshak <span>2.0</span></span></div>
+        <h1>Keep your brand<br/>in the <span>conversation.</span></h1>
+        <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
+      </div>
+      <div class="login-right">
+        <h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p>
+        <div class="form-group"><label>INDUSTRY</label><select><option>Technology / SaaS</option></select></div>
+        <div class="form-group"><label>COMPANY / BRAND</label><select><option>Acme SaaS</option></select></div>
+        <div class="form-group"><label>ACCESS CODE</label><input type="password" placeholder="Enter access code" /></div>
+        <button class="btn">Continue to workspace →</button>
+        <div class="hint">Demo access code: ACME-2026 · Prototype only</div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="section"><h2>G — Warm Grey — Workspace</h2>
+    <div class="frame opt-g workspace"><div class="ws-wrap">
+      <div class="ws-sidebar"><div class="logo">Rakshak <span>2.0</span></div><div class="nav"><a class="active">Review draft</a><a>Brand logo</a><a>Guidelines</a><a>Review history</a></div></div>
+      <div class="ws-main"><h1>Review before it ships</h1><p class="sub">Upload a draft or paste text to check against brand rules.</p>
+        <div class="ws-layout"><div class="ws-card"><h3>The draft</h3><p style="font-size:12px;opacity:0.5;">Upload PDF/TXT or paste text here...</p></div>
+        <div class="ws-card"><h3>Active Rule Pack — Acme SaaS</h3><div class="rule">AC-01 Qualify guaranteed outcomes <span class="badge badge-high">HIGH</span></div><div class="rule">AC-02 Replace vague superlatives <span class="badge badge-med">MEDIUM</span></div><div class="rule">AC-03 Add statistics sources <span class="badge badge-med">MEDIUM</span></div></div></div>
+        <div class="ws-footer"><button class="btn-clear">Clear</button><button class="btn-run">Run review →</button><span class="note">Nothing leaves the browser</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Option H - Pure White -->
+<div id="h" class="preview">
+  <div class="section"><h2>H — Pure White — Login</h2>
+    <div class="frame opt-h login"><div class="login-wrap"><div class="login-card">
+      <div class="login-left">
+        <div class="brand"><span style="font-size:24px;">🛡️</span><span class="brand-name">Rakshak <span>2.0</span></span></div>
+        <h1>Keep your brand<br/>in the <span>conversation.</span></h1>
+        <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
+      </div>
+      <div class="login-right">
+        <h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p>
+        <div class="form-group"><label>INDUSTRY</label><select><option>Technology / SaaS</option></select></div>
+        <div class="form-group"><label>COMPANY / BRAND</label><select><option>Acme SaaS</option></select></div>
+        <div class="form-group"><label>ACCESS CODE</label><input type="password" placeholder="Enter access code" /></div>
+        <button class="btn">Continue to workspace →</button>
+        <div class="hint">Demo access code: ACME-2026 · Prototype only</div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="section"><h2>H — Pure White — Workspace</h2>
+    <div class="frame opt-h workspace"><div class="ws-wrap">
+      <div class="ws-sidebar"><div class="logo">Rakshak <span>2.0</span></div><div class="nav"><a class="active">Review draft</a><a>Brand logo</a><a>Guidelines</a><a>Review history</a></div></div>
+      <div class="ws-main"><h1>Review before it ships</h1><p class="sub">Upload a draft or paste text to check against brand rules.</p>
+        <div class="ws-layout"><div class="ws-card"><h3>The draft</h3><p style="font-size:12px;opacity:0.5;">Upload PDF/TXT or paste text here...</p></div>
+        <div class="ws-card"><h3>Active Rule Pack — Acme SaaS</h3><div class="rule">AC-01 Qualify guaranteed outcomes <span class="badge badge-high">HIGH</span></div><div class="rule">AC-02 Replace vague superlatives <span class="badge badge-med">MEDIUM</span></div><div class="rule">AC-03 Add statistics sources <span class="badge badge-med">MEDIUM</span></div></div></div>
+        <div class="ws-footer"><button class="btn-clear">Clear</button><button class="btn-run">Run review →</button><span class="note">Nothing leaves the browser</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.preview').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
