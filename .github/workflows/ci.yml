@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run tests
+        run: node tests/test-harness.js
+      - name: Check JS syntax
+        run: node --check web/app.js
+      - name: Check HTML validity
+        run: |
+          if grep -q '<!DOCTYPE html>' web/index.html; then echo "HTML OK"; else echo "Missing DOCTYPE"; exit 1; fi
