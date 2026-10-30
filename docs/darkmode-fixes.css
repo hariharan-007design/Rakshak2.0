@@ -84,3 +84,7 @@
   color: #F2EFE6 !important;
   border: 1px solid #4a3a2a !important;
 }
+
+/* Keep your brand in the - black color */
+.login-message h1 { color: #000000 !important; }
+.login-message h1 em { color: var(--orange, #D4782A) !important; }
