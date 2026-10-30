@@ -101,7 +101,8 @@ function showView(view) {
   state.currentView = view;
   document.querySelectorAll('[data-view]').forEach(tab => tab.classList.toggle('active', tab.dataset.view === view));
   document.querySelectorAll('.view').forEach(panel => { const active = panel.id === `${view}View`; panel.hidden = !active; panel.classList.toggle('hidden',!active); panel.classList.toggle('active-view', active); });
-  if ($('breadcrumbCurrent')) $('breadcrumbCurrent').textContent = ({review:'New review',guidelines:'Guidelines',history:'Review history',settings:'Workspace settings',polish:'AI polish',logo:'Logo'})[view] || 'New review';
+  if ($('breadcrumbCurrent')) $('breadcrumbCurrent').textContent = ({review:'New review',guidelines:'Guidelines',history:'Review history',settings:'Workspace settings',polish:'AI polish',logo:'Logo',savedFiles:'Saved files'})[view] || 'New review';
+  if (view === 'savedFiles') renderSavedFiles();
   if($('profileMenu')){$('profileMenu').classList.remove('open');$('profileMenu').classList.add('hidden');}$('profileTrigger')?.setAttribute('aria-expanded','false');
 }
 
@@ -963,6 +964,7 @@ function bind() {
   $('changeCompany')?.addEventListener('click',signOut); $('settingsChangeCompany')?.addEventListener('click',signOut);
   document.querySelectorAll('[data-view]').forEach(tab=>tab.addEventListener('click',()=>showView(tab.dataset.view)));
   $('analyzeButton')?.addEventListener('click',analyze);
+$('saveToDbBtn')?.addEventListener('click',async()=>{const draft=$('draftInput')?.value||'';if(!draft.trim()){toast('Nothing to save');return;}try{const profile=localStorage.getItem('rakshak_profile');const p=profile?JSON.parse(profile):{};await saveFileToDB(draft,state.findings,p.industry||state.industry,p.company||state.company);toast('Saved to database');renderSavedFiles();}catch(e){toast('Save failed');console.error(e);}});
   $('voiceBtn')?.addEventListener('click',initVoice);
   $('shareEmail')?.addEventListener('click',shareEmail);
   $('shareCopy')?.addEventListener('click',shareCopy);
@@ -1005,4 +1007,139 @@ async function loadPdfJs() {
   try { const module=await import('./vendor/pdf.min.mjs'); window.pdfjsLib=module; module.GlobalWorkerOptions.workerSrc=new URL('./vendor/pdf.worker.min.mjs',import.meta.url).href; }
   catch(error){ console.warn('PDF.js unavailable; text files still work.',error); }
 }
+
+/* ═══ INDUSTRY DATABASE (IndexedDB) ═══ */
+const DB_NAME = 'rakshak_db';
+const DB_VERSION = 1;
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    if (db) { resolve(db); return; }
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('files')) {
+        const store = d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('industry', 'industry', { unique: false });
+        store.createIndex('company', 'company', { unique: false });
+      }
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function saveFileToDB(draft, findings, industry, company) {
+  const d = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = d.transaction('files', 'readwrite');
+    const store = tx.objectStore('files');
+    const record = {
+      industry: industry || 'general',
+      company: company || 'unknown',
+      draft: draft || '',
+      findings: findings || [],
+      savedAt: new Date().toISOString(),
+      wordCount: (draft || '').trim().split(/\s+/).filter(Boolean).length
+    };
+    const req = store.add(record);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function getFilesByIndustry(industry) {
+  const d = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = d.transaction('files', 'readonly');
+    const store = tx.objectStore('files');
+    const idx = store.index('industry');
+    const req = idx.getAll(industry);
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function getAllFiles() {
+  const d = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = d.transaction('files', 'readonly');
+    const store = tx.objectStore('files');
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function deleteFileFromDB(id) {
+  const d = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = d.transaction('files', 'readwrite');
+    const store = tx.objectStore('files');
+    const req = store.delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// Render saved files list for current industry
+async function renderSavedFiles() {
+  const container = $('savedFilesList');
+  if (!container) return;
+  const industry = state.industry || 'tech';
+  try {
+    const files = await getFilesByIndustry(industry);
+    if (files.length === 0) {
+      container.innerHTML = '<p style="color:var(--tan);font-size:12px;">No saved files for this industry yet.</p>';
+      return;
+    }
+    container.innerHTML = files.map(f => `
+      <div class="saved-file-item" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <strong style="font-size:12px;">${f.wordCount} words</strong>
+          <span style="font-size:10px;color:var(--tan);margin-left:8px;">${new Date(f.savedAt).toLocaleDateString()}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="button button-outline" style="font-size:9px;padding:4px 8px;" onclick="loadSavedFile(${f.id})">Load</button>
+          <button class="button button-outline" style="font-size:9px;padding:4px 8px;" onclick="deleteSavedFile(${f.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load saved files:', e);
+  }
+}
+
+async function loadSavedFile(id) {
+  const d = await openDB();
+  const tx = d.transaction('files', 'readonly');
+  const store = tx.objectStore('files');
+  const req = store.get(id);
+  req.onsuccess = () => {
+    const file = req.result;
+    if (file && $('draftInput')) {
+      $('draftInput').value = file.draft || '';
+      state.draft = file.draft || '';
+      state.findings = file.findings || [];
+      updateWordCount();
+      if (state.findings.length > 0) renderFindings();
+      toast('File loaded from database');
+    }
+  };
+}
+
+async function deleteSavedFile(id) {
+  try {
+    await deleteFileFromDB(id);
+    toast('File deleted');
+    renderSavedFiles();
+  } catch (e) {
+    toast('Delete failed');
+  }
+}
+
+
 bind(); loadPdfJs();
+// Init DB
+openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init failed", e));

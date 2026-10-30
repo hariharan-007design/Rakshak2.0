@@ -157,7 +157,7 @@
             <span class="tiny-label">A CLEARER LAST LOOK</span>
             <h1>Keep your brand<br />in the <em>conversation.</em></h1>
             <p>Review a draft, understand every flag, and choose what changes before it goes live.</p>
-            <div class="login-proof"><svg class="icon"><use href="#i-lock" /></svg><span>Demo mode · Files stay in this browser session</span></div>
+            
           </div>
           <form class="login-form" id="loginForm">
             <div class="form-heading"><h2>Open your workspace</h2><p>Select your industry and company, or register a new one.</p></div>
@@ -240,6 +240,7 @@
           <button class="side-tab" data-view="logo" type="button"><svg class="icon"><use href="#i-image"/></svg><span>Logo</span></button>
           <button class="side-tab" data-view="guidelines" type="button"><svg class="icon"><use href="#i-book" /></svg><span>Guidelines</span></button>
           <button class="side-tab" data-view="history" type="button"><svg class="icon"><use href="#i-history" /></svg><span>Review history</span><span class="nav-badge" id="historyBadge">0</span></button>
+        <button class="side-tab" data-view="savedFiles" type="button"><svg class="icon"><use href="#i-history" /></svg><span>Saved files</span></button>
         </nav>
         <div class="sidebar-bottom"></div>
       </aside>
@@ -261,7 +262,7 @@
                 <textarea id="draftInput" placeholder="Paste the copy you want to review…" aria-label="Draft copy"></textarea>
                 <div class="draft-meta"><span id="draftMeta">0 words · 0 characters</span><span id="pdfMeta" class="pdf-meta"></span></div>
                 <div class="draft-preview hidden" id="highlightPanel"><div class="preview-label">ORIGINAL DRAFT <span>Flagged text is highlighted below</span></div><div class="highlighted-copy" id="highlightedCopy"></div></div>
-                <div class="draft-actions"><span class="rule-mode"><svg class="icon"><use href="#i-shield" /></svg> Curated rules · AI advisory available</span><button class="button button-outline" id="voiceBtn" type="button">🎤 Voice</button><button class="button button-primary" id="analyzeButton" type="button">Analyze draft <svg class="icon"><use href="#i-arrow" /></svg></button></div>
+                <div class="draft-actions"><span class="rule-mode"><svg class="icon"><use href="#i-shield" /></svg> Curated rules · AI advisory available</span><button class="button button-outline" id="voiceBtn" type="button">🎤 Voice</button><button class="button button-primary" id="analyzeButton" type="button">Analyze draft <svg class="icon"><use href="#i-arrow" /></svg></button><button class="button button-outline" id="saveToDbBtn" type="button" style="margin-left:6px;">💾 Save</button></div>
     <div class="share-bar">
       <span class="share-label">Export / collaborate:</span>
       <button class="share-btn share-copy" id="shareCopy" type="button">📋 Copy</button>
@@ -367,7 +368,12 @@
         <section class="view" id="historyView" data-title="Review history">
           <div class="page-heading"><div><h1>Review <em>history.</em></h1><p>Recent activity held only in this open browser session.</p></div><button class="button button-outline" id="clearSession" type="button">Clear this session</button></div>
           <div class="history-list" id="historyList"></div><div class="history-empty hidden" id="historyEmpty">No scans yet. Reviews from this session will appear here.</div>
-        </section>
+                  </section>
+
+                  <section class="view" id="savedFilesView" data-title="Saved files">
+                    <div class="page-heading"><div><h1>Saved <em>files.</em></h1><p>Files saved to the local database, filtered by industry. Only visible for the selected industry.</p></div></div>
+                    <div class="saved-files-list" id="savedFilesList" style="padding:16px 0;"><p style="color:var(--tan);font-size:12px;">Loading...</p></div>
+                  </section>
 
         <section class="view" id="settingsView" data-title="Profile & settings">
           <div class="page-heading"><div><h1>Profile & <em>settings.</em></h1><p>Local demo preferences for this browser session.</p></div></div>
