@@ -8,6 +8,8 @@
     <meta name="theme-color" content="#11100e" />
     <title>Rakshak 2.0 — Brand review</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" href="./assets/rakshak-logo.png" />
@@ -478,13 +480,13 @@
     console.warn('Transformers.js failed to load:', e);
   }
 </script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     // Advanced UI effects
     (function() {
       const field = document.getElementById('particles');
       if (field) {
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < 8; i++) {
           const dot = document.createElement('div');
           dot.className = 'particle-dot';
           dot.style.left = Math.random() * 100 + '%';

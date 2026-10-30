@@ -1276,3 +1276,45 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .app-footer {
   font-size: 12px !important;
 }
+
+/* === Performance Optimizations === */
+
+/* CSS containment for better rendering */
+.view, .sidebar, .topbar, .finding-card {
+  contain: layout style paint;
+}
+
+/* Reduce animation overhead on mobile */
+@media (max-width: 768px) {
+  .particle-field, .dot-grid, .floating-shapes {
+    display: none !important;
+  }
+  * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+}
+
+/* GPU acceleration for transforms */
+.logo-3d, .splash-screen, .modal-overlay {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Reduce paint area for dot grid */
+.dot-grid {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Disable expensive effects on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .particle-field, .dot-grid, .floating-shapes {
+    display: none !important;
+  }
+}
