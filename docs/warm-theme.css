@@ -1058,9 +1058,15 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 
 /* ═══ MODAL REDESIGN (Emil Kowalski style) ═══ */
 .modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
   background: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 .modal {
   background: var(--surface) !important;
