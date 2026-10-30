@@ -1054,3 +1054,115 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   font-size: 28px !important;
   text-align: center !important;
 }
+
+
+/* ═══ MODAL REDESIGN (Emil Kowalski style) ═══ */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+.modal {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3) !important;
+  max-width: 420px !important;
+  width: 90% !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.modal-header {
+  padding: 20px 24px 16px !important;
+  border-bottom: 1px solid var(--line-soft) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+}
+.modal-kicker {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.15em !important;
+  color: var(--orange) !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--ink) !important;
+  margin: 0 !important;
+}
+.modal-close {
+  background: none !important;
+  border: none !important;
+  color: var(--muted) !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
+}
+.modal-close:hover {
+  color: var(--ink) !important;
+  background: var(--surface-2) !important;
+}
+.modal-body {
+  padding: 20px 24px 24px !important;
+}
+.modal-field {
+  margin-bottom: 16px !important;
+}
+.modal-field label {
+  display: block !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.13em !important;
+  color: var(--muted) !important;
+  margin-bottom: 6px !important;
+}
+.modal-input {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  transition: border-color 0.15s ease !important;
+}
+.modal-input:focus {
+  border-color: var(--orange) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(217, 125, 79, 0.15) !important;
+}
+.modal-hint {
+  display: block !important;
+  font-size: 10px !important;
+  color: var(--muted) !important;
+  margin-top: 4px !important;
+}
+.modal-submit {
+  width: 100% !important;
+  padding: 12px !important;
+  background: var(--orange) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.15s ease !important;
+  margin-top: 8px !important;
+}
+.modal-submit:hover {
+  background: #b86a3f !important;
+  transform: translateY(-1px) !important;
+}
+.modal-submit:active {
+  transform: translateY(0) scale(0.98) !important;
+}
