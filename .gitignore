@@ -4,3 +4,5 @@
 .tunnel-out.log
 
 Future stack/
+backend/node_modules/
+backend/rakshak.db
