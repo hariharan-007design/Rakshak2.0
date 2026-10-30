@@ -1240,3 +1240,11 @@ openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init fa
     }
   });
 })();
+
+// Gate voice button where unsupported
+(function() {
+  const btn = document.getElementById('voiceBtn');
+  if (btn && !('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    btn.hidden = true;
+  }
+})();
