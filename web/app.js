@@ -1166,3 +1166,13 @@ async function deleteSavedFile(id) {
 bind(); loadPdfJs();
 // Init DB
 openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init failed", e));
+
+// Sidebar toggle
+(function() {
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.querySelector('.sidebar');
+  if (!toggle || !sidebar) return;
+  toggle.addEventListener('click', function() {
+    sidebar.classList.toggle('hidden');
+  });
+})();

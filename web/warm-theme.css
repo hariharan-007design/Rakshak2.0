@@ -468,8 +468,11 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 }
 
 /* ─── Floating Logo ────────────────────────────────────────── */
-.sidebar-logo, .login-logo {
+.sidebar-logo {
   animation: float 6s ease-in-out infinite;
+}
+.login-logo {
+  animation: none !important;
 }
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
