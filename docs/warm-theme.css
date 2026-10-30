@@ -1208,3 +1208,71 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     width: 100% !important;
   }
 }
+
+/* === Dark Mode UI Fixes === */
+
+/* 1. Login page title readable in dark mode */
+.login-brand .brand-name,
+.login-content h1,
+.login-content .login-title {
+  color: var(--foreground, #FAF7F2) !important;
+}
+
+[data-theme="dark"] .login-brand .brand-name,
+[data-theme="dark"] .login-content h1 {
+  color: #F2EFE6 !important;
+}
+
+/* 2. Workspace layout: top-aligned, left-aligned */
+.workspace, .main-area, .view {
+  margin-top: 0 !important;
+  align-items: flex-start !important;
+}
+
+.workspace-grid, .review-layout {
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+
+/* 3. Input text boxes: lighter bg in dark mode */
+[data-theme="dark"] input, [data-theme="dark"] textarea, [data-theme="dark"] select {
+  background: var(--card, #2E2218) !important;
+  color: var(--foreground, #F2EFE6) !important;
+  border: 1px solid var(--border, #4A3A2A) !important;
+}
+
+/* 4. Top nav left-aligned */
+.topbar, .breadcrumb, .page-heading {
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+
+/* 5. Destination selector inline with title */
+.workspace-header, .page-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+/* 6. Focus-visible outlines */
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent, #D4782A) !important;
+  outline-offset: 2px !important;
+}
+
+/* 7. Mobile: stack upload zone and textarea */
+@media (max-width: 768px) {
+  .upload-strip, .draft-area, .review-layout, .workspace-grid {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+  .upload-zone, .textarea-wrap {
+    width: 100% !important;
+  }
+}
+
+/* Footer text minimum size */
+.app-footer {
+  font-size: 12px !important;
+}
