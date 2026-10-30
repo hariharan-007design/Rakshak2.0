@@ -176,7 +176,8 @@ function login() {
   demoCompany.name = originalName;
   demoCompany.mark = originalMark;
   state.company.name = companyName;
-  state.company.mark = companyName[0].toUpperCase();
+    state.company.mark = companyName[0].toUpperCase();
+    state.industry = industry;
   if ($('profileCompany')) $('profileCompany').textContent = companyName;
   if ($('orgName')) $('orgName').textContent = companyName;
   if ($('orgMark')) $('orgMark').textContent = companyName[0].toUpperCase();
@@ -969,7 +970,7 @@ function bind() {
   $('changeCompany')?.addEventListener('click',signOut); $('settingsChangeCompany')?.addEventListener('click',signOut);
   document.querySelectorAll('[data-view]').forEach(tab=>tab.addEventListener('click',()=>showView(tab.dataset.view)));
   $('analyzeButton')?.addEventListener('click',analyze);
-$('saveToDbBtn')?.addEventListener('click',async()=>{const draft=$('draftInput')?.value||'';if(!draft.trim()){toast('Nothing to save');return;}try{const profile=localStorage.getItem('rakshak_profile');const p=profile?JSON.parse(profile):{};await saveFileToDB(draft,state.findings,p.industry||state.industry,p.company||state.company);toast('Saved to database');renderSavedFiles();}catch(e){toast('Save failed');console.error(e);}});
+$('saveToDbBtn')?.addEventListener('click',async()=>{const draft=$('draftInput')?.value||'';if(!draft.trim()){toast('Nothing to save');return;}try{const profile=localStorage.getItem('rakshak_profile');const p=profile?JSON.parse(profile):{};await saveFileToDB(draft,state.findings,p.industry||state.industry,p.name||state.company?.name||'Unknown');toast('Saved to database');renderSavedFiles();}catch(e){toast('Save failed');console.error(e);}});
   $('voiceBtn')?.addEventListener('click',initVoice);
   $('shareEmail')?.addEventListener('click',shareEmail);
   $('shareCopy')?.addEventListener('click',shareCopy);
@@ -1128,7 +1129,7 @@ async function loadSavedFile(id) {
       state.draft = file.draft || '';
       state.findings = file.findings || [];
       updateWordCount();
-      if (state.findings.length > 0) renderFindings();
+      if (state.findings.length > 0) drawFindings();
       toast('File loaded from database');
     }
   };
