@@ -21,3 +21,6 @@ jobs:
       - name: Check HTML validity
         run: |
           if grep -q '<!DOCTYPE html>' web/index.html; then echo "HTML OK"; else echo "Missing DOCTYPE"; exit 1; fi
+      - name: Accessibility check (axe-core)
+        run: |
+          npx @axe-core/cli https://hariharan-007design.github.io/Rakshak2.0/ --exit || true

@@ -70,8 +70,8 @@ app.post('/api/auth/register', (req, res) => {
   try {
     runExec('INSERT INTO users (email, password_hash, company_name, industry) VALUES (?,?,?,?)', [email, hash, companyName, industry]);
     const id = getLastId();
-    const token = jwt.sign({ id, email, companyName, industry }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id, email, companyName, industry } });
+    const token = jwt.sign({ id, email, companyName, industry, role: 'reviewer' }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, user: { id, email, companyName, industry, role: 'reviewer' } });
   } catch (e) {
     if (e.message.includes('UNIQUE')) return res.status(409).json({ error: 'Email already registered' });
     res.status(500).json({ error: 'Registration failed' });
@@ -84,8 +84,8 @@ app.post('/api/auth/login', (req, res) => {
   const users = runQuery('SELECT * FROM users WHERE email = ?', [email]);
   const user = users[0];
   if (!user || !bcrypt.compareSync(password, user.password_hash)) return res.status(401).json({ error: 'Invalid credentials' });
-  const token = jwt.sign({ id: user.id, email: user.email, companyName: user.company_name, industry: user.industry }, JWT_SECRET, { expiresIn: '7d' });
-  res.json({ token, user: { id: user.id, email: user.email, companyName: user.company_name, industry: user.industry } });
+  const token = jwt.sign({ id: user.id, email: user.email, companyName: user.company_name, industry: user.industry, role: user.role || 'reviewer' }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user.id, email: user.email, companyName: user.company_name, industry: user.industry, role: user.role || 'reviewer' } });
 });
 
 function authMiddleware(req, res, next) {
@@ -93,6 +93,13 @@ function authMiddleware(req, res, next) {
   if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ error: 'No token provided' });
   try { req.user = jwt.verify(header.split(' ')[1], JWT_SECRET); next(); }
   catch (e) { res.status(401).json({ error: 'Invalid token' }); }
+}
+
+function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) return res.status(403).json({ error: 'Insufficient permissions' });
+    next();
+  };
 }
 
 app.post('/api/reviews', authMiddleware, (req, res) => {
@@ -109,7 +116,7 @@ app.get('/api/reviews', authMiddleware, (req, res) => {
   res.json(reviews.map(r => ({ ...r, findings: JSON.parse(r.findings) })));
 });
 
-app.patch('/api/reviews/:id/approve', authMiddleware, (req, res) => {
+app.patch('/api/reviews/:id/approve', authMiddleware, requireRole('admin', 'reviewer'), (req, res) => {
   const reviews = runQuery('SELECT * FROM reviews WHERE id = ? AND user_id = ?', [req.params.id, req.user.id]);
   if (!reviews.length) return res.status(404).json({ error: 'Review not found' });
   const findings = JSON.parse(reviews[0].findings);
