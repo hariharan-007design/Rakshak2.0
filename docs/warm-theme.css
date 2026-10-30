@@ -924,22 +924,32 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   z-index: 1;
 }
 
-/* Bright labels */
+/* Bright labels - max visibility */
 .login-form > label {
-  color: #FAF7F2 !important;
+  color: #FFFFFF !important;
   font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
 }
 
-/* Thin blur behind login + quote only */
+/* No box - transparent, max opacity content */
 .login-content {
-  background: rgba(61, 43, 31, 0.3) !important;
-  border: 1px solid rgba(242, 239, 229, 0.08) !important;
-  border-radius: 16px !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   padding: 40px 48px !important;
   gap: 48px !important;
 }
+/* Max opacity for quote and login */
+.login-message, .login-form {
+  opacity: 1 !important;
+}
+.login-message h1, .login-message p, .login-message span {
+  opacity: 1 !important;
+  color: #FAF7F2 !important;
+}
+
 
 
 /* Logo text highlight only - no blur */
