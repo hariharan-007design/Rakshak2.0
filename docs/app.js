@@ -730,68 +730,38 @@ function aiKey() { return localStorage.getItem('rakshak_ai_key') || ''; }
 function aiBase() { return (localStorage.getItem('rakshak_ai_base') || 'https://api.groq.com/openai/v1').trim(); }
 function aiModel() { let v = ($('aiModelInput') && $('aiModelInput').value.trim()) || localStorage.getItem('rakshak_ai_model') || 'llama-3.1-8b-instant'; return v; }
 function refreshAiStatus() { const k=aiKey(); if($('aiKeyStatus')) $('aiKeyStatus').textContent = k ? 'SET' : 'NOT SET'; if($('aiKeyInput')) $('aiKeyInput').value = k; if($('aiBaseInput')) $('aiBaseInput').value = aiBase(); if($('aiModelInput')) $('aiModelInput').value = aiModel(); }
-let _offlinePipe = null;
-async function loadOfflineModel() {
-  if (_offlinePipe) return _offlinePipe;
-  if (!window.transformers) throw new Error('Offline AI library not loaded');
-  const { pipeline } = window.transformers;
-  toast('Loading offline AI model (first time, ~500MB)...');
-  _offlinePipe = await pipeline('text-generation', 'Xenova/Qwen2.5-0.5B-Instruct', { dtype: 'q4' });
-  return _offlinePipe;
-}
 
-async function polishOffline(text, findings) {
-  const pipe = await loadOfflineModel();
-  const prompt = `Rewrite this marketing copy to comply with brand rules. Keep meaning and tone. Return only rewritten copy.\nRules:\n${findings || 'none'}\n\nDraft:\n${text}\n\nRewritten:`;
-  const out = await pipe(prompt, { max_new_tokens: 256, temperature: 0.3, do_sample: false });
-  return (out?.[0]?.generated_text || '').replace(prompt, '').trim();
-}
 
 async function polishWithAi() {
   if (!state.revised) { toast('Run a review first'); return; }
   const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · WORKING…</span>Polishing…'; }
   const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail}`).join('\n');
-  const online = !!aiKey();
+  const key = aiKey();
+  if (!key) {
+    if (result) result.innerHTML = '<span class="ai-label">AI POLISH · NO API KEY</span>Set your Groq/OpenAI API key in Settings to use AI polish.';
+    toast('Set API key in Settings first');
+    return;
+  }
   try {
-    let text = '', mode = '';
-    if (online) {
-      mode = 'ONLINE';
-      const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${aiKey()}`},
-        body: JSON.stringify({ model: aiModel(), messages:[
-          {role:'system', content:'You rewrite marketing copy to comply with brand rules. Keep meaning, tone, facts. Return only rewritten copy.'},
-          {role:'user', content:`Rules:\n${findings || 'none'}\n\nDraft:\n${state.revised}\n\nRewrite:`}
-        ], temperature:0.3 })
-      });
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const data = await res.json();
-      text = data?.choices?.[0]?.message?.content?.trim() || '';
-    } else {
-      mode = 'OFFLINE';
-      text = await polishOffline(state.revised, findings);
-    }
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ${mode} · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only. Re-run Analyze to verify.</p>`;
+    const res = await fetch(`${aiBase().replace(/\/+$/,'')}/chat/completions`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body: JSON.stringify({ model: aiModel(), messages:[
+        {role:'system', content:'You rewrite marketing copy to comply with brand rules. Keep meaning, tone, facts. Return only rewritten copy.'},
+        {role:'user', content:`Rules:\n${findings || 'none'}\n\nDraft:\n${state.revised}\n\nRewrite:`}
+      ], temperature:0.3 })
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content?.trim() || '';
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ONLINE · AI-GENERATED · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only. Re-run Analyze to verify.</p>`;
     const polishedFindings = findMatches(text, $('channelSelect')?.value);
     const newCount = polishedFindings.length;
-    toast(`AI polish complete (${mode}) · ${newCount} finding${newCount===1?'':'s'} in polished version`);
+    toast(`AI polish complete (ONLINE) · ${newCount} finding${newCount===1?'':'s'} in polished version`);
   } catch (e) {
-    // If online fails, try offline
-    if (online) {
-      try {
-        const text = await polishOffline(state.revised, findings);
-        if (result) result.innerHTML = `<span class="ai-label">AI POLISH · OFFLINE FALLBACK · REVIEW BEFORE USE</span>${esc(text)}<p class="section-note">Proposed rewrite only.</p>`;
-        toast('Online failed — used offline AI');
-        return;
-      } catch (e2) {}
-    }
-    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`;
-    const msg = (e.message || '').includes('Unauthorized') || (e.message || '').includes('huggingface') || (e.message || '').includes('Failed to fetch')
-            ? 'Offline model requires internet on first load. Enter your Groq API key in Settings for online AI polish.'
-            : (e.message || 'Failed');
-          if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ERROR</span>${esc(msg)}`;
-          toast('AI polish failed');
-      }
+    if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ERROR</span>${esc(e.message)}<p class="section-note">Check your API key and network connection.</p>`;
+    toast('AI polish failed: ' + e.message);
+  }
 }
 
 
@@ -880,14 +850,8 @@ function initChatbot() {
         } else {
           throw new Error('API error ' + res.status);
         }
-      } else if (window.transformers) {
-        const pipe = await loadOfflineModel();
-        const prompt = `${systemPrompt}\n${chatHistory.map(m => m.role + ': ' + m.content).join('\n')}\nassistant:`;
-        const out = await pipe(prompt, { max_new_tokens: 128, temperature: 0.7, do_sample: true });
-        reply = (out?.[0]?.generated_text || '').replace(prompt, '').trim() || 'No response';
-        botMsg.textContent = reply;
       } else {
-        reply = 'AI is not available. Set an API key in Settings or wait for offline model to load.';
+        reply = 'AI is not available. Set an API key in Settings.';
         botMsg.textContent = reply;
       }
       chatHistory.push({ role: 'assistant', content: reply });
