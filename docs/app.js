@@ -391,6 +391,7 @@ function initVoice() {
   recognition.onerror = (e) => {
     if (e.error === 'no-speech') { toast('No speech detected. Try again.'); }
     else if (e.error === 'not-allowed') { toast('Microphone access denied. Allow mic in browser settings.'); }
+    else if (e.error === 'network') { toast('Voice recognition requires internet (Google speech service). Use Chrome/Edge with network.'); }
     else { toast('Voice error: ' + e.error); }
     stopVoice();
   };
@@ -732,7 +733,7 @@ async function polishWithAi() {
   if (!state.revised) { toast('Run a review first'); return; }
   const result = $('aiPolishResult'); if (result) { result.classList.remove('hidden'); result.innerHTML = '<span class="ai-label">AI POLISH · WORKING…</span>Polishing…'; }
   const findings = state.findings.map(f => `${f.ruleId}: ${f.title} — ${f.detail}`).join('\n');
-  const online = navigator.onLine && aiKey();
+  const online = !!aiKey();
   try {
     let text = '', mode = '';
     if (online) {
@@ -1175,8 +1176,16 @@ openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init fa
 (function() {
   const toggle = document.getElementById('sidebarToggle');
   const sidebar = document.querySelector('.sidebar');
+  const main = document.querySelector('.main-area');
   if (!toggle || !sidebar) return;
   toggle.addEventListener('click', function() {
     sidebar.classList.toggle('hidden');
+    if (main) {
+      if (sidebar.classList.contains('hidden')) {
+        main.style.marginLeft = '0';
+      } else {
+        main.style.marginLeft = '';
+      }
+    }
   });
 })();
