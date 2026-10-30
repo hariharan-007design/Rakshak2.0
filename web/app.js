@@ -767,8 +767,12 @@ async function polishWithAi() {
       } catch (e2) {}
     }
     if (result) result.innerHTML = `<span class="ai-label">AI POLISH · FAILED</span>${esc(e.message || 'Request failed')}`;
-    toast('AI polish failed');
-  }
+    const msg = (e.message || '').includes('Unauthorized') || (e.message || '').includes('huggingface') || (e.message || '').includes('Failed to fetch')
+            ? 'Offline model requires internet on first load. Enter your Groq API key in Settings for online AI polish.'
+            : (e.message || 'Failed');
+          if (result) result.innerHTML = `<span class="ai-label">AI POLISH · ERROR</span>${esc(msg)}`;
+          toast('AI polish failed');
+      }
 }
 
 
