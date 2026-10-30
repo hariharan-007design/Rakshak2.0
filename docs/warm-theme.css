@@ -60,7 +60,7 @@ select:focus, input:focus { border-color: var(--tan); box-shadow: 0 0 0 2px var(
 .button-outline { background: var(--surface); color: var(--brown); border-color: var(--line); }
 .button-outline:hover { background: var(--tan-wash); border-color: var(--tan); }
 .button-text { color: var(--tan); }
-.login-footer { color: var(--quiet); border-top: 1px solid var(--line-soft); }
+.login-footer { margin-top: 24px !important; padding-bottom: 8px !important; color: var(--quiet); border-top: 1px solid var(--line-soft); }
 .login-disclaimer { color: var(--quiet); }
 .demo-hint { color: var(--muted); }
 
@@ -964,6 +964,9 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 /* Logo text highlight */
 .login-logo { filter: drop-shadow(0 0 8px rgba(242,239,229,0.4)) !important; }
 .login-brand-name span { color: #4A90D9 !important; }
+/* Theme-aware logo text color */
+[data-theme="light"] .login-brand-name { color: #1a1a2e !important; }
+[data-theme="dark"] .login-brand-name { color: #FAF7F2 !important; }
 
 /* Theme toggle button */
 .theme-toggle {
