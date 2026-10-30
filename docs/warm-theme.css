@@ -889,6 +889,24 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   --label-color: #6a6a7a;
 }
 
+
+[data-theme="dark"] {
+  --bg: #1a1510;
+  --sidebar: #2e2218;
+  --surface: #2e2218;
+  --surface-2: #3a2e22;
+  --line: #4a3a2a;
+  --line-soft: #3a2e22;
+  --ink: #f2efe6;
+  --muted: #b0a898;
+  --quiet: #8a8270;
+  --tan: #c4a87a;
+  --tan-2: #b09a6a;
+  --brown: #c4a87a;
+  --brown-dark: #a08860;
+  --tan-wash: #2e2218;
+}
+
 [data-theme="dark"] {
   --bg-primary: #1a1510;
   --bg-secondary: #2e2218;
