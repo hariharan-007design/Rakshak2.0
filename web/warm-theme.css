@@ -1060,7 +1060,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .modal-overlay {
   position: fixed !important;
   inset: 0 !important;
-  z-index: 1000 !important;
+  z-index: 10000 !important;
   background: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
