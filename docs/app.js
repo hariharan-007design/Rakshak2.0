@@ -162,7 +162,7 @@ function login() {
   if (!company) { toast('Company not found. Create one first.'); return; }
   if (company.code.toUpperCase() !== code.toUpperCase()) { $('passwordInput').setAttribute('aria-invalid','true'); toast('Access code does not match'); return; }
   $('passwordInput').removeAttribute('aria-invalid');
-  const industryMap = { tech:'acme', healthcare:'pharma', finance:'finra', realestate:'acme', education:'acme', chemical:'ghs', media:'mozilla', ecommerce:'mailchimp', other:'acme' };
+  const industryMap = { tech:'acme', healthcare:'pharma', finance:'finra', realestate:'realestate', education:'education', chemical:'ghs', media:'mozilla', ecommerce:'mailchimp', insurance:'insurance', other:'acme' };
   const key = industryMap[industry] || 'acme';
   const demoCompany = DEMO_COMPANIES[key];
   if (!demoCompany) { toast('Industry pack not found'); return; }
@@ -268,8 +268,9 @@ function drawHighlight() {
 function drawFindings() {
   const list = $('findingList'); if (!list) return;
   if (!state.findings.length) {
-    list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><h3>No issues found</h3><p>Your draft passes all ${state.company.rules.length} rules for ${$('channelSelect')?.value || 'Website'}.</p><div class="empty-actions"><button class="button button-outline" onclick="document.getElementById('loadSample')?.click()">Load sample draft</button><button class="button button-outline" onclick="showView('guidelines')">View rules</button></div></div>`;
-    if ($('findingCount')) $('findingCount').textContent = '0 findings';
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><h3>No issues found</h3><p>Your draft passes all ${state.company.rules.length} rules for ${$('channelSelect')?.value || 'Website'}.</p><div class="empty-actions"><button class="button button-outline" onclick="document.getElementById('loadSample')?.click()">Load sample draft</button><button class="button button-outline view-rules-btn">View rules</button></div></div>`;
+         list.querySelector('.view-rules-btn')?.addEventListener('click', () => showView('guidelines'));
+         if ($('findingCount')) $('findingCount').textContent = '0 findings';
     return;
   }
   const open = state.findings.filter(f => f.status === 'open');
@@ -978,7 +979,7 @@ $('saveToDbBtn')?.addEventListener('click',async()=>{const draft=$('draftInput')
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
   $('channelSelect')?.addEventListener('change',()=>{if(state.findings.length){analyze();}else{updateRevised();} renderChannelPreview();}); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
-  $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();toast('Session history cleared');});
+  $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();const profile=JSON.parse(localStorage.getItem('rakshak_profile')||'{}');if(profile.name)localStorage.removeItem('rakshak_history_'+profile.name);toast('Session history cleared');});
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
@@ -1094,24 +1095,34 @@ async function renderSavedFiles() {
   const container = $('savedFilesList');
   if (!container) return;
   const industry = state.industry || 'tech';
+  const companyName = state.company?.name || '';
   try {
     const files = await getFilesByIndustry(industry);
-    if (files.length === 0) {
-      container.innerHTML = '<p style="color:var(--tan);font-size:12px;">No saved files for this industry yet.</p>';
+    // Filter by company name for data isolation
+    const filtered = companyName ? files.filter(f => f.company === companyName) : files;
+    if (filtered.length === 0) {
+      container.innerHTML = '<p style="color:var(--tan);font-size:12px;">No saved files for this company yet.</p>';
       return;
     }
-    container.innerHTML = files.map(f => `
+    container.innerHTML = filtered.map(f => `
       <div class="saved-file-item" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <strong style="font-size:12px;">${f.wordCount} words</strong>
           <span style="font-size:10px;color:var(--tan);margin-left:8px;">${new Date(f.savedAt).toLocaleDateString()}</span>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="button button-outline" style="font-size:9px;padding:4px 8px;" onclick="loadSavedFile(${f.id})">Load</button>
-          <button class="button button-outline" style="font-size:9px;padding:4px 8px;" onclick="deleteSavedFile(${f.id})">Delete</button>
+          <button class="button button-outline saved-load-btn" data-id="${f.id}" style="font-size:9px;padding:4px 8px;">Load</button>
+          <button class="button button-outline saved-delete-btn" data-id="${f.id}" style="font-size:9px;padding:4px 8px;">Delete</button>
         </div>
       </div>
     `).join('');
+    // Event delegation for saved file buttons
+    container.querySelectorAll('.saved-load-btn').forEach(btn => {
+      btn.addEventListener('click', () => loadSavedFile(parseInt(btn.dataset.id)));
+    });
+    container.querySelectorAll('.saved-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteSavedFile(parseInt(btn.dataset.id)));
+    });
   } catch (e) {
     console.error('Failed to load saved files:', e);
   }
@@ -1123,16 +1134,23 @@ async function loadSavedFile(id) {
   const store = tx.objectStore('files');
   const req = store.get(id);
   req.onsuccess = () => {
-    const file = req.result;
-    if (file && $('draftInput')) {
-      $('draftInput').value = file.draft || '';
-      state.draft = file.draft || '';
-      state.findings = file.findings || [];
-      updateWordCount();
-      if (state.findings.length > 0) drawFindings();
-      toast('File loaded from database');
-    }
-  };
+      const file = req.result;
+      if (file && $('draftInput')) {
+        $('draftInput').value = file.draft || '';
+        state.draft = file.draft || '';
+        state.findings = file.findings || [];
+        updateWordCount();
+        if (state.findings.length > 0) drawFindings();
+        // Restore revised draft if available
+        if (file.revised) {
+          state.revised = file.revised;
+          if ($('revisedDraft')) $('revisedDraft').innerHTML = esc(file.revised);
+        }
+        // Update channel preview
+        renderChannelPreview();
+        toast('File loaded from database');
+      }
+    };
 }
 
 async function deleteSavedFile(id) {
@@ -1194,7 +1212,7 @@ openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init fa
 // Disable Analyze when empty
 (function() {
   const ta = document.getElementById('draftInput');
-  const btn = document.getElementById('analyzeBtn');
+  const btn = document.getElementById('analyzeButton');
   if (!ta || !btn) return;
   function update() {
     const empty = !ta.value.trim();

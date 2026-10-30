@@ -361,6 +361,97 @@ Source: github.com/hariharan-007design/Rakshak2.0
 
 ---
 
+## Development Tools Disclosure
+
+Significant tools used during development:
+
+- Hermes Agent (Nous Research) — planning, scaffolding, editing.
+- Claude (Anthropic) — code assistance and copy review.
+- GitHub Copilot / Cursor-style assistants — inline code completion (where used).
+- In-app (optional): AI polish calls an OpenAI-compatible API (Groq by default) using a key the user provides; sends the revised draft + rule context to that provider.
+- Design: Figma (plugin experiments), Mermaid/ASCII for architecture diagrams.
+- PDF.js (Mozilla) v6.4.299 — bundled browser PDF reader.
+- Git/GitHub — version control and hosting (GitHub Pages).
+
+No low-code/no-code builders used. All application code is hand-written HTML/CSS/JS.
+
+---
+
+## Development Evidence (Round 3 Window)
+
+Git history during the Round 3 window (selected commits, most recent first):
+
+- 142b4b0 Fix: saved files load (drawFindings), industry filter, company name, PDF ref upload
+- eb4697d Fix: drag-and-drop upload, step indicator (Draft→Review→Approve)
+- 0f01c7e Fix: disable Analyze button when textarea empty
+- b22178f Fix: sidebar maximize workspace, remove navigator.onLine check for AI, voice network error msg
+- a72403f Fix: AI polish error message - use Groq API key for online
+- df073d1 Fix: dark mode CSS variables for workspace (bg, ink, surface, etc.)
+- 4d3ce5e Fix: remove logo float, add sidebar toggle, voice wired
+- 0147d8e Fix: logo gap 4px, reduce workspace gap
+- b2f4be4 Fix modal: remove display:flex override
+- a0e2f32 Fix modal z-index (above splash), sync all files
+
+Full history available in the repository. Commits are timestamped in Git.
+
+---
+
+## Security & Privacy Statement
+
+- Demo access codes (MOZ-2026, MAIL-2026, ACME-2026, etc.) are visible demo credentials. They are not authentication and must never protect real company information.
+- The deterministic scan runs entirely in the browser. No draft content leaves the browser for the scan.
+- Optional AI polish sends the revised draft + rule context to an external OpenAI-compatible provider (Groq by default) using a key the user supplies. The key is stored in browser localStorage (not a secure vault). Do not submit confidential material to AI polish without authorization.
+- The page loads fonts from Google Fonts (network).
+- Review history is held in memory for the current tab only; saved files are stored in IndexedDB (browser-local).
+- This is a prototype, not an enterprise-secure system. No SSO, RBAC, tenant isolation, or audit-grade logging is implemented.
+
+### Offline / Privacy Wording (Reconciled)
+
+- Deterministic scanning and all rule checks: 100% offline, no network required.
+- Optional AI polish: requires network and sends selected content to the configured provider.
+- The phrase "100% local-first" refers to the deterministic scan path, not the optional AI polish.
+
+---
+
+## Testing Evidence (Detailed)
+
+### Seeded Test (Quantitative)
+
+- Violations detected (recall): 12/12 (4 per pack, each mapped to one rule ID).
+- False discovery: 0/20 clean control passages produced spurious findings.
+- Deterministic scan speed: under 1 second on a representative draft.
+- Offline operation: deterministic scan runs with no network; only optional AI polish calls an external API.
+
+These are seeded, controlled results on 32 passages. They are not a claim of production accuracy on arbitrary real-world text.
+
+### Manual End-to-End (Qualitative)
+
+- Empty textarea → Analyze disabled.
+- Drag-and-drop upload of .txt/.md/.pdf.
+- Refresh behaviour: review history is in-memory only (documented).
+- Repeat action (Analyze twice) → no crash, findings re-render.
+- Bad input (empty, oversized PDF) → surfaced limits, no hang.
+- Theme toggle light/dark → workspace readable in both.
+- Saved files load correctly per industry.
+
+### Not Yet Done
+
+- No independent user testing with external participants.
+- No automated test suite (unit/integration) in the repository.
+- No performance benchmarking beyond the seeded timer.
+
+---
+
+## Improvements — Evidence Table
+
+| # | Round 2 Commitment | Status | What Works | What Doesn't | Evidence (file) |
+|---|---|---|---|---|---|
+| 1 | Multimodal doc & asset review (OCR, page-level evidence, approved-logo matching, accessibility checks) | Not delivered | Text-based PDF extraction (PDF.js); logo file-quality heuristics (dimensions, size, transparency) | No OCR; no page/region citations; no approved-asset matching; no accessibility checks | `web/app.js` (PDF extraction), `web/index.html` (logo upload) |
+| 2 | Enterprise governance & audit (real auth, RBAC, isolated workspaces, versioned rules, auditable approval history) | Not delivered | In-memory workspaces per demo company; in-memory decision history | No real auth; demo codes are not security; no RBAC; no tenant isolation; no versioned rules; no persistent audit log | `web/app.js` (workspace select), README (demo codes warning) |
+| 3 | Controlled publishing & quality measurement (approval-before-publishing, audit trails, FP/reviewer-override metrics) | Partially delivered | Approval step indicator (Draft→Review→Approve); in-memory accept/ignore decisions | No publishing to platforms (channel preview only, paragraph-break changes); no metrics tracking; no audit trail export | `web/app.js` (step indicator), `web/index.html` |
+
+---
+
 ## Team and Participant Details
 
 | Field | Value |
