@@ -955,18 +955,13 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   color: #4A90D9 !important;
 }
 
-/* Blurred background behind logo text only */
+/* Logo - no blur box, just text highlight */
 .login-brand {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 16px;
-  border-radius: 12px;
-  background: rgba(61, 43, 31, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 .login-logo {
-  position: relative;
-  z-index: 1;
+  filter: drop-shadow(0 0 6px rgba(242, 239, 229, 0.4));
 }
+
