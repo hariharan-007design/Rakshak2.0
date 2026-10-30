@@ -1,0 +1,86 @@
+/* === FINAL DARK MODE UI FIXES === */
+
+/* 1. Login page: "keep..." quote visible in light mode */
+[data-theme="light"] .login-quote,
+[data-theme="light"] .login-quote p,
+[data-theme="light"] .login-quote blockquote,
+[data-theme="light"] .login-message p {
+  color: #2C2416 !important;
+  font-weight: 600 !important;
+}
+
+/* 2. Login page: Rakshak 2.0 and Open workspace readable in dark mode */
+[data-theme="dark"] .login-brand-name,
+[data-theme="dark"] .login-brand-name span,
+[data-theme="dark"] .login-content h1,
+[data-theme="dark"] .login-title,
+[data-theme="dark"] .open-workspace,
+[data-theme="dark"] .login-message h1 {
+  color: #F2EFE6 !important;
+}
+
+/* 3. Workspace: top-aligned, left-aligned, full width */
+.workspace,
+.main-area,
+.view,
+.workspace-grid,
+.review-layout {
+  margin-top: 0 !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+/* 4. Text boxes lighter in dark mode */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+[data-theme="dark"] .draft-section textarea {
+  background: #3a2e22 !important;
+  color: #F2EFE6 !important;
+  border: 1px solid #4a3a2a !important;
+}
+
+/* 5. Navigation left-aligned */
+.topbar, .breadcrumb, .page-heading, .nav-tabs, .step-indicator {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+/* 6. Destination selector below draft */
+.channel-select-wrap {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+/* 7. Full page utilization */
+.content-section {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* 8. Good spacing */
+.view {
+  padding: 16px 24px !important;
+}
+
+.content-section {
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+/* 9. Login quote contrast in light mode */
+.login-message p,
+.login-quote p {
+  color: #2C2416 !important;
+}
+
+/* 10. Dark mode input contrast */
+[data-theme="dark"] .login-input,
+[data-theme="dark"] .login-form input,
+[data-theme="dark"] .login-form select {
+  background: #2e2218 !important;
+  color: #F2EFE6 !important;
+  border: 1px solid #4a3a2a !important;
+}
