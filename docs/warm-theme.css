@@ -889,7 +889,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(242, 239, 229, 0.8);
+  background: rgba(242, 239, 229, 1.0);
   transform: translate(-50%, -50%);
   transition: all 0.3s ease;
   pointer-events: auto;
@@ -898,7 +898,7 @@ input::placeholder { color: var(--quiet); opacity: 0.8; }
 .dot:hover {
   width: 12px;
   height: 12px;
-  background: rgba(242, 239, 229, 0.8);
+  background: rgba(242, 239, 229, 1.0);
   box-shadow: 0 0 8px rgba(242, 239, 229, 0.4);
 }
 /* Noise texture overlay */
