@@ -267,12 +267,15 @@ function drawHighlight() {
 
 function drawFindings() {
   const list = $('findingList'); if (!list) return;
+  const ab = $('approveBtn');
   if (!state.findings.length) {
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><h3>No issues found</h3><p>Your draft passes all ${state.company.rules.length} rules for ${$('channelSelect')?.value || 'Website'}.</p><div class="empty-actions"><button class="button button-outline" onclick="document.getElementById('loadSample')?.click()">Load sample draft</button><button class="button button-outline view-rules-btn">View rules</button></div></div>`;
-         list.querySelector('.view-rules-btn')?.addEventListener('click', () => showView('guidelines'));
-         if ($('findingCount')) $('findingCount').textContent = '0 findings';
+    list.querySelector('.view-rules-btn')?.addEventListener('click', () => showView('guidelines'));
+    if ($('findingCount')) $('findingCount').textContent = '0 findings';
+    if (ab) { ab.style.display = 'inline-block'; }
     return;
   }
+  if (ab) { ab.style.display = 'inline-block'; }
   const open = state.findings.filter(f => f.status === 'open');
   if ($('findingCount')) $('findingCount').textContent = String(open.length);
   const totalRules = state.company.rules.length + (state.findings.filter(f=>f.ruleId&&f.ruleId.startsWith('DEST')).length > 0 ? 1 : 0);
@@ -979,7 +982,8 @@ $('saveToDbBtn')?.addEventListener('click',async()=>{const draft=$('draftInput')
   $('draftInput')?.addEventListener('input',updateWordCount);
   $('draftFile')?.addEventListener('change',e=>handleDraft(e.target.files[0])); $('logoFile')?.addEventListener('change',e=>inspectLogo(e.target.files[0]));
   $('channelSelect')?.addEventListener('change',()=>{if(state.findings.length){analyze();}else{updateRevised();} renderChannelPreview();}); $('copyRevised')?.addEventListener('click',async()=>{if(!state.revised){toast('Run a review first');return;}await navigator.clipboard.writeText(state.revised);toast('Revised draft copied');});
-  $('downloadReport')?.addEventListener('click',downloadReport); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();const profile=JSON.parse(localStorage.getItem('rakshak_profile')||'{}');if(profile.name)localStorage.removeItem('rakshak_history_'+profile.name);toast('Session history cleared');});
+  $('downloadReport')?.addEventListener('click',downloadReport);
+$('approveBtn')?.addEventListener('click',()=>{ const open = state.findings.filter(f=>f.status==='open').length; if (open > 0) { toast(open + ' finding(s) still open. Resolve all before approving.'); return; } state.approved = true; toast('Draft approved!'); const ab = $('approveBtn'); if (ab) { ab.textContent = '✅ Approved'; ab.disabled = true; } }); $('rescanButton')?.addEventListener('click',rescan); $('clearSession')?.addEventListener('click',()=>{state.history=[];drawHistory();const profile=JSON.parse(localStorage.getItem('rakshak_profile')||'{}');if(profile.name)localStorage.removeItem('rakshak_history_'+profile.name);toast('Session history cleared');});
   $('expandGuidelines')?.addEventListener('click',()=>showView('guidelines')); $('openGuidelines')?.addEventListener('click',()=>showView('guidelines'));
   $('guidelineDocument')?.addEventListener('load',()=>{});
   $('highlightedCopy')?.addEventListener('click',e=>{const mark=e.target.closest('mark');if(mark)focusFinding(mark.dataset.findingId);});
