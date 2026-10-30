@@ -191,6 +191,13 @@ function login() {
   const ws = $('workspace');
   const ls = $('loginScreen');
   if (ws) { ws.classList.remove('hidden'); ws.hidden = false; }
+  // Auto-select company logo as reference if available
+  const logoImg = $('logoRefImg');
+  if (logoImg) {
+    const companyLogoPath = './logos/' + (industry || 'acme') + '.png';
+    logoImg.src = companyLogoPath;
+    logoImg.onerror = () => { logoImg.src = './assets/rakshak-logo.png'; };
+  }
   if (ls) { ls.classList.add('hidden'); ls.hidden = true; }
   showView('review');
   const savedHistory = localStorage.getItem('rakshak_history_' + companyName);
@@ -297,7 +304,7 @@ function drawFindings() {
   list.querySelectorAll('.apply-fix').forEach(btn => btn.addEventListener('click', () => applyFix(btn.dataset.id)));
   list.querySelectorAll('.reject-fix').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f){f.status='rejected'; drawFindings(); drawHighlight(); toast('Fix rejected — original kept');} }));
   list.querySelectorAll('.dismiss-finding').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f)f.status='ignored'; drawFindings(); drawHighlight(); }));
-  list.querySelectorAll('.override-fix').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f){const reason=prompt('Why are you overriding this finding?'); if(reason){f.status='overridden'; f.overrideReason=reason; drawFindings(); drawHighlight(); toast('Override recorded');}} }));
+  list.querySelectorAll('.override-fix').forEach(btn => btn.addEventListener('click', () => { const f=state.findings.find(x=>x.id===btn.dataset.id); if(f){const reason=prompt('Why are you overriding this finding?'); if(reason){f.status='overridden'; f.overrideReason=reason; f.overrideType = reason.toLowerCase().includes('false') ? 'false-positive' : 'true-positive'; state.metrics = state.metrics || { tp:0, fp:0, fn:0 }; if (f.overrideType === 'true-positive') state.metrics.tp++; else state.metrics.fp++; drawFindings(); drawHighlight(); toast('Override recorded (' + f.overrideType + ')');}} }));
 }
 
 function focusFinding(id) {
@@ -695,6 +702,12 @@ Warnings: ${warnings}
 Blockers: ${blockers}
 Advisory: ${reviews}
 Total findings: ${state.findings.length}
+Open: ${state.findings.filter(f=>f.status==='open').length}
+Resolved: ${state.findings.filter(f=>f.status!=='open').length}
+True Positives: ${state.metrics?.tp || 0}
+False Positives: ${state.metrics?.fp || 0}
+Reviewer: ${state.company?.name || 'Unknown'}
+Timestamp: ${new Date().toISOString()}
 
 FINDINGS
 ${findings || 'No findings.'}
