@@ -1204,3 +1204,20 @@ openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init fa
   ta.addEventListener('input', update);
   update();
 })();
+
+// Drag and drop upload
+(function() {
+  const zone = document.getElementById('dropZone');
+  const input = document.getElementById('draftFile');
+  if (!zone || !input) return;
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.borderColor = 'var(--orange)'; });
+  zone.addEventListener('dragleave', () => { zone.style.borderColor = 'var(--line)'; });
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.style.borderColor = 'var(--line)';
+    if (e.dataTransfer.files.length) {
+      input.files = e.dataTransfer.files;
+      input.dispatchEvent(new Event('change'));
+    }
+  });
+})();
