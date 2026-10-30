@@ -1189,3 +1189,18 @@ openDB().then(() => console.log("DB ready")).catch(e => console.warn("DB init fa
     }
   });
 })();
+
+// Disable Analyze when empty
+(function() {
+  const ta = document.getElementById('draftInput');
+  const btn = document.getElementById('analyzeBtn');
+  if (!ta || !btn) return;
+  function update() {
+    const empty = !ta.value.trim();
+    btn.disabled = empty;
+    btn.style.opacity = empty ? '0.5' : '1';
+    btn.style.cursor = empty ? 'not-allowed' : 'pointer';
+  }
+  ta.addEventListener('input', update);
+  update();
+})();
